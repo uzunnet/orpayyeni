@@ -1,6 +1,0 @@
-﻿<Solution>
-  <Project Path="VizitLink3D.Ortak/VizitLink3D.Ortak.csproj" />
-  <Project Path="VizitLink3D.Api/VizitLink3D.Api.csproj" />
-  <Project Path="VizitLink3D.Testler/VizitLink3D.Testler.csproj" />
-  <Project Path="VizitLink3D.UI/VizitLink3D.UI.csproj" />
-</Solution>
