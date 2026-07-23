@@ -121,3 +121,8 @@ Yedekler/
 # Python sanal ortam
 UcBoyutMotor/venv/
 
+
+# Build outputs
+uiout/
+*.br
+*.gz
