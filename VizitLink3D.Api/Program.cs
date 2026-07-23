@@ -311,7 +311,19 @@ uygulama.MapHub<AIHub>("/hubs/ai");
 uygulama.MapHub<SahneAyarHub>("/hubs/sahne-ayar");
 uygulama.MapHub<TemaHub>("/hubs/tema");
 
-// 12. Blazor WASM fallback
-uygulama.MapFallbackToFile("index.html");
+// 12. Root endpoint - API durumu
+uygulama.MapGet("/", () => Results.Json(new {
+    basariliMi = true,
+    mesaj = "VizitLink3D API calisiyor",
+    apiVersiyon = "1.0",
+    endpointler = new[] {
+        "/api/sayfa-duzen-ayarlari",
+        "/api/db-yukle",
+        "/api/kapak-modelleri",
+        "/api/menu",
+        "/api/urunler",
+        "/swagger"
+    }
+}));
 
 uygulama.Run();
