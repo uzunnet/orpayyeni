@@ -286,6 +286,7 @@ saglayici.Mappings[".css"] = "text/css";
 saglayici.Mappings[".map"] = "application/json";
 saglayici.Mappings[".br"] = "application/octet-stream";
 
+uygulama.UseDefaultFiles();
 uygulama.UseStaticFiles(new StaticFileOptions
 {
     ContentTypeProvider = saglayici,
@@ -313,7 +314,6 @@ uygulama.MapHub<TemaHub>("/hubs/tema");
 
 // 12. UI varsa default dosya + SPA fallback
 if (System.IO.File.Exists(Path.Combine(uygulama.Environment.WebRootPath, "index.html"))) {
-    uygulama.UseDefaultFiles();
     uygulama.MapFallbackToFile("index.html");
 }
 
