@@ -1,0 +1,134 @@
+﻿@page "/iletisim"
+@layout VizitLink3DDuzen
+
+<PageTitle>@DilServisi.T("menu.iletisim", "İletişim")</PageTitle>
+
+<section class="gb-iletisim">
+    <header class="gb-iletisim__hero">
+        <span class="gb-iletisim__rozet">@DilServisi.T("iletisim.rozet", "ORPAY SHOWROOM")</span>
+        <h1>@DilServisi.T("iletisim.baslik", "Hayalinizdeki banyoyu birlikte tasarlayalım.")</h1>
+        <p>@DilServisi.T("iletisim.aciklama", "Ürünler, ölçüler, renk seçenekleri ve proje teklifleriniz için uzman ekibimize doğrudan ulaşın.")</p>
+    </header>
+
+    <div class="gb-iletisim__grid">
+        <aside class="gb-iletisim__bilgiler gb-panel">
+            <div class="gb-iletisim__bilgi-baslik">
+                <span>@DilServisi.T("iletisim.bilgiEtiketi", "BİZE ULAŞIN")</span>
+                <h2>@DilServisi.T("iletisim.bilgiBaslik", "Showroom ve satış ekibi")</h2>
+            </div>
+
+            <div class="gb-iletisim__bilgi-listesi">
+                <article class="gb-iletisim__bilgi-kart">
+                    <MudIcon Icon="@Icons.Material.Outlined.Phone" />
+                    <div>
+                        <span>@DilServisi.T("iletisim.telefon", "Telefon")</span>
+                        @foreach (var tel in _telefonlar)
+                        {
+                            <a href="@($"tel:{tel}")">@tel</a>
+                        }
+                    </div>
+                </article>
+
+                @if (!string.IsNullOrWhiteSpace(_whatsapp))
+                {
+                    <article class="gb-iletisim__bilgi-kart">
+                        <MudIcon Icon="@Icons.Material.Outlined.Chat" />
+                        <div>
+                            <span>@DilServisi.T("iletisim.whatsapp", "WhatsApp")</span>
+                            <a href="@($"https://wa.me/{new string(_whatsapp.Where(char.IsDigit).ToArray())}")" target="_blank" rel="noopener">@DilServisi.T("iletisim.whatsappAksiyon", "Hızlı mesaj gönder")</a>
+                        </div>
+                    </article>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(_email))
+                {
+                    <article class="gb-iletisim__bilgi-kart">
+                        <MudIcon Icon="@Icons.Material.Outlined.MailOutline" />
+                        <div>
+                            <span>@DilServisi.T("iletisim.eposta", "E-posta")</span>
+                            <a href="@($"mailto:{_email}")">@_email</a>
+                        </div>
+                    </article>
+                }
+
+                <article class="gb-iletisim__bilgi-kart">
+                    <MudIcon Icon="@Icons.Material.Outlined.LocationOn" />
+                    <div>
+                        <span>@DilServisi.T("iletisim.fabrika", "Fabrika")</span>
+                        <p>@_adres</p>
+                    </div>
+                </article>
+
+                @if (!string.IsNullOrWhiteSpace(_showroomAdres))
+                {
+                    <article class="gb-iletisim__bilgi-kart">
+                        <MudIcon Icon="@Icons.Material.Outlined.Storefront" />
+                        <div>
+                            <span>@DilServisi.T("iletisim.showroom", "Showroom")</span>
+                            <p>@_showroomAdres</p>
+                        </div>
+                    </article>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(_calismaSaatleri))
+                {
+                    <article class="gb-iletisim__bilgi-kart">
+                        <MudIcon Icon="@Icons.Material.Outlined.Schedule" />
+                        <div>
+                            <span>@DilServisi.T("iletisim.calismaSaatleri", "Çalışma saatleri")</span>
+                            <p>@_calismaSaatleri</p>
+                        </div>
+                    </article>
+                }
+            </div>
+        </aside>
+
+        <section class="gb-iletisim__form-panel gb-panel">
+            <span class="gb-iletisim__rozet">@DilServisi.T("iletisim.formRozet", "TEKLİF VE BİLGİ TALEBİ")</span>
+            <h2>@DilServisi.T("iletisim.formBaslik", "Size nasıl yardımcı olabiliriz?")</h2>
+            <p>@DilServisi.T("iletisim.formAciklama", "Mesajınız doğrudan yönetim panelindeki iletişim kutusuna iletilir.")</p>
+
+            <MudForm @ref="_form" Class="gb-iletisim__form">
+                <div class="gb-iletisim__form-ikili">
+                    <MudTextField @bind-Value="_formVerisi.AdSoyad" Label="@DilServisi.T("iletisim.adSoyad", "Ad soyad")" Required="true" RequiredError="@DilServisi.T("iletisim.adSoyadZorunlu", "Ad soyad zorunludur.")" Variant="Variant.Outlined" />
+                    <MudTextField @bind-Value="_formVerisi.Telefon" Label="@DilServisi.T("iletisim.telefon", "Telefon")" Variant="Variant.Outlined" />
+                </div>
+                <MudTextField @bind-Value="_formVerisi.Eposta" Label="@DilServisi.T("iletisim.eposta", "E-posta")" InputType="InputType.Email" Required="true" RequiredError="@DilServisi.T("iletisim.epostaZorunlu", "E-posta zorunludur.")" Variant="Variant.Outlined" />
+                <MudTextField @bind-Value="_formVerisi.Konu" Label="@DilServisi.T("iletisim.konu", "İlgilendiğiniz ürün veya konu")" Variant="Variant.Outlined" />
+                <MudTextField @bind-Value="_formVerisi.Mesaj" Label="@DilServisi.T("iletisim.mesaj", "Mesajınız")" Required="true" RequiredError="@DilServisi.T("iletisim.mesajZorunlu", "Mesaj alanı zorunludur.")" Lines="6" Variant="Variant.Outlined" />
+
+                @if (!string.IsNullOrWhiteSpace(_formDurumMesaji))
+                {
+                    <div class="@(_formBasariliMi ? "gb-iletisim__durum gb-iletisim__durum--basarili" : "gb-iletisim__durum gb-iletisim__durum--hata")">@_formDurumMesaji</div>
+                }
+
+                <MudButton OnClick="MesajGonderAsync" Disabled="_gonderiliyor" Variant="Variant.Filled" Class="gb-btn gb-btn--altin gb-iletisim__gonder">
+                    @if (_gonderiliyor)
+                    {
+                        <MudProgressCircular Indeterminate="true" Size="Size.Small" />
+                    }
+                    else
+                    {
+                        <MudIcon Icon="@Icons.Material.Outlined.Send" />
+                        @DilServisi.T("iletisim.gonder", "Mesajı gönder")
+                    }
+                </MudButton>
+            </MudForm>
+        </section>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_haritaUrl))
+    {
+        <section class="gb-iletisim__harita gb-panel">
+            <div>
+                <span class="gb-iletisim__rozet">@DilServisi.T("iletisim.konum", "KONUM")</span>
+                <h2>@DilServisi.T("iletisim.haritaBaslik", "Showroomumuza yol tarifi alın")</h2>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(_haritaBaglantiUrl))
+            {
+                <a class="gb-chip gb-chip--active" href="@_haritaBaglantiUrl" target="_blank" rel="noopener">@DilServisi.T("iletisim.haritaAksiyon", "Haritada aç")</a>
+            }
+            <iframe class="gb-iletisim__harita-cerceve" src="@_haritaUrl" title="@DilServisi.T("iletisim.harita", "Harita")" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </section>
+    }
+</section>

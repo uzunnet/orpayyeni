@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+
+<html class="light" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ORPAY - PVC Kapı Yüzeyleri</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500;600;700&amp;family=Hanken+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#f4fbf1",
+                        "surface-dim": "#d5dcd2",
+                        "surface-bright": "#f4fbf1",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#eff6ec",
+                        "surface-container": "#e9f0e6",
+                        "surface-container-high": "#e3ebe1",
+                        "surface-container-highest": "#dee5db",
+                        "primary": "#0e6d38",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#9ef6b2",
+                        "on-primary-container": "#00210c",
+                        "secondary": "#506352",
+                        "on-secondary": "#ffffff",
+                        "secondary-container": "#d2e8d3",
+                        "on-secondary-container": "#0e1f12",
+                        "tertiary": "#3a656f",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-container": "#beeaf6",
+                        "on-tertiary-container": "#001f25",
+                        "error": "#ba1a1a",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#410002",
+                        "outline": "#727970",
+                        "outline-variant": "#c1c9be",
+                        "on-surface": "#191c19",
+                        "on-surface-variant": "#414941",
+                        "inverse-surface": "#2e312d",
+                        "inverse-on-surface": "#f0f1ec",
+                        "inverse-primary": "#82d998",
+                        "scrim": "#000000",
+                        "shadow": "#000000",
+                        "primary-fixed": "#9ef6b2",
+                        "on-primary-fixed": "#00210c",
+                        "primary-fixed-dim": "#82d998",
+                        "on-primary-fixed-variant": "#005228",
+                        "secondary-fixed": "#d2e8d3",
+                        "on-secondary-fixed": "#0e1f12",
+                        "secondary-fixed-dim": "#b6ccb7",
+                        "on-secondary-fixed-variant": "#394b3c",
+                        "tertiary-fixed": "#beeaf6",
+                        "on-tertiary-fixed": "#001f25",
+                        "tertiary-fixed-dim": "#a2ced9",
+                        "on-tertiary-fixed-variant": "#1f4d56"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-sm": "8px",
+                        "gutter": "32px",
+                        "section-gap": "128px",
+                        "margin-x": "64px",
+                        "stack-md": "24px",
+                        "container-max": "1440px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["EB Garamond"],
+                        "headline-lg": ["EB Garamond"],
+                        "title-lg": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["EB Garamond"],
+                        "display-lg": ["EB Garamond"],
+                        "body-md": ["Hanken Grotesk"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "label-sm": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["32px", { "lineHeight": "1.3", "fontWeight": "500" }],
+                        "headline-lg": ["48px", { "lineHeight": "1.2", "fontWeight": "500" }],
+                        "title-lg": ["20px", { "lineHeight": "1.5", "letterSpacing": "0.1em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["32px", { "lineHeight": "1.2", "fontWeight": "500" }],
+                        "display-lg": ["72px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "1.7", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "1.4", "letterSpacing": "0.2em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Light Mode Glass Panel */
+        .glass-panel {
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+        }
+        
+        .dark .glass-panel {
+            background-color: rgba(26, 26, 26, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .glow-effect::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(14, 109, 56, 0.08) 0%, transparent 70%);
+            z-index: -1;
+            filter: blur(40px);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .glow-effect:hover::before {
+            opacity: 1;
+        }
+
+        /* Animations */
+        .reveal-element {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .reveal-element.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .scale-in {
+            opacity: 0;
+            transform: scale(0.95);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .scale-in.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: theme('colors.surface'); 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: theme('colors.outline-variant'); 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: theme('colors.outline'); 
+        }
+
+        /* Ambient Background */
+        .ambient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f4fbf1 0%, #eff6ec 100%);
+        }
+        
+        .ambient-shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(5%, -5%) scale(1.1); }
+            66% { transform: translate(-5%, 5%) scale(0.9); }
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen font-body-md overflow-x-hidden selection:bg-primary/20 selection:text-primary transition-colors duration-500">
+<!-- Ambient Background -->
+<div class="ambient-bg">
+<div class="ambient-shape bg-primary-container w-[600px] h-[600px] -top-[200px] -right-[200px]" style="animation-delay: 0s;"></div>
+<div class="ambient-shape bg-secondary-container w-[500px] h-[500px] top-[40%] -left-[150px]" style="animation-delay: -5s;"></div>
+<div class="ambient-shape bg-tertiary-container w-[700px] h-[700px] -bottom-[300px] right-[10%]" style="animation-delay: -10s;"></div>
+</div>
+<!-- TopNavBar Component -->
+<nav class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/30 shadow-sm transition-all duration-300" id="main-nav">
+<div class="flex justify-between items-center px-5 md:px-margin-x py-4 max-w-container-max mx-auto">
+<a class="font-headline-md text-headline-md font-bold text-primary tracking-tight" href="#">ORPAY</a>
+<div class="hidden lg:flex space-x-8 items-center">
+<a class="font-label-sm text-label-sm tracking-widest text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">ANA SAYFA</a>
+<a class="font-label-sm text-label-sm tracking-widest text-primary border-b-2 border-primary pb-1" href="#">ÜRÜNLER</a>
+<a class="font-label-sm text-label-sm tracking-widest text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">KATALOG</a>
+<a class="font-label-sm text-label-sm tracking-widest text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">KURUMSAL</a>
+<a class="font-label-sm text-label-sm tracking-widest text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">HABERLER</a>
+<a class="font-label-sm text-label-sm tracking-widest text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">İLETİŞİM</a>
+</div>
+<div class="hidden md:flex items-center space-x-4">
+<div class="flex items-center space-x-2 text-on-surface-variant border-r border-outline-variant/50 pr-4">
+<button class="hover:text-primary transition-colors font-label-sm text-xs font-bold">TR</button>
+<span>/</span>
+<button class="hover:text-primary transition-colors font-label-sm text-xs">EN</button>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors p-2" id="theme-toggle">
+<span class="material-symbols-outlined text-[20px] dark:hidden">dark_mode</span>
+<span class="material-symbols-outlined text-[20px] hidden dark:block">light_mode</span>
+</button>
+<button class="bg-primary hover:bg-primary/90 text-on-primary font-label-sm text-label-sm tracking-widest px-6 py-2.5 rounded-DEFAULT shadow-md hover:shadow-lg transition-all duration-300">TEKLİF AL</button>
+</div>
+<!-- Mobile Menu Toggle -->
+<button class="lg:hidden text-on-surface p-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">menu</span>
+</button>
+</div>
+</nav>
+<main class="pt-32 pb-section-gap relative z-10">
+<!-- Product Hero Section -->
+<section class="max-w-container-max mx-auto px-5 md:px-margin-x mb-section-gap">
+<!-- Breadcrumbs -->
+<div class="flex items-center space-x-2 text-on-surface-variant font-label-sm text-[10px] tracking-widest mb-8 uppercase reveal-element">
+<a class="hover:text-primary transition-colors" href="#">Ana Sayfa</a>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">Ürünler</a>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-primary font-bold">PVC Kapı Yüzeyleri</span>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Main Image Area -->
+<div class="lg:col-span-7 h-[50vh] lg:h-[75vh] relative group overflow-hidden rounded-lg glow-effect scale-in shadow-xl shadow-black/5 bg-white border border-outline-variant/20">
+<img alt="PVC Kapı Yüzeyi" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]" src="https://lh3.googleusercontent.com/aida/AP1WRLuDb75bBkU0f_RRHtDI9m5dlbGDW5juVPM4OTnY8oL1TT4CeRxDf6roKp1UpUk9pQ7x1FNM5ey0WjjIpBffbW-YHZRVjwGUBDMKSHlRi4jZAxrNAFp6MDB-kQJPoxQybYeP_Jkn_6wDRw73vxCPg2dGR2p-MRvtMBx4amLv6apCyrKmfvtmb2rvHteo0TnCaAl2NoouzD47IRIXfBCCEtkgxc8aPUfUgcyzNagTv-oPc8AuxqA_PclOgz4"/>
+<!-- Floating Tech Spec Overlay -->
+<div class="absolute bottom-6 left-6 right-6 glass-panel p-6 rounded-DEFAULT flex justify-between items-end opacity-0 transform translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 delay-100">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-1">P-Series</h3>
+<p class="font-body-md text-sm text-on-surface-variant">Yüksek dayanımlı polimer kompozit yüzey</p>
+</div>
+<div class="flex space-x-6">
+<div class="text-center">
+<span class="block font-label-sm text-primary mb-1">KALINLIK</span>
+<span class="font-title-lg text-on-surface font-bold">2.2mm</span>
+</div>
+<div class="text-center pl-6 border-l border-outline-variant/50">
+<span class="block font-label-sm text-primary mb-1">GARANTİ</span>
+<span class="font-title-lg text-on-surface font-bold">10 Yıl</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Product Info Area -->
+<div class="lg:col-span-5 flex flex-col justify-center pt-8 lg:pt-0 lg:pl-8 reveal-element" style="transition-delay: 200ms;">
+<div class="inline-flex items-center space-x-2 bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20 mb-6 w-max">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="font-label-sm text-primary text-[10px] tracking-widest uppercase font-bold">Premium Seri</span>
+</div>
+<h1 class="font-display-lg text-[48px] md:text-display-lg text-on-surface mb-6 leading-tight tracking-tight">PVC Kapı <br/><span class="text-on-surface-variant font-light italic">Yüzeyleri</span></h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-10 leading-relaxed">
+                        Modern mimarinin ihtiyaç duyduğu estetik ve dayanıklılığı bir araya getiren PVC kapı yüzeyleri, yüksek çizilme direnci ve UV koruması ile uzun ömürlü kullanım sunar. Neme ve ısıya karşı üstün yalıtım özellikleri ile mekanlarınıza değer katar.
+                    </p>
+<!-- Feature Chips -->
+<div class="flex flex-wrap gap-3 mb-12">
+<div class="bg-surface-container border border-outline-variant/50 px-4 py-2.5 rounded-DEFAULT flex items-center space-x-2 hover:bg-surface-container-high transition-colors hover:shadow-sm">
+<span class="material-symbols-outlined text-primary text-[18px]">water_drop</span>
+<span class="font-label-sm text-on-surface">Neme Dayanıklı</span>
+</div>
+<div class="bg-surface-container border border-outline-variant/50 px-4 py-2.5 rounded-DEFAULT flex items-center space-x-2 hover:bg-surface-container-high transition-colors hover:shadow-sm">
+<span class="material-symbols-outlined text-primary text-[18px]">wb_sunny</span>
+<span class="font-label-sm text-on-surface">UV Korumalı</span>
+</div>
+<div class="bg-surface-container border border-outline-variant/50 px-4 py-2.5 rounded-DEFAULT flex items-center space-x-2 hover:bg-surface-container-high transition-colors hover:shadow-sm">
+<span class="material-symbols-outlined text-primary text-[18px]">architecture</span>
+<span class="font-label-sm text-on-surface">Kolay İşlenebilir</span>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-col sm:flex-row gap-4 mt-auto pt-6 border-t border-outline-variant/30">
+<button class="bg-primary hover:bg-primary/90 text-on-primary font-label-sm text-label-sm tracking-widest px-8 py-4 rounded-DEFAULT shadow-md hover:shadow-lg transition-all duration-300 flex-1 flex justify-center items-center space-x-2 group">
+<span>TEKLİF AL</span>
+<span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<button class="bg-surface border border-primary text-primary hover:bg-primary/5 font-label-sm text-label-sm tracking-widest px-8 py-4 rounded-DEFAULT transition-all duration-300 flex-1 flex justify-center items-center space-x-2 group">
+<span class="material-symbols-outlined text-[18px] group-hover:-translate-y-1 transition-transform">download</span>
+<span>TEKNİK PDF</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Technical Details Section -->
+<section class="max-w-container-max mx-auto px-5 md:px-margin-x mb-section-gap">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-24 items-center">
+<div class="order-2 md:order-1 reveal-element">
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-10 leading-tight">Teknik Özellikler <br/><span class="text-on-surface-variant font-light italic">&amp; Malzeme Analizi</span></h2>
+<div class="space-y-4">
+<!-- Data Row -->
+<div class="bg-white border border-outline-variant/40 p-6 rounded-DEFAULT shadow-sm hover:shadow-md transition-all duration-300 group border-l-4 border-l-primary cursor-pointer">
+<div class="flex justify-between items-center mb-3">
+<h4 class="font-title-lg text-on-surface group-hover:text-primary transition-colors">Yüzey Yoğunluğu</h4>
+<span class="font-label-sm text-on-surface-variant bg-surface-container px-2 py-1 rounded">EN 323 Standart</span>
+</div>
+<div class="flex justify-between items-end">
+<p class="font-body-md text-on-surface-variant max-w-[70%]">Yüksek basınçlı presleme teknolojisi.</p>
+<span class="font-headline-md text-on-surface font-semibold">1.4 <span class="text-body-md text-on-surface-variant font-normal">g/cm³</span></span>
+</div>
+</div>
+<!-- Data Row -->
+<div class="bg-white border border-outline-variant/40 p-6 rounded-DEFAULT shadow-sm hover:shadow-md transition-all duration-300 group border-l-4 border-l-secondary cursor-pointer">
+<div class="flex justify-between items-center mb-3">
+<h4 class="font-title-lg text-on-surface group-hover:text-primary transition-colors">Çizilme Direnci</h4>
+<span class="font-label-sm text-on-surface-variant bg-surface-container px-2 py-1 rounded">EN 438-2 Standart</span>
+</div>
+<div class="flex justify-between items-end">
+<p class="font-body-md text-on-surface-variant max-w-[70%]">Mikro çiziklere karşı akrilik koruma katmanı.</p>
+<span class="font-headline-md text-on-surface font-semibold">Seviye 4</span>
+</div>
+</div>
+<!-- Data Row -->
+<div class="bg-white border border-outline-variant/40 p-6 rounded-DEFAULT shadow-sm hover:shadow-md transition-all duration-300 group border-l-4 border-l-tertiary cursor-pointer">
+<div class="flex justify-between items-center mb-3">
+<h4 class="font-title-lg text-on-surface group-hover:text-primary transition-colors">Isı Dayanımı</h4>
+<span class="font-label-sm text-on-surface-variant bg-surface-container px-2 py-1 rounded">DIN 68861</span>
+</div>
+<div class="flex justify-between items-end">
+<p class="font-body-md text-on-surface-variant max-w-[70%]">Kısa süreli yüksek ısıya maruziyet testi.</p>
+<span class="font-headline-md text-on-surface font-semibold">180°C</span>
+</div>
+</div>
+</div>
+</div>
+<div class="order-1 md:order-2 relative h-[500px] rounded-lg overflow-hidden glass-panel flex items-center justify-center p-8 scale-in" style="transition-delay: 200ms;">
+<!-- Abstract Material Representation -->
+<div class="w-full h-full relative perspective-1000">
+<div class="absolute inset-0 transform -skew-y-6 rotate-3 rounded-lg flex items-center justify-center bg-white/80 backdrop-blur-sm border border-outline-variant/50 shadow-xl z-20 hover:-translate-y-4 hover:shadow-2xl transition-all duration-700 cursor-pointer">
+<span class="font-label-sm text-primary uppercase tracking-[0.2em] font-bold">Üst Koruma Katmanı</span>
+</div>
+<div class="absolute inset-0 transform -skew-y-6 translate-y-12 rounded-lg flex items-center justify-center bg-surface-container/80 border border-outline-variant/40 shadow-lg z-10 transition-transform duration-700">
+<span class="font-label-sm text-secondary uppercase tracking-[0.2em]">Dekoratif PVC Film</span>
+</div>
+<div class="absolute inset-0 transform -skew-y-6 translate-y-24 rounded-lg flex items-center justify-center bg-surface-container-highest border border-outline-variant/30 shadow-md z-0 transition-transform duration-700">
+<span class="font-label-sm text-on-surface-variant uppercase tracking-[0.2em]">HDF / MDF Alt Katman</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Color Palette Section -->
+<section class="max-w-container-max mx-auto px-5 md:px-margin-x mb-section-gap reveal-element">
+<div class="mb-12 flex justify-between items-end border-b border-outline-variant/30 pb-6">
+<div>
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">Renk &amp; Doku <br/><span class="text-on-surface-variant font-light italic">Koleksiyonu</span></h2>
+</div>
+<div class="hidden md:flex gap-3">
+<button class="w-12 h-12 rounded-full border border-outline-variant flex items-center justify-center hover:bg-primary hover:text-on-primary hover:border-primary transition-all duration-300">
+<span class="material-symbols-outlined text-[20px]">arrow_back</span>
+</button>
+<button class="w-12 h-12 rounded-full border border-outline-variant flex items-center justify-center hover:bg-primary hover:text-on-primary hover:border-primary transition-all duration-300">
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="flex overflow-x-auto snap-x snap-mandatory gap-8 pb-8 custom-scrollbar">
+<!-- Color Card -->
+<div class="min-w-[280px] md:min-w-[320px] snap-start group cursor-pointer">
+<div class="h-56 rounded-DEFAULT mb-5 bg-[#3b3a36] shadow-md relative overflow-hidden transform group-hover:-translate-y-2 transition-all duration-300">
+<div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm">
+<div class="bg-white/90 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform duration-300">
+<span class="material-symbols-outlined text-primary text-[24px]">zoom_in</span>
+</div>
+</div>
+</div>
+<div>
+<h4 class="font-title-lg text-on-surface mb-1 group-hover:text-primary transition-colors font-bold">Antrasit Meşe</h4>
+<p class="font-label-sm text-on-surface-variant tracking-wider">Mat Yüzey / Kod: AM-042</p>
+</div>
+</div>
+<!-- Color Card -->
+<div class="min-w-[280px] md:min-w-[320px] snap-start group cursor-pointer">
+<div class="h-56 rounded-DEFAULT mb-5 bg-[#8b7355] shadow-md relative overflow-hidden transform group-hover:-translate-y-2 transition-all duration-300">
+<div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm">
+<div class="bg-white/90 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform duration-300">
+<span class="material-symbols-outlined text-primary text-[24px]">zoom_in</span>
+</div>
+</div>
+</div>
+<div>
+<h4 class="font-title-lg text-on-surface mb-1 group-hover:text-primary transition-colors font-bold">Klasik Ceviz</h4>
+<p class="font-label-sm text-on-surface-variant tracking-wider">Ahşap Doku / Kod: KC-108</p>
+</div>
+</div>
+<!-- Color Card -->
+<div class="min-w-[280px] md:min-w-[320px] snap-start group cursor-pointer">
+<div class="h-56 rounded-DEFAULT mb-5 bg-[#e5e0d8] border border-outline-variant/30 shadow-md relative overflow-hidden transform group-hover:-translate-y-2 transition-all duration-300">
+<div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm">
+<div class="bg-white/90 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform duration-300">
+<span class="material-symbols-outlined text-primary text-[24px]">zoom_in</span>
+</div>
+</div>
+</div>
+<div>
+<h4 class="font-title-lg text-on-surface mb-1 group-hover:text-primary transition-colors font-bold">Saf İpek</h4>
+<p class="font-label-sm text-on-surface-variant tracking-wider">Parlak Yüzey / Kod: SI-001</p>
+</div>
+</div>
+<!-- Color Card -->
+<div class="min-w-[280px] md:min-w-[320px] snap-start group cursor-pointer">
+<div class="h-56 rounded-DEFAULT mb-5 bg-[#2a2d34] shadow-md relative overflow-hidden transform group-hover:-translate-y-2 transition-all duration-300">
+<div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm">
+<div class="bg-white/90 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform duration-300">
+<span class="material-symbols-outlined text-primary text-[24px]">zoom_in</span>
+</div>
+</div>
+</div>
+<div>
+<h4 class="font-title-lg text-on-surface mb-1 group-hover:text-primary transition-colors font-bold">Gece Mavisi</h4>
+<p class="font-label-sm text-on-surface-variant tracking-wider">Soft Touch / Kod: GM-077</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Related Products Section -->
+<section class="max-w-container-max mx-auto px-5 md:px-margin-x py-20 bg-surface-container rounded-xl border border-outline-variant/30 reveal-element shadow-sm">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-12 text-center">Benzer <span class="text-primary italic">Ürünler</span></h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Related Item 1 -->
+<a class="group block bg-white rounded-lg p-6 shadow-sm hover:shadow-xl transition-all duration-500 border border-outline-variant/20 transform hover:-translate-y-1" href="#">
+<div class="bg-surface-container-low p-4 rounded-DEFAULT h-56 mb-6 relative overflow-hidden flex items-center justify-center">
+<span class="material-symbols-outlined text-outline text-[64px] group-hover:text-primary transition-colors duration-500 group-hover:scale-110 transform">door_front</span>
+<div class="absolute top-4 right-4 z-20">
+<span class="font-label-sm text-primary bg-primary/10 border border-primary/20 px-2.5 py-1 rounded">MELAMİN</span>
+</div>
+</div>
+<h3 class="font-title-lg text-on-surface group-hover:text-primary transition-colors font-bold">Orlam Melamin Yüzeyler</h3>
+<p class="font-body-md text-on-surface-variant mt-3 line-clamp-2 leading-relaxed">Standart kapı üretimleri için ekonomik ve estetik çözümler sunan melamin serisi.</p>
+</a>
+<!-- Related Item 2 -->
+<a class="group block bg-white rounded-lg p-6 shadow-sm hover:shadow-xl transition-all duration-500 border border-outline-variant/20 transform hover:-translate-y-1" href="#">
+<div class="bg-surface-container-low p-4 rounded-DEFAULT h-56 mb-6 relative overflow-hidden flex items-center justify-center">
+<span class="material-symbols-outlined text-outline text-[64px] group-hover:text-primary transition-colors duration-500 group-hover:scale-110 transform">layers</span>
+<div class="absolute top-4 right-4 z-20">
+<span class="font-label-sm text-primary bg-primary/10 border border-primary/20 px-2.5 py-1 rounded">MDF</span>
+</div>
+</div>
+<h3 class="font-title-lg text-on-surface group-hover:text-primary transition-colors font-bold">Ham MDF Paneller</h3>
+<p class="font-body-md text-on-surface-variant mt-3 line-clamp-2 leading-relaxed">Özel CNC işlemlerine uygun, yüksek yoğunluklu ham MDF levhalar.</p>
+</a>
+<!-- Related Item 3 -->
+<a class="group block bg-white rounded-lg p-6 shadow-sm hover:shadow-xl transition-all duration-500 border border-outline-variant/20 transform hover:-translate-y-1" href="#">
+<div class="bg-surface-container-low p-4 rounded-DEFAULT h-56 mb-6 relative overflow-hidden flex items-center justify-center">
+<span class="material-symbols-outlined text-outline text-[64px] group-hover:text-primary transition-colors duration-500 group-hover:scale-110 transform">format_paint</span>
+<div class="absolute top-4 right-4 z-20">
+<span class="font-label-sm text-primary bg-primary/10 border border-primary/20 px-2.5 py-1 rounded">LAKE</span>
+</div>
+</div>
+<h3 class="font-title-lg text-on-surface group-hover:text-primary transition-colors font-bold">Lake Boyalı Yüzeyler</h3>
+<p class="font-body-md text-on-surface-variant mt-3 line-clamp-2 leading-relaxed">Üst segment projeler için kusursuz pürüzsüzlükte, UV kürlemeli lake yüzeyler.</p>
+</a>
+</div>
+</section>
+</main>
+<!-- Footer Component -->
+<footer class="bg-surface-container-highest w-full py-section-gap border-t border-outline-variant/30">
+<div class="max-w-container-max mx-auto px-5 md:px-margin-x grid grid-cols-1 md:grid-cols-4 gap-gutter">
+<div class="col-span-1 md:col-span-1">
+<span class="font-headline-lg text-headline-lg text-primary mb-8 block font-bold">ORPAY</span>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">Yüksek standartlarda orman ürünleri ve mimari yüzey çözümleri.</p>
+</div>
+<div class="col-span-1 md:col-span-2 grid grid-cols-2 md:grid-cols-3 gap-8">
+<div class="flex flex-col space-y-4">
+<h4 class="font-label-sm font-bold text-on-surface tracking-widest mb-2">ÜRÜNLER</h4>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">Koleksiyonlar</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">Katalog</a>
+</div>
+<div class="flex flex-col space-y-4">
+<h4 class="font-label-sm font-bold text-on-surface tracking-widest mb-2">ŞİRKET</h4>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">Kurumsal</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">Fabrikamız</a>
+</div>
+<div class="flex flex-col space-y-4">
+<h4 class="font-label-sm font-bold text-on-surface tracking-widest mb-2">BİLGİ</h4>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">İletişim</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">KVKK</a>
+</div>
+</div>
+<div class="col-span-1 md:col-span-1 flex flex-col justify-end mt-8 md:mt-0 border-t md:border-t-0 border-outline-variant/30 pt-8 md:pt-0">
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">© 2024 Orpay Orman Ürünleri. Tüm Hakları Saklıdır.</p>
+</div>
+</div>
+</footer>
+<!-- Interactive Scripts -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Navbar Scroll Effect
+            const nav = document.getElementById('main-nav');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    nav.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
+                    nav.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.05)';
+                } else {
+                    nav.style.backgroundColor = 'rgba(244, 251, 241, 0.8)'; // surface color
+                    nav.style.boxShadow = 'none';
+                }
+            });
+
+            // Intersection Observer for Reveal Animations (Staggered)
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        // Stagger effect if multiple elements appear at once
+                        setTimeout(() => {
+                            entry.target.classList.add('visible');
+                        }, index * 100);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.reveal-element, .scale-in').forEach((el) => {
+                observer.observe(el);
+            });
+
+            // Dark Mode Toggle Logic (Placeholder for future functionality)
+            const themeToggle = document.getElementById('theme-toggle');
+            if(themeToggle) {
+                themeToggle.addEventListener('click', () => {
+                   document.documentElement.classList.toggle('dark');
+                });
+            }
+        });
+    </script>
+</body></html>

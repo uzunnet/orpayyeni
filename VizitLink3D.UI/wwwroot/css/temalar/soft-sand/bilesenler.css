@@ -1,0 +1,51 @@
+﻿/*
+ * Soft Sand — bilesenler.css
+ * CokluTemaServisi tarafından manifest taslağından otomatik üretilir.
+ */
+
+:root[data-tema-id="soft-sand"] {
+    color: var(--tema-metin);
+    background: var(--tema-arkaplan);
+}
+
+:root[data-tema-id="soft-sand"] h1,
+:root[data-tema-id="soft-sand"] h2,
+:root[data-tema-id="soft-sand"] h3 {
+    font-family: var(--tema-font-baslik);
+    font-weight: var(--tema-baslik-agirlik);
+    letter-spacing: var(--tema-baslik-harf-araligi);
+}
+
+:root[data-tema-id="soft-sand"] .navbar {
+    background: var(--tema-yuzey);
+    border-bottom: var(--tema-border-kalinlik) var(--tema-border-stil) var(--tema-cizgi);
+    transition: var(--tema-gecis-normal);
+}
+
+:root[data-tema-id="soft-sand"] .urun-kart {
+    background: var(--tema-yuzey);
+    border: var(--tema-border-kalinlik) var(--tema-border-stil) var(--tema-cizgi);
+    border-radius: var(--tema-kose-md);
+    box-shadow: var(--tema-golge-md);
+    transition: transform var(--tema-gecis-yavas), box-shadow var(--tema-gecis-yavas), border-color var(--tema-gecis-normal);
+}
+
+:root[data-tema-id="soft-sand"] .urun-kart:hover {
+    transform: translateY(-4px);
+    border-color: var(--tema-vurgu);
+    box-shadow: var(--tema-golge-vurgu), var(--tema-golge-lg);
+}
+
+:root[data-tema-id="soft-sand"] .btn-birincil,
+:root[data-tema-id="soft-sand"] .mud-button-filled {
+    background: var(--tema-vurgu);
+    color: var(--tema-metin-ters);
+    border-radius: var(--tema-kose-md);
+    transition: var(--tema-gecis-normal);
+}
+
+:root[data-tema-id="soft-sand"] .footer {
+    background: var(--tema-birincil);
+    color: var(--tema-metin);
+    border-top: var(--tema-border-kalinlik) var(--tema-border-stil) var(--tema-cizgi);
+}

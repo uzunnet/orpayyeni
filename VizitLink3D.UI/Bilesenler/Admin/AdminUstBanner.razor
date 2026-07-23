@@ -1,0 +1,116 @@
+@namespace VizitLink3D.UI.Bilesenler.Admin
+
+<div class="admin-banner">
+    <div class="admin-banner-sol">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                       Color="Color.Inherit"
+                       Size="Size.Large"
+                       OnClick="MenuTugKeySilidi"
+                       Class="admin-banner-menu-btn" />
+
+        @if (!string.IsNullOrEmpty(LogoUrl))
+        {
+            <img src="@LogoUrl" alt="Logo" class="admin-banner-logo" />
+        }
+        else
+        {
+            <img src="/img/vizitlink3d-logo.svg" alt="Firma Logosu" class="admin-banner-logo" />
+        }
+
+        <div class="admin-banner-baslik-alan">
+            <MudText Typo="Typo.h6" Class="admin-banner-sayfa-baslik">
+                @SayfaBasligi
+            </MudText>
+
+            @if (Breadcrumb.Any())
+            {
+                <MudBreadcrumbs Items="@_breadcrumbItems" Class="admin-banner-breadcrumb" />
+            }
+        </div>
+    </div>
+
+    <div class="admin-banner-sag">
+        @* Dil Secici — Dropdown *@
+        <MudMenu AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter" PopoverClass="admin-dil-dropdown" Dense="true" Class="mr-2">
+            <ActivatorContent>
+                <MudButton Variant="Variant.Text" Class="admin-banner-dil-btn" EndIcon="@Icons.Material.Filled.KeyboardArrowDown">
+                    <span class="@(DilServisi.DesteklenenDiller.FirstOrDefault(d => d.Kod == DilServisi.AktifDil)?.Bayrak ?? "")"></span> @DilServisi.AktifDil.ToUpper()
+                </MudButton>
+            </ActivatorContent>
+            <ChildContent>
+                @foreach (var dilBilgi in DilServisi.DesteklenenDiller.Where(d => d.Kod != DilServisi.AktifDil))
+                {
+                    <MudMenuItem OnClick="@(() => DilDegistir(dilBilgi.Kod))">
+                        <span class="@dilBilgi.Bayrak" style="margin-right: 8px;"></span> @dilBilgi.Ad
+                    </MudMenuItem>
+                }
+            </ChildContent>
+        </MudMenu>
+
+        <div class="admin-banner-tema">
+            <MudTooltip Text="@DilServisi.T("ortak.acik", "Açık")">
+                <MudIconButton Icon="@Icons.Material.Filled.LightMode"
+                               Color="Color.Inherit"
+                               Class="@TemaDugmeSinifi("acik")"
+                               OnClick="@(() => TemaModuDegistir("acik"))" />
+            </MudTooltip>
+            <MudTooltip Text="@DilServisi.T("ortak.koyu", "Koyu")">
+                <MudIconButton Icon="@Icons.Material.Filled.DarkMode"
+                               Color="Color.Inherit"
+                               Class="@TemaDugmeSinifi("koyu")"
+                               OnClick="@(() => TemaModuDegistir("koyu"))" />
+            </MudTooltip>
+        </div>
+
+        @* SuperAdmin Rozeti *@
+        @if (IsSuperAdmin)
+        {
+            <MudChip T="string" Icon="@Icons.Material.Filled.Shield"
+                     Color="Color.Error"
+                     Size="Size.Small"
+                     Class="admin-banner-super-admin-chip">
+                @DilServisi.T("admin.superAdmin", "SuperAdmin")
+            </MudChip>
+        }
+
+        @* Bildirim Zili *@
+        <MudBadge Content="@(BildirimSayisi > 0 ? BildirimSayisi.ToString() : null)"
+                  Color="Color.Error"
+                  Overlap="true">
+            <MudIconButton Icon="@Icons.Material.Filled.Notifications"
+                           Color="Color.Inherit"
+                           OnClick="BildirimTiklandi"
+                           Class="admin-banner-notification-btn" />
+        </MudBadge>
+
+        @* Kullanıcı Menüsü *@
+        <MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
+            <ActivatorContent>
+                <MudButton Variant="Variant.Text" Color="Color.Inherit">
+                    <MudAvatar Size="Size.Small" Color="Color.Secondary" Class="mr-2">
+                        <MudIcon Icon="@Icons.Material.Filled.Person" />
+                    </MudAvatar>
+                    <MudText Typo="Typo.caption">@KullaniciAdi</MudText>
+                </MudButton>
+            </ActivatorContent>
+            <ChildContent>
+                <MudMenuItem OnClick="ProfilMenuAc">
+                    <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Small" Class="mr-2" />
+                    @DilServisi.T("admin.profil", "Profil")
+                </MudMenuItem>
+
+                <MudMenuItem OnClick="AyarlarAc">
+                    <MudIcon Icon="@Icons.Material.Filled.Settings" Size="Size.Small" Class="mr-2" />
+                    @DilServisi.T("admin.ayarlar", "Ayarlar")
+                </MudMenuItem>
+
+                <MudDivider />
+
+                <MudMenuItem Href="admin/giris">
+                    <MudIcon Icon="@Icons.Material.Filled.Logout" Size="Size.Small" Class="mr-2" />
+                    @DilServisi.T("ortak.cikis", "Çıkış Yap")
+                </MudMenuItem>
+            </ChildContent>
+        </MudMenu>
+    </div>
+</div>

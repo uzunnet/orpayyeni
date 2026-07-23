@@ -1,0 +1,395 @@
+/*
+ * ===========================================================================
+ * VIZITLINK3D — ÜRÜN SAYFASI BİLEŞEN ŞABLONLARI (urun.css)
+ * Ortak component template'leri — 2 tema (gold + aurelian-onyx)
+ * ===========================================================================
+ */
+
+/* === 3D KONFİGÜRATÖR === */
+.urun-3d-kapsayici {
+    width: 100%;
+    height: 520px;
+    border: 1px solid var(--vizit-border);
+    border-radius: var(--vizit-radius-lg, 8px);
+    background: var(--vizit-bg-alt);
+    overflow: hidden;
+    position: relative;
+}
+
+:root[data-site-tema="aurelian-onyx"] .urun-3d-kapsayici {
+    background: var(--vizit-3d-bg, #050505);
+    border: 1px solid var(--aureli-glass-border, rgba(212,175,55,0.15));
+    box-shadow: inset 0 0 60px rgba(0,0,0,0.5);
+}
+
+/* === YAN PANEL === */
+.urun-yan-panel {
+    max-height: 520px;
+    overflow-y: auto;
+    padding: var(--vizit-space-sm, 0.5rem);
+}
+
+/* === RENK SEÇİM === */
+.urun-renk-bilgi {
+    background: var(--vizit-border-light);
+    border-radius: var(--vizit-radius-md, 6px);
+    padding: var(--vizit-space-sm, 0.5rem);
+}
+
+:root[data-site-tema="aurelian-onyx"] .urun-renk-bilgi {
+    background: var(--aureli-glass-bg, rgba(255,255,255,0.06));
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--aureli-glass-border);
+}
+
+.urun-renk-cember {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    border: 1px solid var(--vizit-text-muted);
+    margin-right: 12px;
+    flex-shrink: 0;
+    transition: transform var(--vizit-transition-fast, 0.15s ease);
+}
+
+.urun-renk-cember:hover { transform: scale(1.15); }
+
+.urun-renk-secim-cember {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all var(--vizit-transition-fast, 0.15s ease);
+    border: 2px solid transparent;
+}
+
+.urun-renk-secim-cember:hover {
+    transform: scale(1.1);
+    border-color: var(--vizit-accent);
+}
+
+.urun-renk-secim-cember.aktif {
+    border-color: var(--vizit-accent);
+    box-shadow: 0 0 0 2px var(--vizit-bg-base), 0 0 0 4px var(--vizit-accent);
+}
+
+.urun-renk-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+/* === MALZEME KART === */
+.urun-malzeme-kart {
+    cursor: pointer;
+    border: 1px solid var(--vizit-border);
+    border-radius: var(--vizit-radius-md, 6px);
+    background: var(--vizit-surface);
+    padding: var(--vizit-space-sm, 0.5rem);
+    transition: all var(--vizit-transition, 0.3s ease);
+}
+
+.urun-malzeme-kart:hover {
+    border-color: var(--vizit-accent);
+    transform: translateY(-2px);
+    box-shadow: var(--vizit-shadow-md);
+}
+
+.urun-malzeme-kart-secili {
+    cursor: pointer;
+    border: 2px solid var(--vizit-accent);
+    background: var(--vizit-border-light);
+    border-radius: var(--vizit-radius-md, 6px);
+    padding: var(--vizit-space-sm, 0.5rem);
+    box-shadow: var(--aureli-glow, 0 0 15px rgba(212,175,55,0.25));
+}
+
+/* === TEKLİF KART === */
+.urun-teklif-kart {
+    border-radius: 12px;
+    border: 1px solid var(--vizit-border);
+    background: var(--vizit-surface);
+    padding: var(--vizit-space-lg, 1.5rem);
+    transition: all var(--vizit-transition, 0.3s ease);
+}
+
+:root[data-site-tema="aurelian-onyx"] .urun-teklif-kart {
+    background: var(--aureli-glass-bg, rgba(255,255,255,0.06));
+    backdrop-filter: var(--aureli-blur, blur(20px));
+    -webkit-backdrop-filter: var(--aureli-blur, blur(20px));
+    border: 1px solid var(--aureli-glass-border, rgba(255,255,255,0.10));
+}
+
+/* === ÜRÜN KARTI — ORTAK TEMPLATE (gb- prefix) === */
+.gb-urun-kart {
+    height: 100%;
+    transition: transform var(--vizit-transition, 0.3s ease),
+                box-shadow var(--vizit-transition, 0.3s ease);
+    position: relative;
+    cursor: pointer;
+}
+
+.gb-urun-kart:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--vizit-shadow-lg);
+}
+
+.gb-urun-kart-gorsel-sarici {
+    position: relative;
+    width: 100%;
+    /* Tüm ürün listesi görselleri aynı vitrin oranında kalır. */
+    aspect-ratio: 5 / 4;
+    overflow: hidden;
+    background: var(--vizit-bg-alt);
+    border-radius: var(--tema-kose-xl, var(--vizit-radius-md, 4px));
+}
+
+.gb-urun-kart-gorsel-sarici img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    transition: transform var(--vizit-transition-slow, 0.6s ease);
+}
+
+.gb-urun-kart:hover .gb-urun-kart-gorsel-sarici img {
+    transform: scale(1.05);
+}
+
+.gb-urun-kart-rozetler {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 2;
+}
+
+.gb-rozet {
+    display: inline-block;
+    padding: 4px 10px;
+    font-family: var(--vizit-font-sans);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: var(--vizit-radius-sm, 2px);
+    backdrop-filter: blur(4px);
+}
+
+.gb-rozet-koleksiyon {
+    background: var(--vizit-accent);
+    color: var(--vizit-text-inverse);
+}
+
+.gb-rozet-3d {
+    background: var(--vizit-text-inverse);
+    color: var(--vizit-bg-base);
+    border: 1px solid var(--vizit-accent);
+}
+
+.gb-rozet-yeni {
+    background: var(--vizit-bg-dark);
+    color: var(--vizit-accent);
+    border: 1px solid var(--vizit-accent);
+}
+
+.gb-urun-kart-aciklama {
+    color: var(--vizit-text-secondary);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-family: var(--vizit-font-sans);
+}
+
+.gb-urun-kart-fiyat {
+    color: var(--vizit-accent);
+    font-weight: 700;
+    font-size: 1.15rem;
+    font-family: var(--vizit-font-serif);
+    margin-top: 8px;
+}
+
+/* === ÜRÜN KARTI — GLASSMORPHİSM VARYANTI (aurelian-onyx için) === */
+.gb-urun-kart--glass {
+    background: var(--aureli-glass-bg, rgba(255,255,255,0.06));
+    backdrop-filter: var(--aureli-blur, blur(20px) saturate(180%));
+    -webkit-backdrop-filter: var(--aureli-blur, blur(20px) saturate(180%));
+    border: 1px solid var(--aureli-glass-border, rgba(255,255,255,0.10));
+    border-radius: var(--vizit-radius-md, 4px);
+    box-shadow: var(--vizit-shadow-md);
+    overflow: hidden;
+    transition: all var(--vizit-transition, 0.3s ease);
+    position: relative;
+}
+
+.gb-urun-kart--glass::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--vizit-accent, #d4af37), transparent);
+    opacity: 0.4;
+}
+
+.gb-urun-kart--glass:hover {
+    border-color: var(--vizit-accent);
+    box-shadow: 0 0 25px rgba(212, 175, 55, 0.30), var(--vizit-shadow-lg);
+    transform: translateY(-6px);
+}
+
+/* === ÜRÜN DETAY BAŞLIK (büyük display, aurelian için) === */
+:root[data-site-tema="aurelian-onyx"] .urun-detay-baslik {
+    font-family: var(--vizit-font-serif);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    font-size: clamp(2rem, 5vw, 4rem);
+    color: var(--vizit-text);
+}
+
+:root[data-site-tema="aurelian-onyx"] .urun-detay-fiyat {
+    font-family: var(--vizit-font-serif);
+    font-style: italic;
+    color: var(--vizit-accent);
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+/* === KOLEKSİYON GRUBU === */
+.urun-koleksiyon-grubu {
+    margin-bottom: var(--vizit-space-3xl, 6rem);
+}
+
+.urun-koleksiyon-grubu__baslik {
+    margin-bottom: var(--vizit-space-lg, 1.5rem);
+    padding-bottom: var(--vizit-space-sm, 0.5rem);
+    border-bottom: 1px solid var(--vizit-border);
+    font-family: var(--vizit-font-serif);
+}
+
+:root[data-site-tema="aurelian-onyx"] .urun-koleksiyon-grubu__baslik {
+    border-bottom: 1px solid var(--aureli-glass-border, rgba(255,255,255,0.10));
+    letter-spacing: 0.02em;
+}
+
+/* === HERO SLIDER OVERLAY (aurelian için koyu degrade) === */
+:root[data-site-tema="aurelian-onyx"] .hero-slider-overlay {
+    background: linear-gradient(135deg, rgba(5, 5, 5, 0.85) 0%, rgba(18, 20, 20, 0.65) 100%);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
+
+/* === SHIMMER EFEKTI (ürün kartı hover) === */
+.gb-urun-kart.gb-urun-kart--shimmer::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.08) 50%, transparent 70%);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.gb-urun-kart.gb-urun-kart--shimmer:hover::before {
+    transform: translateX(100%);
+}
+
+/* === ORPAY VITRINI === */
+.banyo-vitrin-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.9fr) minmax(280px, 1fr);
+    gap: var(--vizit-space-lg, 1.5rem);
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    border: 1px solid var(--vizit-border);
+    border-radius: var(--vizit-radius-lg, 12px);
+    background:
+        radial-gradient(circle at top right, color-mix(in srgb, var(--vizit-accent) 18%, transparent) 0%, transparent 46%),
+        linear-gradient(135deg, color-mix(in srgb, var(--vizit-bg-base) 88%, white) 0%, var(--vizit-surface, #fff) 100%);
+    box-shadow: var(--vizit-shadow-md);
+}
+
+.banyo-vitrin-hero__etiket {
+    letter-spacing: 0.12em;
+    color: var(--vizit-accent);
+}
+
+.banyo-vitrin-hero__aciklama {
+    max-width: 62ch;
+    color: var(--vizit-text-secondary);
+    line-height: 1.75;
+}
+
+.banyo-vitrin-hero__ozetler {
+    display: grid;
+    gap: var(--vizit-space-md, 1rem);
+    align-content: stretch;
+}
+
+.banyo-vitrin-ozet-kart {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 110px;
+    padding: 1.1rem 1.2rem;
+    border: 1px solid var(--vizit-border);
+    border-radius: var(--vizit-radius-md, 8px);
+    background: color-mix(in srgb, var(--vizit-surface, #fff) 92%, transparent);
+}
+
+.banyo-vitrin-ozet-kart span {
+    color: var(--vizit-text-secondary);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.banyo-vitrin-ozet-kart strong {
+    margin-top: 0.45rem;
+    color: var(--vizit-text);
+    font-family: var(--vizit-font-serif);
+    font-size: clamp(1.65rem, 3vw, 2.4rem);
+}
+
+.banyo-vitrin-yardimci-metin {
+    color: var(--vizit-text-secondary);
+}
+
+.urun-hizli-rozeti-satiri {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1rem;
+}
+
+.urun-hizli-rozeti-satiri span {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.55rem 0.85rem;
+    border: 1px solid var(--vizit-border);
+    border-radius: var(--vizit-radius-pill, 999px);
+    background: color-mix(in srgb, var(--vizit-surface, #fff) 88%, transparent);
+    color: var(--vizit-text-secondary);
+    font-size: 0.85rem;
+}
+
+@media (max-width: 960px) {
+    .banyo-vitrin-hero {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .urun-hizli-rozeti-satiri {
+        flex-direction: column;
+    }
+
+    .urun-hizli-rozeti-satiri span {
+        width: 100%;
+        justify-content: center;
+    }
+}

@@ -1,0 +1,77 @@
+﻿@page "/katalog"
+@layout VizitLink3DDuzen
+
+<PageTitle>@DilServisi.T("katalog.sayfaBasligi", "Kataloglar")</PageTitle>
+
+<main class="gb-page gb-katalog-sayfasi">
+    <section class="gb-panel gb-katalog-hero">
+        <MudText Typo="Typo.overline" Class="gb-katalog-etiket">@DilServisi.T("katalog.etiket", "DİJİTAL YAYINLAR")</MudText>
+        <MudText Typo="Typo.h2" Class="gb-katalog-baslik">@DilServisi.T("katalog.baslik", "ORPAY Katalogları")</MudText>
+        <MudText Typo="Typo.body1" Class="gb-katalog-aciklama">@DilServisi.T("katalog.aciklama", "Güncel koleksiyonları inceleyin, kataloğu sayfa sayfa görüntüleyin veya cihazınıza indirin.")</MudText>
+    </section>
+
+    @if (_yukleniyor)
+    {
+        <section class="gb-katalog-grid" aria-label="@DilServisi.T("katalog.yukleniyor", "Kataloglar yükleniyor")">
+            @for (var i = 0; i < 2; i++)
+            {
+                <MudSkeleton Class="gb-katalog-kart gb-katalog-kart--iskelet" />
+            }
+        </section>
+    }
+    else if (_kataloglar.Count == 0)
+    {
+        <section class="gb-panel gb-katalog-bos">
+            <MudIcon Icon="@Icons.Material.Outlined.FolderOpen" Size="Size.Large" />
+            <MudText Typo="Typo.h5">@DilServisi.T("katalog.bulunamadi", "Aktif katalog bulunamadı.")</MudText>
+        </section>
+    }
+    else
+    {
+        <section class="gb-katalog-grid">
+            @foreach (var katalog in _kataloglar)
+            {
+                <article class="gb-panel gb-katalog-kart">
+                    <div class="gb-katalog-kart__onizleme">
+                        <img src="@OnizlemeUrl(katalog)" alt="@katalog.Baslik" loading="lazy" />
+                        <span class="gb-katalog-kart__yil">@(katalog.Yil?.ToString() ?? DateTime.UtcNow.Year.ToString())</span>
+                    </div>
+
+                    <div class="gb-katalog-kart__govde">
+                        <MudText Typo="Typo.h4" Class="gb-katalog-kart__baslik">@katalog.Baslik</MudText>
+                        @if (!string.IsNullOrWhiteSpace(katalog.Aciklama))
+                        {
+                            <MudText Typo="Typo.body1" Class="gb-katalog-kart__aciklama">@katalog.Aciklama</MudText>
+                        }
+
+                        <div class="gb-katalog-kart__meta">
+                            @if (katalog.SayfaSayisi is > 0)
+                            {
+                                <span><MudIcon Icon="@Icons.Material.Outlined.MenuBook" Size="Size.Small" /> @katalog.SayfaSayisi @DilServisi.T("katalog.sayfa", "sayfa")</span>
+                            }
+                            @if (katalog.DosyaBoyutuMb is > 0)
+                            {
+                                <span><MudIcon Icon="@Icons.Material.Outlined.Save" Size="Size.Small" /> @katalog.DosyaBoyutuMb.Value.ToString("N1") MB</span>
+                            }
+                        </div>
+
+                        <div class="gb-katalog-kart__aksiyonlar">
+                            <MudButton Href="@PdfGostericiUrl(katalog)"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       StartIcon="@Icons.Material.Filled.RemoveRedEye">
+                                @DilServisi.T("katalog.incele", "Kataloğu İncele")
+                            </MudButton>
+                            <MudIconButton Href="@IndirUrl(katalog)"
+                                           Target="_blank"
+                                           Icon="@Icons.Material.Filled.Download"
+                                           Color="Color.Primary"
+                                           Variant="Variant.Outlined"
+                                           aria-label="@DilServisi.T("katalog.indir", "Kataloğu indir")" />
+                        </div>
+                    </div>
+                </article>
+            }
+        </section>
+    }
+</main>

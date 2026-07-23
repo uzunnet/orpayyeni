@@ -1,0 +1,54 @@
+@using VizitLink3D.Ortak.Modeller.Urunler
+
+<div class="gb-renk-panel">
+    <MudText Typo="Typo.subtitle1" Class="mb-4">
+        @dil.T("konfigurator.renkSecimi", "Renk Seçimi")
+    </MudText>
+
+    @if (!Renkler.Any())
+    {
+        <MudText Typo="Typo.body2" Color="Color.Dark">
+            @dil.T("konfigurator.renkYok", "Renk seçeneği bulunmamaktadır.")
+        </MudText>
+    }
+    else
+    {
+        @if (!string.IsNullOrEmpty(_seciliRenk?.HexKod))
+        {
+            <div class="d-flex align-center gap-3 mb-4">
+                <MudPaper Elevation="2"
+                          Class="gb-renk-onizleme-kutu"
+                          Style="@($"background-color: {_seciliRenk.HexKod};")" />
+                <div>
+                    <MudText Typo="Typo.body2" Class="gb-renk-secili-ad">
+                        @_seciliRenk.Ad
+                    </MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Dark">
+                        @_seciliRenk.Kod
+                    </MudText>
+                </div>
+            </div>
+        }
+
+        <div class="gb-renk-panel-grid">
+            @foreach (var renk in Renkler)
+            {
+                <MudPaper Elevation="@(renk.HexKod == _seciliRenk?.HexKod ? 3 : 1)"
+                          Class="@RenkSwatchSinifi(renk)"
+                          Style="@($"background-color: {renk.HexKod};")"
+                          @onclick="@(() => RenkTiklandi(renk))">
+                    @if (renk.HexKod == _seciliRenk?.HexKod)
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.Check"
+                                 Color="Color.Inherit"
+                                 Size="Size.Small" Class="gb-renk-tik" />
+                    }
+                </MudPaper>
+            }
+        </div>
+
+        <MudText Typo="Typo.caption" Color="Color.Dark" Class="mt-2">
+            @Renkler.Count @dil.T("konfigurator.renkSecenek", "renk seçeneği")
+        </MudText>
+    }
+</div>

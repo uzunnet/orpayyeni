@@ -1,0 +1,125 @@
+﻿@page "/yonetim/giris"
+@page "/yonetim"
+@layout BosDuzen
+@inject NavigationManager NavManager
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+
+<div class="dl-login-scene">
+    <div class="dl-login-form-side">
+        <div class="dl-login-card">
+            <div class="dl-login-card-header">
+                <div class="dl-login-mark">
+                    <svg width="36" height="36" viewBox="0 0 48 48" fill="none">
+                        <rect width="48" height="48" rx="4" fill="var(--gb-gold)" opacity=".9"/>
+                        <path d="M14 16h4v16h-4zm8 0h4v16h-4zm8 0h4v16h-4z" fill="var(--gb-primary)"/>
+                    </svg>
+                </div>
+                <div class="dl-login-card-titles">
+                    <span class="dl-login-card-brand">VizitLink3D</span>
+                    <span class="dl-login-card-sub">@dil.T("admin.giris.altbaslik","Yönetim Paneli")</span>
+                </div>
+            </div>
+
+            <MudForm @ref="_form" Class="dl-login-form">
+                <div class="dl-login-field-group">
+                    <div class="dl-login-field">
+                        <label class="dl-login-label">@dil.T("admin.giris.kullaniciadi","KULLANICI ADI")</label>
+                        <div class="dl-login-field-box">
+                            <span class="dl-login-field-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-7 8-7s8 3 8 7"/>
+                                </svg>
+                            </span>
+                            <MudTextField @bind-Value="_kullaniciAdi"
+                                          Variant="Variant.Text"
+                                          Immediate="true"
+                                          Class="dl-login-field-input"
+                                          Required="true"
+                                          RequiredError="@dil.T("admin.giris.kullaniciadi.zorunlu","Kullanıcı adı zorunludur.")"
+                                           Placeholder="@dil.T("admin.giris.kullaniciAdiPlaceholder","admin")" />
+                        </div>
+                    </div>
+
+                    <div class="dl-login-field">
+                        <label class="dl-login-label">@dil.T("admin.giris.sifre","ŞİFRE")</label>
+                        <div class="dl-login-field-box">
+                            <span class="dl-login-field-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <rect x="3" y="11" width="18" height="11" rx="2"/><circle cx="12" cy="16" r="1"/><path d="M7 11V7a5 5 0 0110 0v4"/>
+                                </svg>
+                            </span>
+                            <MudTextField @bind-Value="_sifre"
+                                          Variant="Variant.Text"
+                                          InputType="InputType.Password"
+                                          Immediate="true"
+                                          Class="dl-login-field-input"
+                                          Required="true"
+                                          RequiredError="@dil.T("admin.giris.sifre.zorunlu","Şifre zorunludur.")"
+                                           Placeholder="@dil.T("admin.giris.sifrePlaceholder","••••••••")" />
+                        </div>
+                    </div>
+                </div>
+
+                <MudButton Variant="Variant.Filled"
+                           Size="Size.Large"
+                           FullWidth="true"
+                           OnClick="GirisYap"
+                           Class="dl-login-btn"
+                           Disabled="@_yukleniyor">
+                    @if (_yukleniyor)
+                    {
+                        <MudProgressCircular Size="Size.Small" Color="Color.Inherit" Indeterminate="true" Class="mr-2" />
+                        @dil.T("ortak.giris","Giriş yapılıyor...")
+                    }
+                    else
+                    {
+                        @dil.T("admin.giris.buton","SİSTEME GİRİŞ YAP")
+                    }
+                </MudButton>
+            </MudForm>
+
+            <div class="dl-login-card-footer">
+                <MudLink Href="/" Typo="Typo.body2" Class="dl-login-back">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5m7-7l-7 7 7 7"/>
+                    </svg>
+                    @dil.T("admin.giris.siteyedon","Siteye Dön")
+                </MudLink>
+                <span class="dl-login-card-divider" aria-hidden="true"></span>
+                <span class="dl-login-card-copy">VizitLink3D &copy; @DateTime.UtcNow.Year</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="dl-login-visual-side">
+        <div class="dl-login-visual-bg"></div>
+        <div class="dl-login-visual-layer">
+            <div class="dl-login-visual-top">
+                <span class="dl-login-visual-eyebrow">@dil.T("admin.giris.markaYil","ORPAY 1989")</span>
+            </div>
+            <div class="dl-login-visual-core">
+                <h2 class="dl-login-visual-headline">
+                    <span class="dl-login-visual-line1">@dil.T("admin.giris.slogan1","Her Mekana")</span>
+                    <span class="dl-login-visual-line2">@dil.T("admin.giris.slogan2","Özel Banyolar")</span>
+                </h2>
+                <p class="dl-login-visual-desc">@dil.T("admin.giris.mirasAciklama","Premium banyo mobilyalarında köklü üretim deneyimini modern koleksiyonlarla buluşturuyoruz.")</p>
+            </div>
+            <div class="dl-login-visual-metrics">
+                <div class="dl-login-metric">
+                    <span class="dl-login-metric-value">Exclusive</span>
+                    <span class="dl-login-metric-label">@dil.T("admin.giris.yilTecrube","KOLEKSİYON")</span>
+                </div>
+                <div class="dl-login-metric-sep"></div>
+                <div class="dl-login-metric">
+                    <span class="dl-login-metric-value">Premium</span>
+                    <span class="dl-login-metric-label">@dil.T("admin.giris.ozgunModel","KOLEKSİYON")</span>
+                </div>
+                <div class="dl-login-metric-sep"></div>
+                <div class="dl-login-metric">
+                    <span class="dl-login-metric-value">Trend</span>
+                    <span class="dl-login-metric-label">@dil.T("admin.giris.ulkeIhracat","KOLEKSİYON")</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

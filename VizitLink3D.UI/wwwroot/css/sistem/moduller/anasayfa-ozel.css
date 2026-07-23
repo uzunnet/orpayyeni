@@ -1,0 +1,390 @@
+/* ─── ANASAYFA BİLEŞENLERİ (AURELIAN ONYX) ───────────────────────── */
+/* 
+ * Bu dosya StitchHero, KoleksiyonlarBentoGrid, IstatistikBolumu vb.
+ * yeni anasayfa bileşenlerinin lüks, karanlık tema (Aurelian Onyx) stillerini içerir.
+ */
+
+/* ─── GENEL BÖLÜM AYARLARI ───────────────────────────────────────── */
+.section-container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 96px 24px;
+}
+
+.section-baslik-kutu {
+    text-align: center;
+    margin-bottom: 64px;
+}
+
+.section-baslik {
+    font-family: var(--vizit-font-serif), serif;
+    font-size: clamp(2.2rem, 4vw, 3.5rem);
+    font-weight: 400;
+    color: var(--vizit-primary);
+    margin-bottom: 16px;
+}
+
+.section-aciklama {
+    font-family: var(--vizit-font-sans), sans-serif;
+    font-size: 1.1rem;
+    color: var(--vizit-secondary);
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.7;
+}
+
+/* ─── 1. STITCH HERO ─────────────────────────────────────────────── */
+.stitch-hero {
+    position: relative;
+    width: 100%;
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+    padding: 0 24px;
+}
+
+.stitch-hero__bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 1;
+    /* Hafif zoom animasyonu */
+    animation: heroZoom 20s infinite alternate linear;
+}
+
+@keyframes heroZoom {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.1); }
+}
+
+.stitch-hero__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Karanlık lüks overlay gradient */
+    background: linear-gradient(180deg, rgba(10, 10, 10, 0.4) 0%, rgba(10, 10, 10, 0.85) 100%);
+    z-index: 2;
+}
+
+.stitch-hero__icerik {
+    position: relative;
+    z-index: 3;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+.stitch-hero__ust-baslik {
+    font-family: var(--vizit-font-sans), sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    color: var(--vizit-accent);
+    text-transform: uppercase;
+}
+
+.stitch-hero__baslik {
+    font-family: var(--vizit-font-serif), serif;
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    font-weight: 400;
+    color: var(--vizit-text-inverse); /* Beyaz/Krem */
+    line-height: 1.1;
+    margin: 0;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+.stitch-hero__aciklama {
+    font-family: var(--vizit-font-sans), sans-serif;
+    font-size: clamp(1.1rem, 2vw, 1.25rem);
+    color: rgba(255, 255, 255, 0.85);
+    max-width: 700px;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.stitch-hero__cta-grup {
+    display: flex;
+    gap: 16px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.stitch-hero__cta {
+    padding: 18px 40px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: var(--vizit-transition);
+    border-radius: var(--vizit-radius, 2px);
+}
+
+.stitch-hero__cta.btn-birincil {
+    background-color: var(--vizit-accent);
+    color: #111; /* Altın üstüne koyu renk */
+    border: 1px solid var(--vizit-accent);
+}
+
+.stitch-hero__cta.btn-birincil:hover {
+    background-color: transparent;
+    color: var(--vizit-accent);
+}
+
+.stitch-hero__cta.btn-ghost {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--vizit-text-inverse);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+}
+
+.stitch-hero__cta.btn-ghost:hover {
+    background-color: var(--vizit-text-inverse);
+    color: #111;
+}
+
+/* ─── 2. İSTATİSTİK SAYAÇLARI ────────────────────────────────────── */
+.vizit-istatistik-bolum {
+    background-color: var(--vizit-bg-alt);
+    border-top: 1px solid var(--vizit-border);
+    border-bottom: 1px solid var(--vizit-border);
+}
+
+.vizit-istatistik-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+}
+
+@media (max-width: 1024px) {
+    .vizit-istatistik-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+    .vizit-istatistik-grid { grid-template-columns: 1fr; }
+}
+
+.vizit-istatistik-kart {
+    text-align: center;
+    padding: 32px 16px;
+}
+
+.vizit-istatistik-deger {
+    font-family: var(--vizit-font-serif), serif;
+    font-size: 3.5rem;
+    font-weight: 400;
+    color: var(--vizit-accent);
+    margin-bottom: 8px;
+    line-height: 1;
+}
+
+.vizit-istatistik-etiket {
+    font-family: var(--vizit-font-sans), sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    color: var(--vizit-text-muted);
+    text-transform: uppercase;
+}
+
+/* ─── 3. KOLEKSİYONLAR BENTO GRID ────────────────────────────────── */
+.bento-bolum {
+    background-color: var(--vizit-bg-base);
+}
+
+.vizit-bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 300px;
+    gap: 24px;
+}
+
+@media (max-width: 1024px) {
+    .vizit-bento-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .vizit-bento-grid {
+        grid-template-columns: 1fr;
+        grid-auto-rows: auto;
+    }
+}
+
+.stitch-bento-kart {
+    position: relative;
+    border-radius: var(--vizit-radius, 4px);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    text-decoration: none;
+    border: 1px solid var(--vizit-border);
+    transition: var(--vizit-transition);
+}
+
+.stitch-bento-buyuk {
+    grid-column: span 2;
+    grid-row: span 2;
+}
+
+@media (max-width: 1024px) {
+    .stitch-bento-buyuk {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 768px) {
+    .stitch-bento-buyuk {
+        grid-column: span 1;
+        min-height: 400px;
+    }
+}
+
+.stitch-bento-orta {
+    grid-column: span 1;
+    grid-row: span 1;
+}
+
+@media (max-width: 768px) {
+    .stitch-bento-orta {
+        min-height: 300px;
+    }
+}
+
+.stitch-bento__gorsel-kutu {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.stitch-bento__gorsel-kutu::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Daha koyu alt bölüm (Glassmorphism için zemin) */
+    background: linear-gradient(180deg, rgba(10,10,10,0) 40%, rgba(10,10,10,0.85) 100%);
+    transition: var(--vizit-transition);
+}
+
+.stitch-bento__gorsel {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stitch-bento-kart:hover .stitch-bento__gorsel {
+    transform: scale(1.05);
+}
+
+.stitch-bento-kart:hover .stitch-bento__gorsel-kutu::after {
+    background: linear-gradient(180deg, rgba(10,10,10,0) 20%, rgba(10,10,10,0.95) 100%);
+}
+
+.stitch-bento__icerik {
+    position: relative;
+    z-index: 2;
+    padding: 32px;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.stitch-bento__etiket {
+    font-family: var(--vizit-font-sans), sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--vizit-accent);
+    text-transform: uppercase;
+}
+
+.stitch-bento__baslik {
+    font-family: var(--vizit-font-serif), serif;
+    font-size: 1.8rem;
+    font-weight: 400;
+    color: var(--vizit-text-inverse); /* Beyaz/Krem */
+    margin: 0;
+}
+
+.stitch-bento-buyuk .stitch-bento__baslik {
+    font-size: 2.8rem;
+}
+
+.bento-kart__aciklama {
+    font-family: var(--vizit-font-sans), sans-serif;
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.stitch-bento-buyuk .bento-kart__aciklama {
+    font-size: 1.1rem;
+    max-width: 80%;
+}
+
+.stitch-bento__aksiyon {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--vizit-text-inverse);
+    font-family: var(--vizit-font-sans), sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 16px;
+    transition: var(--vizit-transition);
+}
+
+.stitch-bento-kart:hover .stitch-bento__aksiyon {
+    color: var(--vizit-accent);
+    gap: 12px; /* ok işareti kayar */
+}
+
+/* ─── 4. REVEAL ANİMASYONLARI ────────────────────────────────────── */
+.anim-reveal-up {
+    opacity: 0;
+    transform: translateY(40px);
+    animation: revealUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.anim-reveal-up.stagger-1 { animation-delay: 0.1s; }
+.anim-reveal-up.stagger-2 { animation-delay: 0.2s; }
+.anim-reveal-up.stagger-3 { animation-delay: 0.3s; }
+.anim-reveal-up.stagger-4 { animation-delay: 0.4s; }
+
+@keyframes revealUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

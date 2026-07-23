@@ -1,0 +1,22 @@
+@* IstatistikBolumu — Aurelian Onyx 4'lü istatistik sayacı *@
+
+@if (Istatistikler.Any())
+{
+    <section class="istatistik-bolumu">
+        <div class="section-container">
+            <div class="istatistik-grid">
+                @foreach (var ist in Istatistikler)
+                {
+                    <div class="anim-reveal-up">
+                        <div class="istatistik-oge__deger">
+                            @ist.Deger
+                        </div>
+                        <div class="istatistik-oge__etiket">
+                            @ist.Etiket
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}

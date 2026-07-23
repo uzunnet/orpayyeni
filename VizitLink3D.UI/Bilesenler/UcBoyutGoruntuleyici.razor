@@ -1,0 +1,84 @@
+<!-- 
+    UC BOYUT GORUNTULEYICI BILEŞENI
+    Three.js tabanli 3D kapak modeli goruntuleyicisi.
+    UcBoyutServisi araciligiyla JS tarafiyla iletisim kurar.
+    KURALLAR.md §2: Three.js dogrudan cagrilmaz, wrapper uzerinden gecilir.
+-->
+
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+
+<div class="gb-viewer-sarici">
+    @if (string.IsNullOrEmpty(ModelYolu))
+    {
+        <!-- GÖRSEL MODU -->
+        <div class="gb-viewer-gorsel-panel aktif">
+            <img src="@(string.IsNullOrEmpty(GorselYolu) ? "/medya/vizitlink3d_default.png" : GorselYolu)" alt='@dil.T("ucBoyut.modelGorseli", "Model gorseli")' onerror="this.onerror=null;this.src='/medya/vizitlink3d_default.png';" />
+            @if (!string.IsNullOrEmpty(SecilenRenk) && SecilenRenk != BaslangicRenk)
+            {
+                <div class="gb-renk-overlay" style="background-color: @SecilenRenk;"></div>
+            }
+        </div>
+    }
+    else
+    {
+        <!-- 3D MODU (Three.js Kanvas) -->
+        <div id="@_kanvasId" class="gb-viewer-kanvas aktif">
+        </div>
+    }
+
+    @if (_aktifTab == "3d")
+    {
+        <div class="gb-viewer-durum" aria-live="polite">
+            <span class="gb-viewer-durum-nokta"></span>
+            <span>@dil.T("ucBoyut.endustriyelMod", "Endustriyel mod")</span>
+        </div>
+
+        <!-- Yukleniyor gostergesi -->
+        @if (_yukleniyor)
+        {
+            <div class="gb-viewer-yuklenme">
+                <div class="gb-viewer-spinner"></div>
+                <span class="gb-viewer-yuklenme-yazi">@dil.T("ucBoyut.modelYukleniyor", "Model yukleniyor")</span>
+            </div>
+        }
+
+        <!-- Kontrol Butonlari (SAĞ TARAFTA DİKEY) -->
+        <div class="gb-viewer-kontroller">
+            <button class="gb-viewer-btn" @onclick="KameraYeSifirla" title='@dil.T("ucBoyut.gorunumuSifirla", "Gorunumu sifirla")'>
+                <MudIcon Icon="@Icons.Material.Outlined.RestartAlt" Size="Size.Small" />
+            </button>
+            <button class="gb-viewer-btn @(_otomatikDondurmeMi ? "aktif" : "")" @onclick="DondurmeyiToggle" title='@dil.T("ucBoyut.otomatikDondur", "Otomatik dondur")'>
+                <MudIcon Icon="@Icons.Material.Outlined.RotateRight" Size="Size.Small" />
+            </button>
+            <button class="gb-viewer-btn @(_izgaraGorunurMu ? "aktif" : "")" @onclick="IzgarayiToggle" title='@dil.T("ucBoyut.olcuIzgarasi", "Olcu izgarasi")'>
+                <MudIcon Icon="@Icons.Material.Outlined.GridOn" Size="Size.Small" />
+            </button>
+            <button class="gb-viewer-btn @(_patlatilmisMi ? "aktif" : "")" @onclick="PatlatilmisGorunumToggle" title='@dil.T("ucBoyut.patlatilmisGorunum", "Patlatilmis gorunum")'>
+                <MudIcon Icon="@Icons.Material.Outlined.OpenInFull" Size="Size.Small" />
+            </button>
+            <button class="gb-viewer-btn" @onclick="TamEkranaAl" title='@dil.T("ucBoyut.tamEkran", "Tam ekran")'>
+                <MudIcon Icon="@Icons.Material.Outlined.Fullscreen" Size="Size.Small" />
+            </button>
+        </div>
+
+        <!-- Kullanim Ipucu -->
+        <div class="gb-viewer-ipucu">
+            <span>@dil.T("ucBoyut.ipucu", "Surukle: dondur | Kaydir: yakinlastir")</span>
+        </div>
+
+        <div class="gb-viewer-alt-panel">
+            <div class="gb-viewer-metrik">
+                <span>@dil.T("ucBoyut.kontrol", "Kontrol")</span>
+                <strong>@dil.T("ucBoyut.hassasOrbit", "Hassas orbit")</strong>
+            </div>
+            <div class="gb-viewer-metrik">
+                <span>@dil.T("ucBoyut.sahne", "Sahne")</span>
+                <strong>@dil.T("ucBoyut.studyoIsik", "Studyo isik")</strong>
+            </div>
+            <div class="gb-viewer-metrik">
+                <span>@dil.T("ucBoyut.deneyim", "Deneyim")</span>
+                <strong>@dil.T("ucBoyut.olcuVePatlat", "Olcu + patlat")</strong>
+            </div>
+        </div>
+    }
+</div>

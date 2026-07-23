@@ -1,0 +1,27 @@
+{
+  "name": "Firma Vitrini",
+  "short_name": "Firma",
+  "description": "Firma vitrini, koleksiyonlar ve proje çözümleri",
+  "start_url": "/?kaynak=pwa-v3",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/medya/brand/orpay-logo-kare.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/medya/brand/orpay-logo-kare.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "lang": "tr-TR",
+  "categories": ["business", "shopping"],
+  "scope": "/"
+}

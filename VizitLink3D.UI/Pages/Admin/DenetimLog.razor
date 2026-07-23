@@ -1,0 +1,59 @@
+@page "/admin/denetim-log"
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<PageTitle>@dil.T("admin.denetimLog.sayfaBasligi", "Denetim Loglari") | VizitLink3D Admin</PageTitle>
+
+<div class="admin-card mb-4">
+    <div class="admin-card-header">
+        <span class="admin-card-title">DENETÝM LOGLARI</span>
+        <span class="admin-nav-count">@_toplam</span>
+    </div>
+    <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mb-3">
+        Sistem geneli ekleme, güncelleme ve silme iþlemlerinin kaydý. Salt okunur.
+    </MudText>
+
+    <div class="d-flex gap-2 mb-3">
+        <MudTextField @bind-Value="_arama" Placeholder="Eylem veya kullanýcý ara..." Variant="Variant.Outlined"
+                      Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search"
+                      Class="flex-grow-1" OnKeyUp="Ara" />
+    </div>
+
+    <div class="admin-table-wrap">
+        <MudTable Items="@_loglar" Hover="true" Elevation="0" Loading="@_yukleniyor">
+            <HeaderContent>
+                <MudTh>#</MudTh>
+                <MudTh>TARÝH</MudTh>
+                <MudTh>KULLANICI</MudTh>
+                <MudTh>ÝÞLEM</MudTh>
+                <MudTh>FÝRMA</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="#">@context.Id</MudTd>
+                <MudTd DataLabel="Tarih">@context.ZamanDamgasi.ToString("dd.MM.yyyy HH:mm")</MudTd>
+                <MudTd DataLabel="Kullanýcý">@context.KullaniciId</MudTd>
+                <MudTd DataLabel="Ýþlem">
+                    <code class="admin-denetim-eylem">@context.Eylem</code>
+                </MudTd>
+                <MudTd DataLabel="Firma">@(context.FirmaId ?? "-")</MudTd>
+            </RowTemplate>
+            <NoRecordsContent>
+                <MudText>Kayýt bulunamadý.</MudText>
+            </NoRecordsContent>
+        </MudTable>
+    </div>
+
+    @* Sayfalama *@
+    @if (_toplamSayfa > 1)
+    {
+        <div class="d-flex align-center justify-center gap-2 mt-4">
+            <MudIconButton Icon="@Icons.Material.Filled.FirstPage" Disabled="@(_sayfa <= 1)" OnClick="@(() => SayfayaGit(1))" />
+            <MudIconButton Icon="@Icons.Material.Filled.ChevronLeft" Disabled="@(_sayfa <= 1)" OnClick="@(() => SayfayaGit(_sayfa - 1))" />
+            <MudText Typo="Typo.caption">@_sayfa / @_toplamSayfa</MudText>
+            <MudIconButton Icon="@Icons.Material.Filled.ChevronRight" Disabled="@(_sayfa >= _toplamSayfa)" OnClick="@(() => SayfayaGit(_sayfa + 1))" />
+            <MudIconButton Icon="@Icons.Material.Filled.LastPage" Disabled="@(_sayfa >= _toplamSayfa)" OnClick="@(() => SayfayaGit(_toplamSayfa))" />
+        </div>
+    }
+</div>

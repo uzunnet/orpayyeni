@@ -1,0 +1,135 @@
+@page "/vitrin/piedra"
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using VizitLink3D.UI.Servisler
+
+<PageTitle>PIEDRA Banyo Konfigüratörü | VizitLink3D</PageTitle>
+
+<MudText Typo="Typo.h4" Class="mb-1">PIEDRA â€” Banyo Dolabı Konfigüratörü</MudText>
+<MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-3">Modele tıkla â†’ parça seç â†’ malzeme/renk uygula</MudText>
+
+<MudGrid>
+    @* SOL: 3D Viewer *@
+    <MudItem xs="12" md="8">
+        <div id="piedra-konfig-viewer" style="width:100%; height:550px; border:1px solid #DDD; border-radius:4px;">
+        </div>
+    </MudItem>
+
+    @* SAÄ: Panel *@
+    <MudItem xs="12" md="4">
+        <MudPaper Elevation="1" Class="pa-3" Style="max-height:550px; overflow-y:auto;">
+
+            @if (!_parcalar.Any())
+            {
+                <MudProgressLinear Indeterminate="true" Class="mb-3" />
+                <MudText Typo="Typo.caption">Model yükleniyor...</MudText>
+            }
+            else
+            {
+                @* SEÇİLİ PARÇA *@
+                @if (!string.IsNullOrEmpty(_secilenParca))
+                {
+                    var sp = _parcalar.FirstOrDefault(x => x.Isim == _secilenParca);
+                    <MudPaper Elevation="2" Class="pa-2 mb-3" Style="border:2px solid #4CAF50; background:#F1F8E9;">
+                        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                            <div>
+                                <MudText Typo="Typo.caption" Color="Color.Success">SEÇİLİ PARÇA</MudText>
+                                <MudText Typo="Typo.body2" class="gb-font-700">@_secilenParca</MudText>
+                                <MudText Typo="Typo.caption" Color="Color.Secondary">@(sp?.Tahmin ?? "")</MudText>
+                            </div>
+                            <MudIconButton Icon="@Icons.Material.Filled.Close" Size="Size.Small" OnClick="SecimiTemizle" />
+                        </MudStack>
+                        @if (sp != null && !string.IsNullOrEmpty(sp.Malzeme))
+                        {
+                            var m = _malzemeler.FirstOrDefault(x => x.Kod == sp.Malzeme);
+                            <MudChip T="string" Text="@($"Malzeme: {m.Ad}")" Size="Size.Small" Color="Color.Primary" Class="mt-1" />
+                        }
+                    </MudPaper>
+                }
+
+                @* MALZEME KARTELASI *@
+                <MudText Typo="Typo.subtitle2" Class="mb-2">Malzeme Seç</MudText>
+                <MudGrid Spacing="1" Class="mb-3">
+                    @foreach (var m in _malzemeler)
+                    {
+                        var aktif = _aktifMalzeme == m.Kod;
+                        <MudItem xs="6">
+                            <MudPaper Elevation="@(aktif ? 3 : 1)" Class="pa-1"
+                                     Style="@(aktif ? "cursor:pointer;border:2px solid #1a1a1a;background:#F5F5F5;" : "cursor:pointer;border:1px solid #EEE;")"
+                                     @onclick="() => MalzemeDegistir(m.Kod)">
+                                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                                    <div style="width:28px;height:28px;border-radius:3px;background:@m.Onizleme;border:1px solid #CCC; flex-shrink:0;"></div>
+                                    <MudText Typo="Typo.caption" Style="font-weight:600;font-size:12px;">@m.Ad</MudText>
+                                    @if (aktif)
+                                    {
+                                        <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Size="Size.Small" Color="Color.Primary" />
+                                    }
+                                </MudStack>
+                            </MudPaper>
+                        </MudItem>
+                    }
+                </MudGrid>
+
+                @* RENK SEÇİCİ *@
+                <MudText Typo="Typo.subtitle2" Class="mb-2">Renk</MudText>
+                <MudStack Row="true" Spacing="1" Wrap="Wrap.Wrap" Class="mb-3">
+                    @foreach (var r in _renkler)
+                    {
+                        <MudTooltip Text="@r.Ad">
+                            <div style="width:24px;height:24px;border-radius:50%;background:@r.Hex;border:2px solid #CCC;cursor:pointer;"
+                                 @onclick="() => RenkDegistir(r.Hex)"></div>
+                        </MudTooltip>
+                    }
+                </MudStack>
+
+                <MudDivider Class="my-2" />
+
+                @* PARÇA LİSTESİ *@
+                <MudText Typo="Typo.subtitle2" Class="mb-2">Parçalar</MudText>
+                @foreach (var p in _parcalar.Where(x => !string.IsNullOrEmpty(x.Isim)))
+                {
+                    var secili = p.Isim == _secilenParca;
+                    <MudPaper Elevation="0" Class="pa-2 mb-1"
+                              Style="@(secili ? "border:2px solid #4CAF50;background:#F1F8E9;border-radius:4px;" : "border:1px solid #EEE;border-radius:4px;")">
+                        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                            <div style="flex:1; min-width:0;">
+                                <MudText Typo="Typo.body2" Style="font-weight:600; font-size:11px;">@p.Tahmin</MudText>
+                                <MudText Typo="Typo.caption" Color="Color.Secondary" class="gb-font-10">@p.Isim</MudText>
+                                @if (!string.IsNullOrEmpty(p.Malzeme))
+                                {
+                                    var m = _malzemeler.FirstOrDefault(x => x.Kod == p.Malzeme);
+                                    <MudChip T="string" Text="@m.Ad" Size="Size.Small" Color="Color.Primary" Style="font-size:9px; height:18px;" />
+                                }
+                            </div>
+                            <MudStack Row="true" Spacing="0">
+                                <MudIconButton Icon="@(p.Gorunur ? Icons.Material.Filled.Visibility : Icons.Material.Filled.VisibilityOff)"
+                                               Size="Size.Small" OnClick="() => ParcaToggle(p)" />
+                            </MudStack>
+                        </MudStack>
+                    </MudPaper>
+                }
+
+                <MudDivider Class="my-2" />
+
+                @* IÅIK AYARI *@
+                <MudText Typo="Typo.caption" Color="Color.Secondary">IÅIK: @((int)(_isikSeviyesi * 100))%</MudText>
+                <MudSlider @bind-Value="_isikSeviyesi" Min="0.2" Max="2.0" Step="0.1" Class="mb-1" />
+                <MudButton Variant="Variant.Text" Size="Size.Small" OnClick="() => IsikDegisti(_isikSeviyesi)" FullWidth="true" class="gb-font-10">Işık Uygula</MudButton>
+
+                @* KAPAK AÇISI *@
+                <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mt-2 mb-1">KAPAK AÇISI</MudText>
+                <MudStack Row="true" Spacing="1" Wrap="Wrap.Wrap">
+                    @foreach (var p in _parcalar.Where(x => x.Isim.StartsWith("Rectangle")))
+                    {
+                        <MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="() => KapakAcKapa(p)" Style="font-size:9px; padding:2px 6px;">
+                            @p.Tahmin @p.Derece°
+                        </MudButton>
+                    }
+                </MudStack>
+
+                <MudDivider Class="my-2" />
+                <MudButton Variant="Variant.Outlined" FullWidth="true" OnClick="TumunuGoster" Size="Size.Small">Tümünü Göster</MudButton>
+                <MudButton Variant="Variant.Text" FullWidth="true" Color="Color.Error" OnClick="SadeceDolapGoster" Size="Size.Small" Class="mt-1">Sadece Dolap</MudButton>
+            }
+        </MudPaper>
+    </MudItem>
+</MudGrid>

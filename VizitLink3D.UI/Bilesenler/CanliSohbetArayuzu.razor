@@ -1,0 +1,68 @@
+@* Canlı Destek — Profesyonel sağ alt köşe widget *@
+
+<div class="gb-canli-destek @(_acikMi ? "acik" : "")">
+    @* ─── FAB BUTON (Kapalıyken) ─── *@
+    @if (!_acikMi)
+    {
+        <button class="gb-cd-fab" @onclick="SohbetGoster" title="@dil.T("canli_destek", "Canlı Destek")">
+            <span class="gb-cd-fab-ikon">💬</span>
+            <span class="gb-cd-fab-etiket">@dil.T("canli_destek", "Canlı Destek")</span>
+        </button>
+    }
+    else
+    {
+        @* ─── SOHBET PANELİ (Açıkken) ─── *@
+        <div class="gb-cd-panel">
+            @* Başlık *@
+            <div class="gb-cd-baslik">
+                <div class="gb-cd-baslik-sol">
+                    <div class="gb-cd-avatar">
+                        <span>🎧</span>
+                    </div>
+                    <div>
+                        <div class="gb-cd-baslik-ad">@dil.T("canli_destek", "Canlı Destek")</div>
+                        <div class="gb-cd-baslik-durum">
+                            <span class="gb-cd-durum-nokta"></span>
+                            @dil.T("canli_destek.cevrimici", "Çevrimiçi")
+                        </div>
+                    </div>
+                </div>
+                <button class="gb-cd-kapat-btn" @onclick="SohbetGizle" title="Kapat">✕</button>
+            </div>
+
+            @* Mesajlar *@
+            <div class="gb-cd-mesajlar">
+                @if (_mesajlar.Count == 0)
+                {
+                    <div class="gb-cd-hosgeldiniz">
+                        <div class="gb-cd-hosgeldiniz-ikon">👋</div>
+                        <div class="gb-cd-hosgeldiniz-baslik">@dil.T("canli_destek.hosgeldiniz", "Merhaba!")</div>
+                        <div class="gb-cd-hosgeldiniz-metin">@dil.T("canli_destek.yardim", "Size nasıl yardımcı olabiliriz?")</div>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var m in _mesajlar)
+                    {
+                        <div class="gb-cd-mesaj @(m.KullaniciMi ? "kullanici" : "sistem")">
+                            <div class="gb-cd-mesaj-metin">@m.Metin</div>
+                            <div class="gb-cd-mesaj-saat">@m.Tarih.ToString("HH:mm")</div>
+                        </div>
+                    }
+                }
+            </div>
+
+            @* Girdi *@
+            <div class="gb-cd-girdi">
+                <input type="text" class="gb-cd-input" 
+                       @bind="_yeniMesaj" @bind:event="oninput"
+                       @onkeydown="KlavyeDinle"
+                       placeholder="@dil.T("canli_destek.mesaj_yaz", "Mesajınızı yazın...")" />
+                <button class="gb-cd-gonder-btn" @onclick="MesajGonder" 
+                        disabled="@string.IsNullOrWhiteSpace(_yeniMesaj)">
+                    ➤
+                </button>
+            </div>
+        </div>
+    }
+</div>

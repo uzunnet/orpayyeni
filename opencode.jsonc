@@ -1,0 +1,205 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "username": "uzunn",
+  "model": "deepseek/deepseek-v4-flash",
+  "small_model": "opencode/mimo-v2.5-free",
+  "default_agent": "supervisor",
+  "subagent_depth": 4,
+  "instructions": [],
+  "mcp": {
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp"
+    },
+    "stitch": {
+      "type": "remote",
+      "url": "https://stitch.googleapis.com/mcp",
+      "enabled": true,
+      "headers": {
+        "X-Goog-Api-Key": "{env:STITCH_API_KEY}"
+      }
+    }
+  },
+  "agent": {
+    "build": {
+      "description": "Birincil uygulama ajani. Kucuk/orta kod yazar.",
+      "model": "deepseek/deepseek-v4-flash",
+      "mode": "primary",
+      "prompt": "Sen uygulama ajanisin. Sadece verilen gorev kartini uygula; kapsam disina cikma; kendi isini kabul etme."
+    },
+    "plan": {
+      "description": "Planlama ajani. Kod yazmaz, gorev karti ve risk cikarir.",
+      "model": "opencode/big-pickle",
+      "mode": "primary",
+      "prompt": "Sen planlama ajanisin. Dosya yazma, sadece analiz et ve uygulanabilir gorev karti cikar."
+    },
+    "general": {
+      "description": "Genel amacli alt ajan. Arastirma, kucuk duzeltme ve yedek isler.",
+      "model": "deepseek/deepseek-v4-flash",
+      "mode": "subagent",
+      "prompt": "Genel amacli alt ajan. Verilen gorev kartina uy; gerekmedikce genis tarama yapma."
+    },
+    "explore": {
+      "description": "Hizli kod tabani arastirmasi. Kod yazmaz.",
+      "model": "opencode/hy3-free",
+      "mode": "subagent",
+      "prompt": "Sen arastirma ajanisin. Dosya bul, oku, kanitli kisa raporla; kod yazma."
+    },
+    "coder-hizli": {
+      "description": "Hizli kod yazma, basit duzeltme, kucuk ekleme.",
+      "model": "deepseek/deepseek-v4-flash",
+      "mode": "subagent",
+      "prompt": "Sen hizli kod yazici ajanisin. Basit duzeltmeler ve kucuk eklemeler yap. Kendi isini kabul etme."
+    },
+    "coder-hizli-yedek": {
+      "description": "Hizli kod yazma yedegi. Ucretsiz model bos/hatali donerse kullanilir.",
+      "model": "mimo/mimo-v2.5",
+      "mode": "subagent",
+      "prompt": "Sen hizli kod yazici yedegisin. Verilen gorev kartini uygula; kapsam disina cikma; kendi isini kabul etme."
+    },
+    "coder-agir": {
+      "description": "Agir kod yazma ve cok dosyali refactoring. DeepSeek Pro kullanma.",
+      "model": "deepseek/deepseek-v4-pro",
+      "mode": "subagent",
+      "prompt": "Sen agir kod yazici ajanisin. Karmasik mimari ve cok dosyali refactoring yap; kapsam disina cikma; kendi isini kabul etme."
+    },
+    "kalfa-uygulayici": {
+      "description": "Kalfa. Kucuk ve orta kapsamli gorev kartini uygular; kendi isini denetlemez veya kabul etmez.",
+      "model": "deepseek/deepseek-v4-flash",
+      "mode": "subagent",
+      "prompt": "Sen Kalfa/Uygulayicisin. Yalniz verilen gorev kartini uygula. Sistem belgelerini tekrar okuma. Kendi isini kabul etme, checkbox kapatma, MODEL_TESLIM'e kabul yazma."
+    },
+    "kalfa-yedek": {
+      "description": "Kalfa yedegi. Kalfa bos/hatali donerse kucuk ve orta uygulamayi devralir.",
+      "model": "mimo/mimo-v2.5",
+      "mode": "subagent",
+      "prompt": "Sen Kalfa yedegisin. Verilen gorev kartini uygula; kapsam disina cikma; kendi isini kabul etme."
+    },
+    "usta-uygulayici": {
+      "description": "Usta. Cok dosyali mimari, refactoring veya zor algoritma gorevini uygular; bagimsiz denetim ister.",
+      "model": "deepseek/deepseek-v4-pro",
+      "mode": "subagent",
+      "prompt": "Sen Usta/Uygulayicisin. Zor ve cok dosyali gorevleri uygula. Kendi isini kabul etme; denetim icin kanitli teslim ver."
+    },
+    "usta-yedek": {
+      "description": "Usta yedegi. Usta modeli kullanilamazsa zor gorevi devralir.",
+      "model": "deepseek/deepseek-v4-flash",
+      "mode": "subagent",
+      "prompt": "Sen Usta yedegisin. Zor gorevleri dikkatli uygula; kendi isini kabul etme."
+    },
+    "yazici": {
+      "description": "Genel dosya duzenleme ve orta duzey kod yazma.",
+      "model": "opencode/mimo-v2.5-free",
+      "mode": "subagent",
+      "prompt": "Sen Yazici ajansin. Verilen dosya duzenleme/kod yazma gorevini uygula; kapsam disina cikma; kendi isini kabul etme."
+    },
+    "memur-dogrulayici": {
+      "description": "Memur. Yalniz tanimli build/test/dogrulama komutlarini calistirir ve ham kanit dondurur.",
+      "model": "lmstudio/Dolphin3.0-Llama3.1-8B-Q4_K_M.gguf",
+      "mode": "subagent",
+      "permission": {
+        "edit": "deny",
+        "bash": "allow",
+        "task": "deny"
+      },
+      "prompt": "Sen Memur/Dogrulayicisin. Yalniz verilen komutlari calistir, ham cikti ve exit durumunu bildir. Kod yazma, dosya degistirme, kabul verme."
+    },
+    "denetci": {
+      "description": "Bagimsiz denetci. Uygulayicinin degisikligini kabul olcutlerine gore inceler; dosya degistirmez.",
+      "model": "nvidia/deepseek-ai/deepseek-v4-flash",
+      "mode": "subagent",
+      "permission": {
+        "edit": "deny",
+        "bash": "allow",
+        "task": "deny"
+      },
+      "prompt": "Sen bagimsiz Denetcisin. Uygulayici ile ayni ajan degilsin. Diff, gorev karti ve dogrulama kanitini incele. Kod yazma. Sonuc: KABUL ADAYI veya RET."
+    },
+    "cirak-arastirmaci": {
+      "description": "Cirak. Yalniz verilen dosya veya soruyu arastirir ve kisa kanitli bulgu dondurur.",
+      "model": "lmstudio/Jan-v3.5-4B-Q4_K_XL",
+      "mode": "subagent",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny",
+        "task": "deny"
+      },
+      "prompt": "Sen Ciraksin. Yalniz verilen dosya, sembol veya soruyu incele. Kod yazma; en fazla bes kanitli bulgu dondur."
+    },
+    "mudur-planlayici": {
+      "description": "Mudur/planlayici. Sefin verdigi baglamla isi parcalar, riskleri ve gorev kartlarini uretir; kod yazmaz.",
+      "model": "opencode/deepseek-v4-flash-free",
+      "mode": "subagent",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny",
+        "task": "allow"
+      },
+      "prompt": "Sen Mudur/Planlayicisin. Yalniz Sefin gorev karti ve verdigi baglamla calis. Kod yazma, dosya degistirme, kabul verme."
+    },
+    "goruntu-uzmani": {
+      "description": "Gorsel uzman. Ekran goruntusu, Figma veya UI analizi yapar; kod yazmaz.",
+      "model": "opencode/big-pickle",
+      "mode": "subagent",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny",
+        "task": "allow"
+      },
+      "prompt": "Sen Gorsel Uzmansin. Gorseli analiz et, bilesen/olcu/renk/akis gorev karti cikar. Kod yazma ve kabul verme."
+    },
+    "supervisor": {
+      "description": "Sef. Istekleri siniflandirir, baglami bir kez toplar, emir verir ve bagimsiz kabul karari uretir.",
+      "model": "deepseek/deepseek-v4-flash",
+      "mode": "primary",
+      "steps": 24,
+      "permission": {
+        "edit": "deny",
+        "bash": "ask",
+        "task": "allow"
+      },
+      "prompt": "Sen Sef/supervisor ajansin. Kod yazmazsin; alt ajana devredersin. Uygulayici kendi isini kabul edemez. Memur ve Denetci kaniti olmadan KABUL verme. Turkce konus."
+    }
+  },
+  "provider": {
+    "deepseek": {
+      "options": {
+        "apiKey": "{env:DEEPSEEK_API_KEY}",
+        "baseURL": "https://api.deepseek.com",
+        "timeout": 120000
+      }
+    },
+    "nvidia": {
+      "options": {
+        "apiKey": "{env:NVIDIA_API_KEY}",
+        "timeout": 120000
+      }
+    },
+    "lmstudio": {
+      "options": {
+        "apiKey": "lm-studio",
+        "baseURL": "http://localhost:1337/v1",
+        "timeout": 120000
+      }
+    },
+    "mimo": {
+      "options": {
+        "apiKey": "{env:XIAOMIMIMO_API_KEY}",
+        "baseURL": "https://token-plan-cn.xiaomimimo.com/v1",
+        "timeout": 120000
+      }
+    }
+  },
+  "compaction": {
+    "auto": true,
+    "tail_turns": 8,
+    "preserve_recent_tokens": 8192,
+    "reserved": 4096
+  },
+  "references": {
+    "proje": {
+      "path": ".",
+      "description": "Proje kok dizini."
+    }
+  }
+}

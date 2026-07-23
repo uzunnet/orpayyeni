@@ -1,0 +1,227 @@
+@page "/admin/uc-boyut-parca-esleme"
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using VizitLink3D.Ortak.Modeller.Urunler
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject VizitLink3D.UI.Servisler.DilServisi DilServisi
+
+<PageTitle>@DilServisi.T("admin.3d.parcaSayfaBaslik", "3D Parça Eşleme") | VizitLink3D Admin</PageTitle>
+
+<AdminSayfaBasligi Baslik='@DilServisi.T("admin.3d.parcaSayfaBaslik", "3D Parça Eşleme")'
+                   Aciklama='@DilServisi.T("admin.3d.parcaSayfaAciklama", "Model mesh parçalarını seçilebilirlik, malzeme, renk ve hareket kurallarıyla yönetin.")'
+                   Ikon="@Icons.Material.Filled.Extension">
+    <MudButton Variant="Variant.Filled"
+               Color="Color.Primary"
+               StartIcon="@Icons.Material.Filled.Add"
+               OnClick="YeniAc"
+               Disabled="@(_seciliModelId is null)">
+        @DilServisi.T("admin.3d.yeniParca", "Yeni Parça")
+    </MudButton>
+</AdminSayfaBasligi>
+
+<MudPaper Elevation="0" Class="admin-arac-cubugu pa-3 mb-4 d-flex align-center flex-wrap">
+    <MudSelect Value="_seciliModelId"
+               ValueChanged="OnModelSecildi"
+               Label='@DilServisi.T("admin.3d.modelSeciniz", "Model seçiniz")'
+               T="int?"
+               Class="flex-grow-1 admin-select gb-maxw-400">
+        @foreach (var m in _modeller)
+        {
+            <MudSelectItem Value="@((int?)m.Id)">@m.ModelAdi - @m.ModelTipi v@(m.Versiyon)@(m.VarsayilanMi ? " *" : "")</MudSelectItem>
+        }
+    </MudSelect>
+    <MudSpacer />
+    <MudChip T="string" Color="Color.Primary" Variant="Variant.Outlined" Size="Size.Small">
+        @DilServisi.T("ortak.toplam", "Toplam") @_filtreliListe.Count
+    </MudChip>
+</MudPaper>
+
+@if (_yukleniyor)
+{
+    <AdminYukleniyorIskeleti />
+}
+
+@if (!_seciliModelId.HasValue)
+{
+    <MudAlert Severity="Severity.Info" Class="mb-4">
+        @DilServisi.T("admin.3d.modelSecUyari", "Parçalarını yönetmek için önce bir 3D model seçiniz.")
+    </MudAlert>
+}
+
+@if (_formAcik)
+{
+    <MudCard Class="admin-form-panel mb-4">
+        <MudCardContent>
+            <MudText Typo="Typo.h6" Class="mb-4">
+                @(_duzenlemeModu
+                    ? DilServisi.T("admin.3d.parcaDuzenle", "Parça Düzenle")
+                    : DilServisi.T("admin.3d.parcaYeni", "Yeni Parça"))
+            </MudText>
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_form.GorunenAd" Label='@DilServisi.T("admin.3d.gorunenAd", "Görünen ad")' Class="mb-3 admin-textfield" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudNumericField @bind-Value="_form.ParcaGrubuId" Label='@DilServisi.T("admin.3d.parcaGrubu", "Parça grubu")' Class="mb-3 admin-textfield" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_form.MeshAdi" Label='@DilServisi.T("admin.3d.meshAdi", "Mesh adı")' Class="mb-3 admin-textfield admin-mono-field" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudNumericField @bind-Value="_form.SiraNo" Label='@DilServisi.T("admin.3d.siraNo", "Sıra no")' Class="mb-3 admin-textfield" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudSwitch @bind-Value="_form.SecilebilirMi" Label='@DilServisi.T("admin.3d.secilebilir", "Seçilebilir")' Class="admin-switch" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudSwitch @bind-Value="_form.RenklenebilirMi" Label='@DilServisi.T("admin.3d.renklenebilir", "Renklenebilir")' Class="admin-switch" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudSwitch @bind-Value="_form.MalzemeDegisebilirMi" Label='@DilServisi.T("admin.3d.malzemeDegisebilir", "Malzeme değişebilir")' Class="admin-switch" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudSwitch @bind-Value="_form.GizlenebilirMi" Label='@DilServisi.T("admin.3d.gizlenebilir", "Gizlenebilir")' Class="admin-switch" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudSwitch @bind-Value="_form.HareketliMi" Label='@DilServisi.T("admin.3d.hareketli", "Hareketli")' Class="admin-switch" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudSelect @bind-Value="_form.HareketTipi" Label='@DilServisi.T("admin.3d.hareketTipi", "Hareket tipi")' Class="mb-3 admin-select">
+                        <MudSelectItem Value="@("KapakAc")">@DilServisi.T("admin.3d.hareketKapakAc", "Kapak aç")</MudSelectItem>
+                        <MudSelectItem Value="@("CekmeceAc")">@DilServisi.T("admin.3d.hareketCekmeceAc", "Çekmece aç")</MudSelectItem>
+                        <MudSelectItem Value="@("Surme")">@DilServisi.T("admin.3d.hareketSurme", "Sürme")</MudSelectItem>
+                        <MudSelectItem Value="@("Donme")">@DilServisi.T("admin.3d.hareketDonme", "Dönme")</MudSelectItem>
+                        <MudSelectItem Value="@("Yok")">@DilServisi.T("admin.3d.hareketYok", "Yok")</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudNumericField @bind-Value="_form.MinDeger" Label='@DilServisi.T("admin.3d.minDeger", "Minimum değer")' Class="mb-3 admin-textfield" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudNumericField @bind-Value="_form.MaxDeger" Label='@DilServisi.T("admin.3d.maxDeger", "Maksimum değer")' Class="mb-3 admin-textfield" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudNumericField @bind-Value="_form.VarsayilanDeger" Label='@DilServisi.T("admin.3d.varsayilanDeger", "Varsayılan değer")' Class="mb-3 admin-textfield" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudSwitch @bind-Value="_form.AktifMi" Label='@DilServisi.T("ortak.aktif", "Aktif")' Class="mt-4 admin-switch" />
+                </MudItem>
+
+                <MudItem xs="12" Class="admin-form-bolum">
+                    <MudText Typo="Typo.subtitle2" Color="Color.Primary" Class="mb-2">
+                        @DilServisi.T("admin.3d.adminOnayBaslik", "Admin onay ve malzeme kısıtı")
+                    </MudText>
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudSwitch @bind-Value="_form.AdminOnayliMi" Label='@DilServisi.T("admin.3d.adminOnayli", "Admin onaylı")' Color="Color.Warning" Class="mt-2 admin-switch" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudSelect @bind-Value="_form.ParcaTipi" Label='@DilServisi.T("admin.3d.parcaTipi", "Parça tipi")' Class="mb-3 admin-select">
+                        <MudSelectItem Value="@("")">@DilServisi.T("ortak.seciniz", "Seçiniz")</MudSelectItem>
+                        <MudSelectItem Value="@("Govde")">@DilServisi.T("admin.3d.tipGovde", "Gövde")</MudSelectItem>
+                        <MudSelectItem Value="@("Cam")">@DilServisi.T("admin.3d.tipCam", "Cam")</MudSelectItem>
+                        <MudSelectItem Value="@("Ayna")">@DilServisi.T("admin.3d.tipAyna", "Ayna")</MudSelectItem>
+                        <MudSelectItem Value="@("Metal")">@DilServisi.T("admin.3d.tipMetal", "Metal")</MudSelectItem>
+                        <MudSelectItem Value="@("Ahsap")">@DilServisi.T("admin.3d.tipAhsap", "Ahşap")</MudSelectItem>
+                        <MudSelectItem Value="@("MDF")">MDF</MudSelectItem>
+                        <MudSelectItem Value="@("Porselen")">@DilServisi.T("admin.3d.tipPorselen", "Porselen")</MudSelectItem>
+                        <MudSelectItem Value="@("Musluk")">@DilServisi.T("admin.3d.tipMusluk", "Musluk")</MudSelectItem>
+                        <MudSelectItem Value="@("Kulp")">@DilServisi.T("admin.3d.tipKulp", "Kulp")</MudSelectItem>
+                        <MudSelectItem Value="@("Zemin")">@DilServisi.T("admin.3d.tipZemin", "Zemin")</MudSelectItem>
+                        <MudSelectItem Value="@("Diger")">@DilServisi.T("admin.3d.tipDiger", "Diğer")</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudTextField @bind-Value="_form.MalzemeTipiKisiti"
+                                  Label='@DilServisi.T("admin.3d.malzemeTipiKisiti", "Malzeme tipi kısıtı JSON")'
+                                  HelperText='@DilServisi.T("admin.3d.malzemeTipiKisitiYardim", "Örnek: Cam, Metal")'
+                                  Class="mb-3 admin-textfield admin-mono-field" />
+                </MudItem>
+            </MudGrid>
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton OnClick="FormIptal" Disabled="@_kaydediliyor">@DilServisi.T("ortak.iptal", "İptal")</MudButton>
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       OnClick="Kaydet"
+                       Disabled="@_kaydediliyor">
+                @(_kaydediliyor ? DilServisi.T("ortak.kaydediliyor", "Kaydediliyor...") : DilServisi.T("ortak.kaydet", "Kaydet"))
+            </MudButton>
+        </MudCardActions>
+    </MudCard>
+}
+
+@if (_seciliModelId.HasValue && !_yukleniyor && _filtreliListe.Count == 0)
+{
+    <AdminBosDurum Icon="@Icons.Material.Filled.Extension"
+                   Baslik='@DilServisi.T("admin.3d.parcaBosBaslik", "Parça kaydı bulunamadı")'
+                   Aciklama='@DilServisi.T("admin.3d.parcaBosAciklama", "Bu model için mesh parçalarını elle ekleyebilir ve yayın akışına hazırlayabilirsiniz.")'>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="YeniAc">
+            @DilServisi.T("admin.3d.yeniParca", "Yeni Parça")
+        </MudButton>
+    </AdminBosDurum>
+}
+else if (_seciliModelId.HasValue)
+{
+    <MudDataGrid Items="@_filtreliListe"
+                 Filterable="true"
+                 SortMode="SortMode.Multiple"
+                 Dense="true"
+                 Striped="true"
+                 Hover="true"
+                 Class="admin-table-wrap">
+        <Columns>
+            <PropertyColumn Property="x => x.MeshAdi" Title='@DilServisi.T("admin.3d.meshAdi", "Mesh adı")' Sortable="true" Filterable="true" />
+            <PropertyColumn Property="x => x.GorunenAd" Title='@DilServisi.T("admin.3d.gorunenAd", "Görünen ad")' Sortable="true" Filterable="true" />
+            <TemplateColumn Title='@DilServisi.T("admin.3d.parcaTipi", "Parça tipi")'>
+                <CellTemplate>
+                    <MudChip T="string" Color="Color.Info" Size="Size.Small" Variant="Variant.Outlined">
+                        @(string.IsNullOrEmpty(context.Item.ParcaTipi) ? "-" : context.Item.ParcaTipi)
+                    </MudChip>
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title='@DilServisi.T("admin.3d.adminOnay", "Admin onay")'>
+                <CellTemplate>
+                    <MudChip T="string" Color="@(context.Item.AdminOnayliMi ? Color.Warning : Color.Default)" Size="Size.Small">
+                        @(context.Item.AdminOnayliMi ? DilServisi.T("ortak.onayli", "Onaylı") : DilServisi.T("ortak.bekliyor", "Bekliyor"))
+                    </MudChip>
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title='@DilServisi.T("admin.3d.secilebilir", "Seçilebilir")'>
+                <CellTemplate>
+                    <MudChip T="string" Color="@(context.Item.SecilebilirMi ? Color.Success : Color.Error)" Size="Size.Small">
+                        @(context.Item.SecilebilirMi ? DilServisi.T("ortak.evet", "Evet") : DilServisi.T("ortak.hayir", "Hayır"))
+                    </MudChip>
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title='@DilServisi.T("admin.3d.renklenebilir", "Renklenebilir")'>
+                <CellTemplate>
+                    <MudChip T="string" Color="@(context.Item.RenklenebilirMi ? Color.Success : Color.Error)" Size="Size.Small">
+                        @(context.Item.RenklenebilirMi ? DilServisi.T("ortak.evet", "Evet") : DilServisi.T("ortak.hayir", "Hayır"))
+                    </MudChip>
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title='@DilServisi.T("ortak.durum", "Durum")'>
+                <CellTemplate>
+                    <MudChip T="string" Color="@(context.Item.AktifMi ? Color.Success : Color.Error)" Size="Size.Small">
+                        @(context.Item.AktifMi ? DilServisi.T("ortak.aktif", "Aktif") : DilServisi.T("ortak.pasif", "Pasif"))
+                    </MudChip>
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title='@DilServisi.T("ortak.islemler", "İşlemler")'>
+                <CellTemplate>
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                   Size="Size.Small"
+                                   OnClick="() => Duzenle(context.Item)" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                   Size="Size.Small"
+                                   Color="Color.Error"
+                                   OnClick="() => SilOnay(context.Item)" />
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager />
+        </PagerContent>
+    </MudDataGrid>
+}

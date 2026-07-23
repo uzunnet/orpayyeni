@@ -1,0 +1,46 @@
+@using Microsoft.AspNetCore.Components.Forms
+@inject Servisler.DilServisi dil
+@inject Servisler.ApiIstemcisi api
+@inject MudBlazor.ISnackbar snackbar
+
+<MudFileUpload T="IReadOnlyList<IBrowserFile>"
+               FilesChanged="DosyalarDegisti"
+               Accept="@KabulEdilenTurler"
+               Class="medya-yukleyici">
+    <CustomContent Context="context">
+        <div class="medya-yukleyici-zone @(_surukleniyorMu ? "drag-over" : "")"
+             @ondragenter="() => _surukleniyorMu = true"
+             @ondragleave="() => _surukleniyorMu = false"
+             @ondrop="() => _surukleniyorMu = false"
+             @onclick="context.OpenFilePickerAsync">
+            <MudIcon Icon="@Icons.Material.Filled.CloudUpload" Size="Size.Large" Color="Color.Secondary" Class="mb-3" />
+            <MudText Typo="Typo.body1">
+                @dil.T("medya.surukleBirak", "Dosyaları sürükleyip bırakın veya seçmek için tıklayın")
+            </MudText>
+            <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mt-1">
+                @dil.T("medya.desteklenenTurler", "Desteklenen: JPG, PNG, GIF, WebP, SVG, MP4, WebM, PDF, GLB, GLTF, MP3")
+            </MudText>
+        </div>
+    </CustomContent>
+</MudFileUpload>
+
+@if (_yukleniyor)
+{
+    <div class="medya-yukleyici-ilerleme">
+        <MudText Typo="Typo.caption" Class="mb-1">
+            @dil.T("medya.yukleniyor", "Yükleniyor...") @_toplamDosya (@_yuklenen/@_toplamDosya)
+        </MudText>
+        <MudProgressLinear Value="@_ilerlemeYuzdesi" Color="Color.Primary" />
+        <MudText Typo="Typo.caption" Color="Color.Secondary">@_ilerlemeYuzdesi%</MudText>
+    </div>
+}
+
+@if (_hatalar.Any())
+{
+    <MudAlert Severity="Severity.Error" Class="mt-3">
+        @foreach (var hata in _hatalar)
+        {
+            <MudText Typo="Typo.caption">@hata</MudText>
+        }
+    </MudAlert>
+}

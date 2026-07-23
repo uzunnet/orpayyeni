@@ -1,0 +1,92 @@
+/*
+ * Aurelian Onyx — tokens.css
+ * CokluTemaServisi tarafından manifest.json'dan otomatik üretilir.
+ * Manuel düzenleme ÖNERİLMEZ.
+ */
+
+:root[data-tema-id="aurelian-onyx"] {
+    /* === RENK === */
+    --tema-birincil: #050505;
+    --tema-ikincil: #1e2020;
+    --tema-vurgu: #d4af37;
+    --tema-vurgu-acik: #e9c349;
+    --tema-vurgu-koyu: #a07020;
+    --tema-arkaplan: #121414;
+    --tema-arkaplan-2: #1a1a1a;
+    --tema-yuzey: #1e2020;
+    --tema-yuzey-hover: #282a2b;
+    --tema-cizgi: rgba(255, 255, 255, 0.10);
+    --tema-cizgi-acik: rgba(255, 255, 255, 0.05);
+    --tema-metin: #e2e2e2;
+    --tema-metin-ikincil: #c4c7c7;
+    --tema-metin-soluk: #8e9192;
+    --tema-metin-ters: #121414;
+    --tema-basari: #4a7c59;
+    --tema-uyari: #c9a449;
+    --tema-hata: #ffb4ab;
+    --tema-bilgi: #4a6c8c;
+
+    /* === TİPOGRAFİ === */
+    --tema-font-baslik: 'Playfair Display', 'Noto Serif', serif;
+    --tema-font-govde: 'Space Grotesk', 'Manrope', system-ui, sans-serif;
+    --tema-font-vurgu: 'Cormorant Garamond', serif;
+    --tema-font-mono: 'JetBrains Mono', monospace;
+    --tema-baslik-agirlik: 700;
+    --tema-baslik-harf-araligi: -0.02em;
+
+    /* === BOŞLUK === */
+    --tema-bosluk-xs: 0.25rem;
+    --tema-bosluk-sm: 0.5rem;
+    --tema-bosluk-md: 1rem;
+    --tema-bosluk-lg: 1.5rem;
+    --tema-bosluk-xl: 2.5rem;
+    --tema-bosluk-2xl: 4rem;
+    --tema-bosluk-3xl: 6rem;
+
+    /* === GEOMETRİ (köşe, border) === */
+    --tema-kose-sm: 2px;
+    --tema-kose-md: 4px;
+    --tema-kose-lg: 8px;
+    --tema-kose-xl: 16px;
+    --tema-kose-tam: 9999px;
+    --tema-border-kalinlik: 1px;
+    --tema-border-stil: solid;
+
+    /* === GÖLGE === */
+    --tema-golge-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+    --tema-golge-md: 0 4px 20px rgba(0, 0, 0, 0.5);
+    --tema-golge-lg: 0 10px 40px rgba(0, 0, 0, 0.6);
+    --tema-golge-xl: 0 20px 60px rgba(0, 0, 0, 0.7);
+    --tema-golge-vurgu: 0 0 15px rgba(212, 175, 55, 0.30);
+
+    /* === GLASSMORPHİSM === */
+    --tema-cam-bg: rgba(255, 255, 255, 0.06);
+    --tema-cam-cizgi: rgba(255, 255, 255, 0.10);
+    --tema-cam-blur: blur(20px) saturate(180%);
+    --tema-cam-glow: 0 0 15px rgba(212, 175, 55, 0.25);
+
+    /* === ANİMASYON === */
+    --tema-gecis-hizli: 0.15s ease;
+    --tema-gecis-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --tema-gecis-yavas: 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    --tema-bezier: cubic-bezier(0.22, 1, 0.36, 1);
+
+    /* === LAYOUT === */
+    --tema-icerik-genislik: 1440px;
+    --tema-kenar-bosluk: 80px;
+    --tema-sutun-sayisi: 4;
+
+    /* === LEGACY UYUMLULUK === */
+    --vizit-primary: var(--tema-birincil);
+    --vizit-accent: var(--tema-vurgu);
+    --vizit-bg-base: var(--tema-arkaplan);
+    --vizit-text: var(--tema-metin);
+    --vizit-text-inverse: var(--tema-metin-ters);
+    --vizit-font-serif: var(--tema-font-baslik);
+    --vizit-font-sans: var(--tema-font-govde);
+    --vizit-radius-md: var(--tema-kose-md);
+    --vizit-transition: var(--tema-gecis-normal);
+    --vizit-shadow-md: var(--tema-golge-md);
+    --vizit-shadow-lux: var(--tema-golge-vurgu);
+    --vizit-border: var(--tema-cizgi);
+}

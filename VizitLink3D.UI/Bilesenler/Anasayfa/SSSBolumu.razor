@@ -1,0 +1,29 @@
+@* SSSBolumu — Aurelian Onyx accordion *@
+
+<section class="sss-bolum">
+    <div class="section-container">
+        <div class="section-baslik-kutu anim-reveal-up">
+            <span class="section-etiket">@dil.T("anasayfa.sss.etiket", "Sıkça Sorulan Sorular")</span>
+            <h2 class="section-baslik">@dil.T("anasayfa.sss.baslik", "Merak Ettikleriniz")</h2>
+        </div>
+
+        <div class="sss-liste" style="max-width:800px; margin:0 auto;">
+            @foreach (var oge in _sss)
+            {
+                var soruId = oge.Id;
+                var acik = _acikSorular.ContainsKey(soruId) && _acikSorular[soruId];
+                <div class="sss-liste__oge anim-reveal-up">
+                    <div class="sss-liste__soru" @onclick="() => SoruAcKapa(soruId)">
+                        @oge.Soru
+                    </div>
+                    @if (acik)
+                    {
+                        <div class="sss-liste__cevap">
+                            @oge.Cevap
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</section>

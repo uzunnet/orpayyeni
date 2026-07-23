@@ -1,0 +1,43 @@
+@* KoleksiyonlarBentoGrid — Aurelian Onyx 4 kartlı bento grid (1 büyük + 3 küçük) *@
+
+<section class="bento-bolum" id="koleksiyonlar">
+    <div class="section-container">
+        <div class="section-baslik-kutu">
+            <h2 class="section-baslik anim-reveal-up">@Baslik</h2>
+            @if (!string.IsNullOrEmpty(Aciklama))
+            {
+                <p class="section-aciklama anim-reveal-up stagger-1">
+                    @Aciklama
+                </p>
+            }
+        </div>
+
+        <div class="vizit-bento-grid">
+            @for (int i = 0; i < Kartlar.Count; i++)
+            {
+                var kart = Kartlar[i];
+                var kartClass = kart.Buyuk
+                    ? "stitch-bento-kart stitch-bento-buyuk urun-kart anim-reveal-up"
+                    : "stitch-bento-kart stitch-bento-orta urun-kart anim-reveal-up";
+
+                <a href="@kart.Href" class="@kartClass">
+                    <div class="stitch-bento__gorsel-kutu">
+                        <img src="@kart.GorselUrl" alt="@kart.Baslik" class="stitch-bento__gorsel" loading="lazy" />
+                    </div>
+                    <div class="stitch-bento__icerik">
+                        <span class="stitch-bento__etiket">@kart.Etiket</span>
+                        <h3 class="stitch-bento__baslik">@kart.Baslik</h3>
+                        @if (!string.IsNullOrEmpty(kart.Aciklama))
+                        {
+                            <p class="bento-kart__aciklama">@kart.Aciklama</p>
+                        }
+                        <div class="stitch-bento__aksiyon">
+                            <span>@KesfetMetin</span>
+                            <span class="material-symbols-outlined">arrow_forward</span>
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+    </div>
+</section>

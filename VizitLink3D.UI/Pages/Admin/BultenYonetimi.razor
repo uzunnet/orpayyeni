@@ -1,0 +1,73 @@
+@page "/admin/bulten-yonetimi"
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using VizitLink3D.Ortak.Modeller
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+
+<PageTitle>@($"{dil.T("admin.bulten.sayfaBasligi", "Bülten Aboneleri")} | VizitLink3D")</PageTitle>
+
+<MudText Typo="Typo.h4" Class="mb-4">@dil.T("admin.bulten.baslik", "Bülten Aboneleri")</MudText>
+
+@if (_yukleniyor)
+{
+    <MudProgressLinear Indeterminate="true" Class="mb-4" />
+}
+else
+{
+    <div class="admin-stats-row mb-4">
+        <div class="admin-stat-card">
+            <div class="stat-label">@dil.T("admin.bulten.toplamAbone", "Toplam Abone")</div>
+            <div class="stat-value">@_liste.Count</div>
+        </div>
+        <div class="admin-stat-card">
+            <div class="stat-label">@dil.T("ortak.aktif", "Aktif")</div>
+            <div class="stat-value admin-stat-basari">@AktifSayisi</div>
+        </div>
+        <div class="admin-stat-card">
+            <div class="stat-label">@dil.T("admin.bulten.dogrulandi", "Doğrulandı")</div>
+            <div class="stat-value admin-stat-birincil">@DogrulananSayisi</div>
+        </div>
+    </div>
+
+    <div class="admin-toolbar mb-3">
+        <MudTextField @bind-Value="_arama" Label="@dil.T("ortak.ara", "Ara...")" Immediate="true" OnKeyUp="AramaYap"
+                       Variant="Variant.Outlined" Adornment="Adornment.Start"
+                       AdornmentIcon="@Icons.Material.Filled.Search" Margin="Margin.Dense"
+                       Class="admin-arama-genis" />
+    </div>
+
+    <MudDataGrid Items="@_filtreliListe" Filterable="true" Dense="true" Striped="true" Hover="true">
+        <Columns>
+            <PropertyColumn Property="x => x.AdSoyad" Title="@dil.T("ortak.adSoyad", "Ad Soyad")" Sortable="true" />
+            <PropertyColumn Property="x => x.Eposta" Title="@dil.T("ortak.eposta", "E-posta")" Sortable="true" />
+            <TemplateColumn Title="@dil.T("admin.bulten.abonelikTarihi", "Abonelik Tarihi")" Sortable="true" SortBy="@(x => x.AbonelikTarihi)">
+                <CellTemplate>
+                    @context.Item.AbonelikTarihi.ToString("dd.MM.yyyy HH:mm")
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title="@dil.T("admin.bulten.dogrulama", "Doğrulama")">
+                <CellTemplate>
+                    <MudChip Size="Size.Small"
+                             Color="@(context.Item.DogrulandiMi ? Color.Success : Color.Warning)"
+                             Variant="Variant.Outlined" Class="admin-chip-kucuk-metin">
+                        @(context.Item.DogrulandiMi ? dil.T("admin.bulten.dogrulandi", "Doğrulandı") : dil.T("admin.bulten.bekliyor", "Bekliyor"))
+                    </MudChip>
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title="@dil.T("ortak.durum", "Durum")">
+                <CellTemplate>
+                    <MudChip Size="Size.Small"
+                             Color="@(context.Item.AktifMi ? Color.Success : Color.Error)"
+                             Variant="Variant.Outlined" Class="admin-chip-kucuk-metin">
+                        @(context.Item.AktifMi ? dil.T("ortak.aktif", "Aktif") : dil.T("ortak.pasif", "Pasif"))
+                    </MudChip>
+                </CellTemplate>
+            </TemplateColumn>
+            <PropertyColumn Property="x => x.KaynakSayfa" Title="@dil.T("admin.bulten.kaynakSayfa", "Kaynak Sayfa")" />
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager T="BultenAbonesi" />
+        </PagerContent>
+    </MudDataGrid>
+}

@@ -1,0 +1,107 @@
+@page "/admin/sayfa-duzen-ayarlari"
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+
+<PageTitle>@dil.T("admin.sayfaDuzen.sayfaBasligi", "Sayfa Düzen Ayarları") | VizitLink3D Admin</PageTitle>
+
+<div class="admin-sayfa admin-sayfa-duzen-shell">
+    <MudPaper Class="admin-sayfa-hero">
+        <div class="admin-sayfa-hero-copy">
+            <MudText Typo="Typo.h4" Class="admin-sayfa-hero-baslik">@dil.T("admin.sayfaDuzen.baslik", "Sayfa Düzen Ayarları")</MudText>
+            <MudText Typo="Typo.body2" Class="admin-sayfa-hero-aciklama">
+                @dil.T("admin.sayfaDuzen.aciklama", "Her sayfa için sütun sayısı, satır sayısı, sayfa başı ürün adedi ve sayfalama durumunu tek tabloda yönetin.")
+            </MudText>
+        </div>
+        <div class="admin-sayfa-hero-eylem">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Kaydet" Disabled="_kaydediliyor" StartIcon="@Icons.Material.Filled.Save">
+                @if (_kaydediliyor)
+                {
+                    <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+                }
+                @dil.T("ortak.kaydet", "Kaydet")
+            </MudButton>
+        </div>
+    </MudPaper>
+
+    @if (_yukleniyor)
+    {
+        <MudProgressLinear Indeterminate="true" Class="mb-4" />
+    }
+    else
+    {
+        <MudCard Class="admin-sayfa-duzen-kart mb-4">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@dil.T("admin.sayfaDuzen.tabloBaslik", "Sayfa Düzeni Tablosu")</MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Secondary">
+                        @dil.T("admin.sayfaDuzen.tabloAciklama", "Ayarları değiştirdikten sonra kaydet düğmesi ile canlıya uygulayın.")
+                    </MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudDataGrid T="SayfaDuzenAyariDto" Items="_ayarlar" Hover="true" Striped="true" Dense="true" Class="admin-sayfa-duzen-grid">
+                    <Columns>
+                        <PropertyColumn Property="x => x.SayfaKodu" Title="@dil.T("admin.sayfaDuzen.sayfaKodu", "Sayfa Kodu")" Editable="false" />
+                        <PropertyColumn Property="x => x.SayfaAdi" Title="@dil.T("admin.sayfaDuzen.sayfaAdi", "Sayfa Adı")" />
+                        <TemplateColumn Title="@dil.T("admin.sayfaDuzen.sutun", "Sütun (md)")" Editable="true">
+                            <CellTemplate>
+                                <MudNumericField @bind-Value="context.Item.SutunAdet" Min="1" Max="12" Variant="Variant.Outlined" Margin="Margin.Dense" Style="width:100px" />
+                            </CellTemplate>
+                        </TemplateColumn>
+                        <TemplateColumn Title="@dil.T("admin.sayfaDuzen.satir", "Satır")" Editable="true">
+                            <CellTemplate>
+                                <MudNumericField @bind-Value="context.Item.SatirAdet" Min="1" Max="20" Variant="Variant.Outlined" Margin="Margin.Dense" Style="width:100px" />
+                            </CellTemplate>
+                        </TemplateColumn>
+                        <TemplateColumn Title="@dil.T("admin.sayfaDuzen.sayfaBasi", "Sayfa Başı")" Editable="true">
+                            <CellTemplate>
+                                <MudNumericField @bind-Value="context.Item.SayfaBasinaAdet" Min="1" Max="100" Variant="Variant.Outlined" Margin="Margin.Dense" Style="width:100px" />
+                            </CellTemplate>
+                        </TemplateColumn>
+                        <TemplateColumn Title="@dil.T("admin.sayfaDuzen.sayfalama", "Sayfalama")" Editable="true">
+                            <CellTemplate>
+                                <MudSwitch @bind-Value="context.Item.SayfalamaAktif" Color="Color.Primary" />
+                            </CellTemplate>
+                        </TemplateColumn>
+                        <TemplateColumn Title="@dil.T("admin.sayfaDuzen.aktif", "Aktif")" Editable="true">
+                            <CellTemplate>
+                                <MudSwitch @bind-Value="context.Item.AktifMi" Color="Color.Success" />
+                            </CellTemplate>
+                        </TemplateColumn>
+                    </Columns>
+                </MudDataGrid>
+            </MudCardContent>
+        </MudCard>
+
+        <MudCard Class="admin-sayfa-onizleme-kart">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@dil.T("admin.sayfaDuzen.onizleme", "Önizleme Hesaplama")</MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Secondary">
+                        @dil.T("admin.sayfaDuzen.onizlemeAciklama", "Aktif satırlar için ürün yerleşim mantığını hızlıca kontrol edin.")
+                    </MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudGrid Spacing="3" Class="admin-sayfa-onizleme-grid">
+                    @foreach (var ayar in _ayarlar.Where(a => a.AktifMi))
+                    {
+                        <MudItem xs="12" sm="6" md="4" lg="3">
+                            <MudPaper Class="admin-sayfa-onizleme-kutu" Elevation="0">
+                                <MudText Typo="Typo.subtitle2" Class="mb-1">@ayar.SayfaAdi</MudText>
+                                <MudText Typo="Typo.body2" Color="Color.Secondary">
+                                    @ayar.SutunAdet @dil.T("admin.sayfaDuzen.sutunKisa", "sutun") x @ayar.SatirAdet @dil.T("admin.sayfaDuzen.satirKisa", "satır") = @ayar.SayfaBasinaAdet @dil.T("admin.sayfaDuzen.urunSayfa", "ürün/sayfa")
+                                </MudText>
+                                <MudText Typo="Typo.caption" Color="Color.Tertiary">
+                                    @dil.T("admin.sayfaDuzen.sayfalamaDurum", "Sayfalama"): @(ayar.SayfalamaAktif ? dil.T("ortak.aktif", "Aktif") : dil.T("ortak.pasif", "Pasif"))
+                                </MudText>
+                            </MudPaper>
+                        </MudItem>
+                    }
+                </MudGrid>
+            </MudCardContent>
+        </MudCard>
+    }
+</div>

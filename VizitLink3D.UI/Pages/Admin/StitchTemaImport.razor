@@ -1,0 +1,230 @@
+﻿@page "/admin/site-tema-yonetimi/yeni"
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using Microsoft.AspNetCore.Authorization
+@using VizitLink3D.Ortak.Modeller
+@attribute [Authorize(Roles = "Admin,SuperAdmin")]
+
+<PageTitle>@dil.T("admin.stitchImport.baslik", "Stitch Tema İçe Aktar") | @dil.T("admin.ortak.panel", "Yönetim Paneli")</PageTitle>
+
+<div class="admin-card mb-6">
+    <div class="admin-card-header">
+        <span class="admin-card-title">@dil.T("admin.stitchImport.baslik", "Stitch Tema İçe Aktar")</span>
+    </div>
+
+    <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-4">
+        @dil.T("admin.stitchImport.aciklama", "Stitch tasarım sisteminden yeni bir tema oluşturun veya mevcut DESIGN.md dosyasından içe aktarın.")
+    </MudText>
+
+    <MudTabs>
+        <MudTabPanel Text="@dil.T("admin.stitchImport.stitchTab", "Stitch Proje")">
+            <div class="pa-4">
+                <MudGrid Spacing="3">
+                    <MudItem xs="12" md="6">
+                        <MudTextField T="string"
+                                      Label="@dil.T("admin.stitchImport.stitchProjeId", "Stitch Proje ID")"
+                                      @bind-Value="_stitchProjeId"
+                                      Placeholder="13800263520330366969"
+                                      Variant="Variant.Outlined"
+                                      HelperText="@dil.T("admin.stitchImport.stitchProjeIdAciklama", "Stitch MCP proje kimliği")" />
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudTextField T="string"
+                                      Label="@dil.T("admin.stitchImport.temaAdi", "Tema Adı")"
+                                      @bind-Value="_temaAdi"
+                                      Placeholder="ORPAY Özel Tema"
+                                      Variant="Variant.Outlined" />
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudTextField T="string"
+                                      Label="@dil.T("admin.stitchImport.temaSlug", "Tema Slug")"
+                                      @bind-Value="_temaSlug"
+                                      Placeholder="gold-banyo-ozel"
+                                      Variant="Variant.Outlined"
+                                      HelperText="@dil.T("admin.stitchImport.slugAciklama", "Küçük harf, tire ile ayrılmış URL güvenli ad")" />
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudSelect T="string"
+                                   Label="@dil.T("admin.stitchImport.firmaSec", "Firma")"
+                                   @bind-Value="_seciliFirmaId"
+                                   Variant="Variant.Outlined">
+                            <MudSelectItem T="string" Value="@("varsayilan")">Varsayılan</MudSelectItem>
+                            @foreach (var firma in _firmalar)
+                            {
+                                <MudSelectItem T="string" Value="@(firma.FirmaId.ToString())">@firma.Ad</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudCheckBox T="bool"
+                                     @bind-Checked="_aktifEt"
+                                     Label="@dil.T("admin.stitchImport.aktifEt", "Oluşturulduktan sonra aktif et")" />
+                    </MudItem>
+                </MudGrid>
+
+                <MudStack Row="true" Spacing="2" Class="mt-4">
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               StartIcon="@Icons.Material.Filled.AutoAwesome"
+                               OnClick="TaslakOlustur"
+                               Disabled="@_yukleniyor"
+                               Loading="@_yukleniyor">
+                        @dil.T("admin.stitchImport.taslakOlustur", "Taslak Oluştur")
+                    </MudButton>
+                    <MudButton Variant="Variant.Outlined"
+                               Color="Color.Secondary"
+                               Href="/admin/site-tema-yonetimi">
+                        @dil.T("admin.ortak.geri", "Geri Dön")
+                    </MudButton>
+                </MudStack>
+            </div>
+        </MudTabPanel>
+
+        <MudTabPanel Text="@dil.T("admin.stitchImport.designMdTab", "DESIGN.md Dosyası")">
+            <div class="pa-4">
+                <MudAlert Severity="Severity.Info" Class="mb-4">
+                    @dil.T("admin.stitchImport.designMdUyari", "Aşağıya Stitch DESIGN.md içeriğini yapıştırın veya dosya yolunu girin.")
+                </MudAlert>
+
+                <MudTextField T="string"
+                              Label="@dil.T("admin.stitchImport.designMdYolu", "DESIGN.md Dosya Yolu")"
+                              @bind-Value="_designMdYolu"
+                              Placeholder="Stitch_Referanslar/DESIGN.md"
+                              Variant="Variant.Outlined"
+                              Class="mb-4" />
+
+                <MudTextField T="string"
+                              Label="@dil.T("admin.stitchImport.designMdIcerik", "DESIGN.md İçeriği")"
+                              @bind-Value="_designMdIcerik"
+                              Lines="15"
+                              Variant="Variant.Outlined"
+                              Class="mb-4" />
+
+                <MudStack Row="true" Spacing="2" Class="mt-4">
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               StartIcon="@Icons.Material.Filled.AutoAwesome"
+                               OnClick="DesignMdIleOlustur"
+                               Disabled="@_yukleniyor"
+                               Loading="@_yukleniyor">
+                        @dil.T("admin.stitchImport.designMdOlarakOlustur", "DESIGN.md'den Oluştur")
+                    </MudButton>
+                    <MudButton Variant="Variant.Outlined"
+                               Color="Color.Secondary"
+                               Href="/admin/site-tema-yonetimi">
+                        @dil.T("admin.ortak.geri", "Geri Dön")
+                    </MudButton>
+                </MudStack>
+            </div>
+        </MudTabPanel>
+    </MudTabs>
+</div>
+
+@if (_taslakSonucu is not null)
+{
+    <div class="admin-card mb-6">
+        <div class="admin-card-header">
+            <span class="admin-card-title">@dil.T("admin.stitchImport.taslakOnizleme", "Taslak Önizleme")</span>
+        </div>
+
+        <MudGrid Spacing="3">
+            <MudItem xs="12" md="4">
+                <MudCard Class="pa-4">
+                    <MudText Typo="Typo.h6">@_taslakSonucu.Taslak.Ad</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">@_taslakSonucu.Taslak.Slug</MudText>
+                    <MudDivider Class="my-2" />
+                    <MudStack Row="true" Spacing="1">
+                        <span class="tema-onizleme-renk" style="background:@_taslakSonucu.Taslak.Renkler.Birincil"></span>
+                        <span class="tema-onizleme-renk" style="background:@_taslakSonucu.Taslak.Renkler.Vurgu"></span>
+                        <span class="tema-onizleme-renk" style="background:@_taslakSonucu.Taslak.Renkler.ArkaPlan"></span>
+                        <span class="tema-onizleme-renk" style="background:@_taslakSonucu.Taslak.Renkler.Metin"></span>
+                    </MudStack>
+                </MudCard>
+            </MudItem>
+            <MudItem xs="12" md="8">
+                @if (!_taslakSonucu.GecerliMi)
+                {
+                    <MudAlert Severity="Severity.Warning" Class="mb-4">
+                        @dil.T("admin.stitchImport.taslakGecersiz", "Tema taslağı geçersiz:")
+                        <ul>
+                            @foreach (var hata in _taslakSonucu.Hatalar)
+                            {
+                                <li>@hata</li>
+                            }
+                        </ul>
+                    </MudAlert>
+                }
+                else
+                {
+                    <MudAlert Severity="Severity.Success" Class="mb-4">
+                        @dil.T("admin.stitchImport.taslakGecerli", "Tema taslağı geçerli ve onaya hazır.")
+                    </MudAlert>
+                }
+
+                <MudExpansionPanels>
+                    <MudExpansionPanel Text="@dil.T("admin.stitchImport.tokensOnizleme", "tokens.css Önizleme")">
+                        <MudSimpleTable Dense="true" Striped="true" Bordered="true">
+                            <thead>
+                                <tr>
+                                    <th>Token</th>
+                                    <th>Değer</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>--tema-birincil</td><td>@_taslakSonucu.Taslak.Renkler.Birincil</td></tr>
+                                <tr><td>--tema-vurgu</td><td>@_taslakSonucu.Taslak.Renkler.Vurgu</td></tr>
+                                <tr><td>--tema-arkaplan</td><td>@_taslakSonucu.Taslak.Renkler.ArkaPlan</td></tr>
+                                <tr><td>--tema-metin</td><td>@_taslakSonucu.Taslak.Renkler.Metin</td></tr>
+                                <tr><td>--tema-font-baslik</td><td>@_taslakSonucu.Taslak.Tipografi.BaslikAilesi</td></tr>
+                                <tr><td>--tema-font-govde</td><td>@_taslakSonucu.Taslak.Tipografi.GovdeAilesi</td></tr>
+                            </tbody>
+                        </MudSimpleTable>
+                    </MudExpansionPanel>
+                </MudExpansionPanels>
+
+                <MudStack Row="true" Spacing="2" Class="mt-4">
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Success"
+                               StartIcon="@Icons.Material.Filled.Check"
+                               OnClick="Onayla"
+                               Disabled="@(_yukleniyor || !(_taslakSonucu?.GecerliMi ?? false))"
+                               Loading="@_yukleniyor">
+                        @dil.T("admin.stitchImport.onaylaVeEkle", "Onayla ve Ekle")
+                    </MudButton>
+                    <MudButton Variant="Variant.Outlined"
+                               Color="Color.Secondary"
+                               OnClick="TaslakIptal">
+                        @dil.T("admin.ortak.iptal", "İptal")
+                    </MudButton>
+                </MudStack>
+            </MudItem>
+        </MudGrid>
+    </div>
+}
+
+@if (_onaySonucu is not null)
+{
+    <div class="admin-card">
+        <MudAlert Severity="Severity.Success" ShowCloseIcon="true" OnClose="Kapat">
+            <strong>@dil.T("admin.stitchImport.temaOlusturuldu", "Tema başarıyla oluşturuldu!")</strong>
+            <br />
+            @dil.T("admin.stitchImport.temaSlug", "Slug"): @_onaySonucu.Slug
+            <br />
+            @dil.T("admin.stitchImport.temaKlasoru", "Klasör"): @_onaySonucu.TemaKlasoru
+        </MudAlert>
+        <MudStack Row="true" Spacing="2" Class="mt-4">
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Href="/admin/site-tema-yonetimi">
+                @dil.T("admin.stitchImport.temaYonetimineGit", "Tema Yönetimine Git")
+            </MudButton>
+            <MudButton Variant="Variant.Outlined"
+                       Color="Color.Secondary"
+                       OnClick="YeniTaslak">
+                @dil.T("admin.stitchImport.yeniTaslak", "Yeni Taslak Oluştur")
+            </MudButton>
+        </MudStack>
+    </div>
+}
+
+

@@ -1,0 +1,182 @@
+@page "/admin/menu-yonetimi"
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using VizitLink3D.UI.Servisler
+@using Microsoft.AspNetCore.Authorization
+@inject DilServisi dil
+@attribute [Authorize]
+
+<PageTitle>@dil.T("menu.yonetim.sayfaBasligi", "Menü Yönetimi") | VizitLink3D Admin</PageTitle>
+
+<MudText Typo="Typo.h4" Class="mb-2">@dil.T("menu.yonetim.baslik", "Menü Yönetimi")</MudText>
+<MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-4">@dil.T("menu.yonetim.aciklama", "Site menulerini duzenleyin. Degisiklikler aninda yansir.")</MudText>
+
+<MudPaper Elevation="0" Class="admin-card mb-4">
+    <MudText Typo="Typo.subtitle2" Class="mb-2">@dil.T("menu.yonetim.hizliSecim", "Hizli menü seçimi")</MudText>
+    <div class="d-flex gap-2 flex-wrap">
+        <MudButton Variant="@KonumButonVaryanti("AdminSol")" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AdminPanelSettings" OnClick="@(() => KonumSec("AdminSol"))">
+            @dil.T("menu.yonetim.adminSolMenu", "Admin Sol Menü")
+        </MudButton>
+        <MudButton Variant="@KonumButonVaryanti("PublicHeader")" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Web" OnClick="@(() => KonumSec("PublicHeader"))">
+            @dil.T("menu.yonetim.frontendUstMenu", "Frontend Üst Menü")
+        </MudButton>
+        <MudButton Variant="@KonumButonVaryanti("PublicMobil")" Color="Color.Primary" StartIcon="@Icons.Material.Filled.PhoneIphone" OnClick="@(() => KonumSec("PublicMobil"))">
+            @dil.T("menu.yonetim.mobilMenu", "Mobil Menü")
+        </MudButton>
+        <MudButton Variant="@KonumButonVaryanti("PublicFooterHizli")" Color="Color.Primary" StartIcon="@Icons.Material.Filled.ViewStream" OnClick="@(() => KonumSec("PublicFooterHizli"))">
+            @dil.T("menu.yonetim.footerMenu", "Footer Menü")
+        </MudButton>
+    </div>
+    <MudText Typo="Typo.caption" Class="d-block mt-3">
+        @AktifKonumAciklamasi()
+    </MudText>
+</MudPaper>
+
+<MudGrid>
+    <MudItem xs="12" md="8">
+        <MudCard Elevation="2">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <div class="d-flex justify-space-between align-center flex-wrap gap-2">
+                        <MudText Typo="Typo.h6">@dil.T("menu.yonetim.menuler", "Menuler")</MudText>
+                        <div class="d-flex gap-2">
+                            <MudSelect T="string" @bind-Value="_konumFiltresi" Label="@dil.T("menu.yonetim.gorunenMenu", "Görünen menü")" Variant="Variant.Outlined" Margin="Margin.Dense" Class="admin-menu-konum-filtre">
+                                <MudSelectItem Value="@("Tum")">@dil.T("menu.yonetim.tumKonumlar", "Tum Konumlar")</MudSelectItem>
+                                <MudSelectItem Value="@("PublicHeader")">@dil.T("menu.yonetim.frontendUstMenu", "Frontend Üst Menü")</MudSelectItem>
+                                <MudSelectItem Value="@("PublicMobil")">@dil.T("menu.yonetim.mobilMenu", "Mobil Menü")</MudSelectItem>
+                                <MudSelectItem Value="@("PublicFooterHizli")">@dil.T("menu.konum.footerHizli", "Footer Hizli")</MudSelectItem>
+                                <MudSelectItem Value="@("PublicFooterKategori")">Footer Kategori</MudSelectItem>
+                                <MudSelectItem Value="@("AdminSol")">@dil.T("menu.konum.adminSol", "Admin Sol Sidebar")</MudSelectItem>
+                                <MudSelectItem Value="@("AdminUst")">@dil.T("menu.konum.adminUst", "Admin Ust Bar")</MudSelectItem>
+                            </MudSelect>
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="YeniMenuEkleBaslat">@dil.T("admin.yeniEkle","Yeni Ekle")</MudButton>
+                        </div>
+                    </div>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                @if (_yukleniyor)
+                {
+                    <MudProgressLinear Indeterminate="true" />
+                }
+                else
+                {
+                    @foreach (var kok in FiltreliKokMenuler())
+                    {
+                        <div class="admin-menu-item admin-menu-kok py-2 px-2">
+                            <div class="d-flex align-center gap-2 flex-wrap">
+                                <MudIcon Icon="@IkonCevir(kok.Ikon)" Size="Size.Small" Color="Color.Primary" />
+                                <MudText Typo="Typo.body2" Class="font-weight-bold mr-2">@kok.Baslik</MudText>
+                                @if (!string.IsNullOrEmpty(kok.Url)) { <MudChip T="string" Size="Size.Small" Color="Color.Default" Variant="Variant.Outlined">@kok.Url</MudChip> }
+                                <MudChip T="string" Size="Size.Small" Color="Color.Info" Variant="Variant.Text">@kok.Konum</MudChip>
+                                @if (kok.GerekliRol != null) { <MudChip T="string" Size="Size.Small" Color="Color.Warning" Variant="Variant.Text">@kok.GerekliRol</MudChip> }
+                                @if (kok.SuperAdminGerekliMi) { <MudChip T="string" Size="Size.Small" Color="Color.Error" Variant="Variant.Text">SA</MudChip> }
+                                @if (kok.KilitliMi) { <MudIcon Icon="@Icons.Material.Filled.Lock" Size="Size.Small" Color="Color.Error" /> }
+                                <MudSpacer />
+                                <MudTooltip Text="@dil.T("menu.yonetim.yukariTasi", "Yukari tasi")">
+                                    <MudIconButton Icon="@Icons.Material.Filled.KeyboardArrowUp" Size="Size.Small" Disabled="@_kaydediliyor" OnClick="@(() => SiraDegistir(kok, -1))" />
+                                </MudTooltip>
+                                <MudTooltip Text="@dil.T("menu.yonetim.asagiTasi", "Asagi tasi")">
+                                    <MudIconButton Icon="@Icons.Material.Filled.KeyboardArrowDown" Size="Size.Small" Disabled="@_kaydediliyor" OnClick="@(() => SiraDegistir(kok, 1))" />
+                                </MudTooltip>
+                                <MudSwitch T="bool" Value="kok.AktifMi" ValueChanged="@((bool v) => { kok.AktifMi = v; _ = DurumDegistir(kok); })" Color="Color.Success" />
+                                <MudTooltip Text="@dil.T("ortak.duzenle", "Düzenle")">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => DuzenleBaslat(kok))" />
+                                </MudTooltip>
+                                <MudTooltip Text="@dil.T("ortak.sil", "Sil")">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error" OnClick="@(() => SilBaslat(kok))" />
+                                </MudTooltip>
+                            </div>
+                        </div>
+                        @if (kok.AltMenuler?.Any() == true)
+                        {
+                            @foreach (var alt in kok.AltMenuler.Where(a => _konumFiltresi == "Tum" || a.Konum == _konumFiltresi))
+                            {
+                                <div class="admin-menu-item admin-menu-alt py-2 pl-6">
+                                    <div class="d-flex align-center gap-2 flex-wrap">
+                                        <MudIcon Icon="@IkonCevir(alt.Ikon)" Size="Size.Small" />
+                                        <MudText Typo="Typo.body2">@alt.Baslik</MudText>
+                                        @if (!string.IsNullOrEmpty(alt.Url)) { <MudChip T="string" Size="Size.Small" Color="Color.Default" Variant="Variant.Outlined">@alt.Url</MudChip> }
+                                        @if (alt.GerekliRol != null) { <MudChip T="string" Size="Size.Small" Color="Color.Warning" Variant="Variant.Text">@alt.GerekliRol</MudChip> }
+                                        <MudSpacer />
+                                        <MudTooltip Text="@dil.T("menu.yonetim.yukariTasi", "Yukari tasi")">
+                                            <MudIconButton Icon="@Icons.Material.Filled.KeyboardArrowUp" Size="Size.Small" Disabled="@_kaydediliyor" OnClick="@(() => SiraDegistir(alt, -1))" />
+                                        </MudTooltip>
+                                        <MudTooltip Text="@dil.T("menu.yonetim.asagiTasi", "Asagi tasi")">
+                                            <MudIconButton Icon="@Icons.Material.Filled.KeyboardArrowDown" Size="Size.Small" Disabled="@_kaydediliyor" OnClick="@(() => SiraDegistir(alt, 1))" />
+                                        </MudTooltip>
+                                        <MudSwitch T="bool" Value="alt.AktifMi" ValueChanged="@((bool v) => { alt.AktifMi = v; _ = DurumDegistir(alt); })" Color="Color.Success" />
+                                        <MudTooltip Text="@dil.T("ortak.duzenle", "Düzenle")">
+                                            <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => DuzenleBaslat(alt))" />
+                                        </MudTooltip>
+                                        <MudTooltip Text="@dil.T("ortak.sil", "Sil")">
+                                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error" OnClick="@(() => SilBaslat(alt))" />
+                                        </MudTooltip>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    }
+                }
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+
+    <MudItem xs="12" md="4">
+        @if (_aktifMenu != null)
+        {
+            <MudCard Elevation="2">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6">@(_aktifMenu.Id == 0 ? dil.T("menu.yonetim.yeniMenu", "Yeni Menu") : dil.T("menu.yonetim.menuDuzenle", "Menu Duzenle"))</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudForm @ref="_form">
+                        <MudTextField @bind-Value="_aktifMenu.Baslik" Label="@dil.T("menu.yonetim.baslikAlani", "Başlık")" Required="true" Variant="Variant.Outlined" Class="mb-3" />
+                        <MudTextField @bind-Value="_aktifMenu.Url" Label="URL" Variant="Variant.Outlined" Class="mb-3" />
+
+                        <MudSelect T="string" @bind-Value="_aktifMenu.Konum" Label="@dil.T("menu.yonetim.konum", "Konum")" Variant="Variant.Outlined" Class="mb-3" Required="true">
+                            <MudSelectItem Value="@("PublicHeader")">Public Header</MudSelectItem>
+                            <MudSelectItem Value="@("PublicMobil")">Public Mobil</MudSelectItem>
+                            <MudSelectItem Value="@("PublicFooterHizli")">@dil.T("menu.konum.footerHizliLink", "Footer Hizli Link")</MudSelectItem>
+                            <MudSelectItem Value="@("PublicFooterKategori")">Footer Kategori</MudSelectItem>
+                            <MudSelectItem Value="@("AdminSol")">@dil.T("menu.konum.adminSol", "Admin Sol Sidebar")</MudSelectItem>
+                            <MudSelectItem Value="@("AdminUst")">@dil.T("menu.konum.adminUst", "Admin Ust Bar")</MudSelectItem>
+                        </MudSelect>
+
+                        <MudTextField @bind-Value="_aktifMenu.Ikon" Label="@dil.T("menu.yonetim.ikon", "Ikon (MudBlazor)")" Variant="Variant.Outlined" Class="mb-3" HelperText="@dil.T("menu.yonetim.ikonOrnek", "Orn: Home, Settings, Inventory2")" />
+
+                        <MudSelect T="int?" @bind-Value="_aktifMenu.UstMenuId" Label="@dil.T("menu.yonetim.ustMenu", "Ust Menu")" Variant="Variant.Outlined" Class="mb-1" Clearable="true">
+                            @foreach(var kok in _kokMenuler.Where(m => m.Id != _aktifMenu.Id && m.Konum == _aktifMenu.Konum))
+                            {
+                                <MudSelectItem Value="@kok.Id">@kok.Baslik</MudSelectItem>
+                            }
+                        </MudSelect>
+                        <MudText Typo="Typo.caption" Class="d-block mb-3">
+                            @dil.T("menu.yonetim.ustMenuYardim", "Boş bırakılırsa üst menü olur; bir üst menü seçilirse alt menü olarak görünür.")
+                        </MudText>
+
+                        <MudTextField @bind-Value="_aktifMenu.Sira" Label="@dil.T("menu.yonetim.siraNo", "Sıra No")" Variant="Variant.Outlined" Class="mb-3" />
+
+                        <MudDivider Class="my-3" />
+                        <MudText Typo="Typo.subtitle2" Class="mb-2">@dil.T("menu.yonetim.yetkiKontrol", "Yetki ve Kontrol")</MudText>
+
+                        <MudTextField @bind-Value="_aktifMenu.GerekliRol" Label="@dil.T("menu.yonetim.gerekliRol", "Gerekli Rol")" Variant="Variant.Outlined" Class="mb-3" HelperText="@dil.T("menu.yonetim.rolYardim", "Bos = herkes gorur")" />
+                        <MudSwitch @bind-Value="_aktifMenu.SuperAdminGerekliMi" Label="@dil.T("menu.yonetim.superAdminGerekli", "SuperAdmin Gerekli")" Color="Color.Error" Class="mb-2" />
+                        <MudTextField @bind-Value="_aktifMenu.YetkiAnahtari" Label="@dil.T("menu.yonetim.yetkiAnahtari", "Yetki Anahtari")" Variant="Variant.Outlined" Class="mb-3" />
+                        <MudSwitch @bind-Value="_aktifMenu.KilitliMi" Label="@dil.T("menu.yonetim.kilitli", "Kilitli (silinemez)")" Color="Color.Warning" Class="mb-2" />
+                        <MudSwitch @bind-Value="_aktifMenu.SistemMenusuMu" Label="@dil.T("menu.yonetim.sistemMenusu", "Sistem Menusu")" Color="Color.Info" Class="mb-2" />
+
+                        <MudDivider Class="my-3" />
+                        <MudSwitch @bind-Value="_aktifMenu.AktifMi" Label="@dil.T("ortak.aktif", "Aktif")" Color="Color.Success" Class="mb-2" />
+                        <MudSwitch @bind-Value="_aktifMenu.YeniSekmede" Label="@dil.T("menu.yonetim.yeniSekmedeAc", "Yeni Sekmede Ac")" Class="mb-2" />
+                    </MudForm>
+                </MudCardContent>
+                <MudCardActions Class="justify-end px-4 pb-4">
+                    <MudButton OnClick="FormIptal" Class="mr-2">@dil.T("ortak.iptal","İptal")</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="FormKaydet" Disabled="@_kaydediliyor">@dil.T("ortak.kaydet","Kaydet")</MudButton>
+                </MudCardActions>
+            </MudCard>
+        }
+    </MudItem>
+</MudGrid>

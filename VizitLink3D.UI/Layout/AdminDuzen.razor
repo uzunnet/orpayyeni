@@ -1,0 +1,202 @@
+@inherits LayoutComponentBase
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+
+@if (!string.IsNullOrWhiteSpace(_faviconUrl))
+{
+    <HeadContent>
+        <link rel="icon" href="@FaviconTamYolu" />
+    </HeadContent>
+}
+
+<MudThemeProvider Theme="@_tema" IsDarkMode="@KoyuTemaMi" />
+<MudSnackbarProvider />
+<MudDialogProvider />
+<MudPopoverProvider />
+
+@* tokens.css zaten index.html'den yukleniyor — burada tekrar yuklenmez *@
+
+<MudLayout Class="admin-layout" @onkeydown="KlavyeKisayolYakala">
+    @* ═══════════════════════════════════════════════════════════════════
+        ADMIN ÜSTAT BANNER — Sayfa bağlamı, kullanıcı, bildirim
+        ═══════════════════════════════════════════════════════════════════ *@
+    <AdminUstBanner SayfaBasligi="@_aktifSayfaBasligi"
+                    Breadcrumb="@_breadcrumbs"
+                    BildirimSayisi="@_bildirimSayisi"
+                    IsSuperAdmin="@_isSuperAdmin"
+                    KullaniciAdi="@_kullaniciAdi"
+                    Rol="@_rol"
+                    LogoUrl="@LogoTamYolu"
+                    AktifTemaModu="@_aktifTemaModu"
+                    OnMenuToggle="@SolCekmeceyiAcKapat"
+                    OnNotificationClick="@BildirimleriGoster"
+                    OnLanguageChanged="@DilDegistiginde"
+                    OnThemeModeChanged="@TemaModuDegistiginde" />
+
+    @* ═══════════════════════════════════════════════════════════════════
+        SOL KENAR ÇUBUĞU — Navigasyon menüsü
+        ═══════════════════════════════════════════════════════════════════ *@
+    <MudDrawer @bind-Open="_solCekmeceAcik" Elevation="4" ClipMode="DrawerClipMode.Always"
+               Variant="@DrawerVariant.Responsive" Class="admin-drawer" Anchor="Anchor.Left">
+        <div class="d-flex flex-column mud-height-full">
+            <MudNavMenu Class="admin-nav-menu">
+                @* Logo başlık *@
+                <div class="admin-sidebar-brand">
+                    <div class="admin-sidebar-brand-icon">
+                        @if (!string.IsNullOrEmpty(_logoUrl))
+                        {
+                            <img src="@LogoTamYolu" alt="@_firmaAdi" width="100" height="32" class="admin-sidebar-logo-img" style="object-fit: contain;" />
+                        }
+                        else
+                        {
+                            <img src="/img/vizitlink3d-logo.svg" alt="@_firmaAdi" width="100" height="32" class="admin-sidebar-logo-img" />
+                        }
+                    </div>
+                </div>
+
+                <MudDivider Class="admin-sidebar-divider" />
+
+                @* Dinamik menü yükleme *@
+                @if (_adminMenuleri != null && _adminMenuleri.Any())
+                {
+                    foreach (var menu in _adminMenuleri.OrderBy(m => m.Sira))
+                    {
+                        if (menu.AltMenuler != null && menu.AltMenuler.Any())
+                        {
+                            <MudNavGroup @key="@($"{menu.Id}_{dil.AktifDil}")" Title="@dil.T(menu.Baslik, menu.Baslik)" Icon="@IkonGetir(menu.Ikon)" Expanded="false">
+                                @foreach (var alt in menu.AltMenuler.OrderBy(a => a.Sira))
+                                {
+                                    <MudNavLink Href="@alt.Url" Icon="@IkonGetir(alt.Ikon)"
+                                                Match="NavLinkMatch.Prefix">
+                                        @dil.T(alt.Baslik, alt.Baslik)
+                                    </MudNavLink>
+                                }
+                            </MudNavGroup>
+                        }
+                        else
+                        {
+                            <MudNavLink Href="@menu.Url" Icon="@IkonGetir(menu.Ikon)"
+                                        Match="NavLinkMatch.Prefix">
+                                @dil.T(menu.Baslik, menu.Baslik)
+                            </MudNavLink>
+                        }
+                    }
+                }
+                else
+                {
+                    <div class="px-4 py-2">
+                        <MudProgressLinear Color="Color.Info" Indeterminate="true" Size="Size.Small" />
+                        <MudText Typo="Typo.caption" Class="mt-1">
+                            @dil.T("ortak.yukleniyor", "Menüler yükleniyor...")
+                        </MudText>
+                    </div>
+                }
+            </MudNavMenu>
+
+            @* Alt kullanıcı bilgisi *@
+            <MudDivider Class="admin-sidebar-divider" />
+            <div class="admin-sidebar-user px-4 py-3">
+                <MudAvatar Size="Size.Small" Color="Color.Secondary" Class="admin-sidebar-avatar">
+                    <MudIcon Icon="@Icons.Material.Filled.Person" />
+                </MudAvatar>
+                <div class="ml-3">
+                    <MudText Typo="Typo.body2" Color="Color.Surface" Class="font-weight-bold">
+                        @_kullaniciAdi
+                    </MudText>
+                    <MudText Typo="Typo.caption" Class="admin-sidebar-role">@_rol</MudText>
+                </div>
+            </div>
+        </div>
+    </MudDrawer>
+
+    @* ═══════════════════════════════════════════════════════════════════
+        MERKEZ İÇERİK ALANI
+        ═══════════════════════════════════════════════════════════════════ *@
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="admin-main-container pt-6 pb-8">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+
+    @* ═══════════════════════════════════════════════════════════════════
+        SAĞ AKTİVİTE PANELİ — Canlı akış, bildirimler, sistem durumu
+        ═══════════════════════════════════════════════════════════════════ *@
+    <MudDrawer @bind-Open="_sagCekmeceAcik" Elevation="4" ClipMode="DrawerClipMode.Always"
+               Variant="@DrawerVariant.Responsive" Class="admin-drawer-right" Anchor="Anchor.Right">
+        <div class="activity-panel">
+            @* Başlık + Kapat *@
+            <div class="d-flex align-center justify-space-between mb-4">
+                <MudText Typo="Typo.h6" Class="font-weight-bold">
+                    @dil.T("admin.canliAkis", "Canlı Akış")
+                </MudText>
+                <MudIconButton Icon="@Icons.Material.Filled.Close" Size="Size.Small"
+                               OnClick="@(() => _sagCekmeceAcik = false)" />
+            </div>
+            <MudDivider Class="mb-3" />
+
+            @* Yer tutucu: Yakında bildirimi *@
+            <div class="activity-item">
+                <div class="activity-dot info"></div>
+                <div class="activity-item-body">
+                    <MudText Typo="Typo.body2" Class="font-weight-bold">
+                        @dil.T("admin.yakinGeliyor", "Yakında")
+                    </MudText>
+                    <MudText Typo="Typo.caption">
+                        @dil.T("admin.aktiviteYakinda",
+                            "Aktivite akışı, bildirimler ve sistem durumu burada gösterilecek.")
+                    </MudText>
+                </div>
+            </div>
+
+            @* Mini bildirim listesi *@
+            <div class="activity-item">
+                <div class="activity-dot success"></div>
+                <div class="activity-item-body">
+                    <MudText Typo="Typo.body2">@dil.T("admin.ornekBildirim1", "Yeni iletişim mesajı alındı")</MudText>
+                    <MudText Typo="Typo.caption">5 dakika önce</MudText>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-dot warning"></div>
+                <div class="activity-item-body">
+                    <MudText Typo="Typo.body2">@dil.T("admin.ornekBildirim2", "Haber taslakta bekliyor")</MudText>
+                    <MudText Typo="Typo.caption">1 saat önce</MudText>
+                </div>
+            </div>
+
+            @* Sistem durumu göstergeleri *@
+            <div class="mt-4">
+                <MudText Typo="Typo.subtitle2" Class="font-weight-bold mb-2">
+                    @dil.T("admin.sistemDurumu", "Sistem Durumu")
+                </MudText>
+                <div class="d-flex align-center mb-2">
+                    <span class="system-health-dot online"></span>
+                    <MudText Typo="Typo.caption">
+                        API — @dil.T("admin.cevrimici", "Çevrimiçi")
+                    </MudText>
+                </div>
+                <div class="d-flex align-center mb-2">
+                    <span class="system-health-dot online"></span>
+                    <MudText Typo="Typo.caption">
+                        @dil.T("admin.veritabani", "Veritabanı") — @dil.T("admin.cevrimici", "Çevrimiçi")
+                    </MudText>
+                </div>
+                <div class="d-flex align-center mb-2">
+                    <span class="system-health-dot online"></span>
+                    <MudText Typo="Typo.caption">
+                        @dil.T("admin.canliGuncelleme", "Canlı Güncelleme") — @dil.T("admin.cevrimici", "Çevrimiçi")
+                    </MudText>
+                </div>
+                <div class="d-flex align-center">
+                    <span class="system-health-dot online"></span>
+                    <MudText Typo="Typo.caption">
+                        @dil.T("admin.depolama", "Depolama") — @dil.T("admin.sorunsuz", "Sorunsuz")
+                    </MudText>
+                </div>
+            </div>
+        </div>
+    </MudDrawer>
+</MudLayout>
+
+@* Global bileşenler *@
+<VizitLink3D.UI.Bilesenler.KomutPaleti @ref="_komutPaleti" />
+<VizitLink3D.UI.Bilesenler.CanliSohbetArayuzu />

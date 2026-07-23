@@ -1,0 +1,15 @@
+@using VizitLink3D.UI.Servisler
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+
+@if (Durum is null)
+{
+    <MudChip T="string" Color="Color.Default" Size="Size.Small">@dil.T("ortak.bilinmiyor", "Bilinmiyor")</MudChip>
+}
+else
+{
+    <MudTooltip Text="@Aciklama">
+        <MudChip T="string" Color="@DurumRenk(Durum.Durum)" Size="Size.Small">
+            @DurumEtiketi(Durum.Durum)
+        </MudChip>
+    </MudTooltip>
+}

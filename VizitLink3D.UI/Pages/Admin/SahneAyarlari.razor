@@ -1,0 +1,187 @@
+@page "/admin/sahne-ayarlari"
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using VizitLink3D.Ortak.Modeller.Urunler
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<PageTitle>@dil.T("admin.sahne.sayfaBasligi", "Sahne Ayarlari") | VizitLink3D Admin</PageTitle>
+
+<AdminSayfaBasligi Baslik='@dil.T("admin.sahne.baslik", "3D Sahne Ayarlari")'
+                   Aciklama='@dil.T("admin.sahne.aciklama", "Kamera, isik, zemin ve arka plan ayarlarini modele gore canli yonetin.")'
+                   Ikon="@Icons.Material.Filled.ViewInAr">
+    <MudChip T="string" Size="Size.Small" Color="Color.Primary" Variant="Variant.Outlined">
+        @_filtreliModeller.Count @dil.T("admin.sahne.model", "model")
+    </MudChip>
+</AdminSayfaBasligi>
+
+@if (_yukleniyor)
+{
+    <AdminYukleniyorIskeleti SatirSayisi="4" />
+}
+
+@if (!_yukleniyor)
+{
+    <MudGrid Class="mb-4">
+        <MudItem xs="12" md="4">
+            <MudSelect T="int?" Label='@dil.T("admin.sahne.urunAilesi", "Ürün Ailesi")'
+                       Value="@_seciliAileId"
+                       ValueChanged="AileDegisti"
+                       Variant="Variant.Outlined"
+                       AnchorOrigin="Origin.BottomCenter">
+                <MudSelectItem Value="@((int?)null)">@dil.T("admin.sahne.tumAileler", "Tum Aileler")</MudSelectItem>
+                @foreach (var aile in _aileler)
+                {
+                    <MudSelectItem Value="@(aile.Id)">@aile.Ad</MudSelectItem>
+                }
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="12" md="5">
+            <MudSelect T="int?" Label='@dil.T("admin.sahne.modelSec", "3D Model")'
+                       Value="@_seciliModelId"
+                       ValueChanged="ModelDegisti"
+                       Variant="Variant.Outlined"
+                       AnchorOrigin="Origin.BottomCenter"
+                       Disabled="@(_filtreliModeller.Count == 0)">
+                <MudSelectItem Value="@((int?)null)">@dil.T("admin.sahne.modelSeciniz", "Model seciniz")</MudSelectItem>
+                @foreach (var model in _filtreliModeller)
+                {
+                    <MudSelectItem Value="@(model.Id)">@model.ModelAdi</MudSelectItem>
+                }
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="12" md="3">
+            <MudPaper Elevation="0" Class="admin-sahne-durum">
+                <MudIcon Icon="@Icons.Material.Filled.DynamicFeed" Color="Color.Info" />
+                <MudText Typo="Typo.body2">
+                    @_filtreliModeller.Count @dil.T("admin.sahne.uygunModel", "uygun model")
+                </MudText>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+}
+
+@if (!_yukleniyor && _seciliModel != null)
+{
+    <MudGrid>
+        <MudItem xs="12" lg="7">
+            <MudPaper Elevation="0" Class="admin-sahne-onizleme">
+                <MudText Typo="Typo.subtitle1" Class="mb-2">@dil.T("admin.sahne.onizleme", "Onizleme"): @_seciliModel.ModelAdi</MudText>
+                <UcBoyutGoruntuleyici @key="_seciliModel.Id"
+                                      ModelId="@_seciliModel.Id"
+                                      ModelYolu="@GetModelYolu()"
+                                      KameraAyarJson="@KameraOnizlemeJson"
+                                      IsikAyarJson="@IsikOnizlemeJson"
+                                      CevreAyarJson="@CevreOnizlemeJson" />
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" lg="5">
+            <MudGrid>
+                @* === KAMERA === *@
+                <MudItem xs="12">
+                    <MudPaper Elevation="0" Class="admin-form-panel pa-4">
+                        <MudText Typo="Typo.h6" Class="mb-3">@dil.T("admin.sahne.kamera", "Kamera")</MudText>
+                        <MudGrid>
+                            <MudItem xs="12" sm="6">
+                                <MudNumericField @bind-Value="_kamera.BaslangicAciX" Immediate="true" Label='@dil.T("admin.sahne.baslangicAciX", "Baslangic Aci X")' Variant="Variant.Outlined" />
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudNumericField @bind-Value="_kamera.BaslangicAciY" Immediate="true" Label='@dil.T("admin.sahne.baslangicAciY", "Baslangic Aci Y")' Variant="Variant.Outlined" />
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudNumericField @bind-Value="_kamera.ZoomMin" Immediate="true" Label='@dil.T("admin.sahne.zoomMin", "Zoom Min")' Variant="Variant.Outlined" />
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudNumericField @bind-Value="_kamera.ZoomMax" Immediate="true" Label='@dil.T("admin.sahne.zoomMax", "Zoom Max")' Variant="Variant.Outlined" />
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudSwitch @bind-Value="_kamera.OtomatikDonme" Label='@dil.T("admin.sahne.otomatikDonme", "Otomatik Donme")' Color="Color.Primary" />
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudNumericField @bind-Value="_kamera.DonmeHizi" Immediate="true" Label='@dil.T("admin.sahne.donmeHizi", "Donme Hizi")' Variant="Variant.Outlined" />
+                            </MudItem>
+                        </MudGrid>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="KameraKaydet" Class="mt-3" StartIcon="@Icons.Material.Filled.PhotoCamera">
+                            @dil.T("admin.sahne.kameraUygula", "Kamera Ayarlarini Uygula")
+                        </MudButton>
+                    </MudPaper>
+                </MudItem>
+
+                @* === ISIK === *@
+                <MudItem xs="12">
+                    <MudPaper Elevation="0" Class="admin-form-panel pa-4">
+                        <MudText Typo="Typo.h6" Class="mb-3">@dil.T("admin.sahne.isik", "Isik")</MudText>
+                        <MudGrid>
+                            <MudItem xs="12" sm="6">
+                                <MudNumericField @bind-Value="_isik.Siddet" Immediate="true" Label='@dil.T("admin.sahne.siddet", "Siddet")' Variant="Variant.Outlined" />
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudNumericField @bind-Value="_isik.Sayi" Immediate="true" Label='@dil.T("admin.sahne.isikSayisi", "Isik Sayisi")' Variant="Variant.Outlined" />
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudNumericField @bind-Value="_isik.AciX" Immediate="true" Label='@dil.T("admin.sahne.aciX", "Aci X")' Variant="Variant.Outlined" />
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudNumericField @bind-Value="_isik.AciY" Immediate="true" Label='@dil.T("admin.sahne.aciY", "Aci Y")' Variant="Variant.Outlined" />
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudNumericField @bind-Value="_isik.Pozlama" Immediate="true" Label='@dil.T("admin.sahne.pozlama", "Pozlama")' Variant="Variant.Outlined" />
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudNumericField @bind-Value="_isik.ParlamaEsigi" Immediate="true" Label='@dil.T("admin.sahne.parlamaEsigi", "Parlama Esigi")' Variant="Variant.Outlined" />
+                            </MudItem>
+                        </MudGrid>
+                        <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="IsikKaydet" Class="mt-3" StartIcon="@Icons.Material.Filled.LightMode">
+                            @dil.T("admin.sahne.isikUygula", "Isik Ayarlarini Uygula")
+                        </MudButton>
+                    </MudPaper>
+                </MudItem>
+
+                @* === CEVRE === *@
+                <MudItem xs="12">
+                    <MudPaper Elevation="0" Class="admin-form-panel pa-4">
+                        <MudText Typo="Typo.h6" Class="mb-3">@dil.T("admin.sahne.cevre", "Cevre / Arka Plan")</MudText>
+                        <MudGrid>
+                            <MudItem xs="12" sm="6">
+                                <MudColorPicker @bind-Value="ZeminRengi" Label='@dil.T("admin.sahne.zeminRengi", "Zemin Rengi")' Variant="Variant.Outlined" ShowColorField="true" />
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudSelect T="string" @bind-Value="_cevre.ZeminTipi" Label='@dil.T("admin.sahne.zeminTipi", "Zemin Tipi")' Variant="Variant.Outlined">
+                                    <MudSelectItem Value="@("mat")">@dil.T("admin.sahne.mat", "Mat")</MudSelectItem>
+                                    <MudSelectItem Value="@("parlak")">@dil.T("admin.sahne.parlak", "Parlak")</MudSelectItem>
+                                    <MudSelectItem Value="@("yansimali")">@dil.T("admin.sahne.yansimali", "Yansimali")</MudSelectItem>
+                                </MudSelect>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudColorPicker @bind-Value="ArkaPlanRengi" Label='@dil.T("admin.sahne.arkaPlanRengi", "Arka Plan Rengi")' Variant="Variant.Outlined" ShowColorField="true" />
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudSelect T="string" @bind-Value="_cevre.ArkaPlanTipi" Label='@dil.T("admin.sahne.arkaPlanTipi", "Arka Plan Tipi")' Variant="Variant.Outlined">
+                                    <MudSelectItem Value="@("duz")">@dil.T("admin.sahne.duz", "Duz")</MudSelectItem>
+                                    <MudSelectItem Value="@("gradient")">@dil.T("admin.sahne.gradient", "Gradient")</MudSelectItem>
+                                    <MudSelectItem Value="@("hdr")">@dil.T("admin.sahne.hdr", "HDR Ortam")</MudSelectItem>
+                                </MudSelect>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudSwitch @bind-Value="_cevre.OtomatikArkaPlan" Label='@dil.T("admin.sahne.akilliArkaPlan", "Akilli Arka Plan")' Color="Color.Success" />
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudNumericField @bind-Value="_cevre.KontrastEsik" Immediate="true" Label='@dil.T("admin.sahne.kontrastEsigi", "Kontrast Esigi")' Variant="Variant.Outlined" />
+                            </MudItem>
+                        </MudGrid>
+                        <MudButton Variant="Variant.Filled" Color="Color.Tertiary" OnClick="CevreKaydet" Class="mt-3" StartIcon="@Icons.Material.Filled.Landscape">
+                            @dil.T("admin.sahne.cevreUygula", "Cevre Ayarlarini Uygula")
+                        </MudButton>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+        </MudItem>
+    </MudGrid>
+}
+else if (!_yukleniyor)
+{
+    <AdminBosDurum Icon="@Icons.Material.Filled.ViewInAr"
+                   Baslik='@dil.T("admin.sahne.modelYokBaslik", "3D model bulunamadi")'
+                   Aciklama='@dil.T("admin.sahne.modelYokAciklama", "Sahne ayari yapabilmek icin once bir urune GLB model baglayin.")' />
+}

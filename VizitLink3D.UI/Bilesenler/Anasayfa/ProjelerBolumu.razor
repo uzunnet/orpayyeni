@@ -1,0 +1,26 @@
+@* ProjelerBolumu — Aurelian Onyx "Seçkin Projeler" showcase (Varyant 2) *@
+
+<section class="projeler-bolum">
+    <div class="section-baslik-kutu anim-reveal-up" style="position:relative; z-index:1; padding: 0 var(--tema-kenar-bosluk);">
+        <span class="section-etiket">@dil.T("anasayfa.projeler.etiket", "Seçkin Projeler")</span>
+        <h2 class="section-baslik">@dil.T("anasayfa.projeler.baslik", "İmza Niteliğinde Uygulamalar")</h2>
+        <p class="section-aciklama">@dil.T("anasayfa.projeler.aciklama", "Dünya çapında prestijli otel ve rezidans projelerinde Orpay imzası.")</p>
+    </div>
+
+    <div class="section-container" style="position:relative; z-index:1;">
+        <div class="projeler-grid">
+            @for (int i = 0; i < Projeler.Count; i++)
+            {
+                var proje = Projeler[i];
+                <div class="proje-kart anim-reveal-up">
+                    <img src="@proje.GorselUrl" alt="@proje.ProjeAd" class="proje-kart__gorsel anim-float" loading="lazy" />
+                    <div class="proje-kart__overlay">
+                        <span class="proje-kart__sehir">@proje.Sehir</span>
+                        <h3 class="proje-kart__adin">@proje.ProjeAd</h3>
+                        <p class="proje-kart__aciklama">@proje.Aciklama</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>

@@ -1,0 +1,302 @@
+﻿@page "/konfigurator/{Slug}"
+@layout VizitLink3D.UI.Layout.VizitLink3DDuzen
+@using VizitLink3D.Ortak.Modeller.Urunler
+@using VizitLink3D.UI.Servisler
+@using VizitLink3D.UI.Bilesenler
+@inject DilServisi dil
+
+<PageTitle>@(_konfigurator?.Ad ?? "Ürün Konfigüratörü") | ORPAY</PageTitle>
+
+<div class="gb-public-konfigurator">
+    @* --- YÜKLENİYOR --- *@
+    @if (_yukleniyor)
+    {
+        <div class="gb-pk-yukleniyor">
+            <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
+            <MudText Typo="Typo.body2" Class="mt-3">@dil.T("konfigurator.yukleniyor", "Konfigüratör yükleniyor...")</MudText>
+        </div>
+    }
+    @* --- HATA --- *@
+    else if (_hataVar)
+    {
+        <div class="gb-pk-hata">
+            <MudIcon Icon="@Icons.Material.Outlined.ErrorOutline" Size="Size.Large" Color="Color.Error" />
+            <MudText Typo="Typo.h6" Class="mt-2">@dil.T("konfigurator.hataBaslik", "Bir sorun oluştu")</MudText>
+            <MudText Typo="Typo.body2" Color="Color.Secondary">@_hataMesaji</MudText>
+            <MudButton Variant="Variant.Outlined" OnClick="KonfiguratorYukle" Class="mt-3">
+                @dil.T("konfigurator.tekrarDene", "Tekrar Dene")
+            </MudButton>
+        </div>
+    }
+    @* --- KONFİGÜRATÖR --- *@
+    else if (_konfigurator != null)
+    {
+        <MudGrid Spacing="0" Class="gb-pk-grid">
+            @* --- SOL: 3D GÖRÜNTÜLEYİCİ --- *@
+            <MudItem xs="12" lg="8" Class="gb-pk-viewer-col">
+                <div class="gb-pk-viewer-sarici">
+                    @if (!string.IsNullOrEmpty(_konfigurator.ModelYolu))
+                    {
+                        <UcBoyutGoruntuleyici ModelYolu="@_konfigurator.ModelYolu"
+                                              ModelId="@_konfigurator.ModelId"
+                                              BaslangicRenk="#E8E4DF" />
+                    }
+                    else
+                    {
+                        <div class="gb-pk-model-yok">
+                            <MudIcon Icon="@Icons.Material.Outlined.ViewInAr" Size="Size.Large" />
+                            <MudText Typo="Typo.body1" Class="mt-2">
+                                @dil.T("konfigurator.3dModelYok", "Bu ürün için 3D model henüz hazır değil.")
+                            </MudText>
+                        </div>
+                    }
+                </div>
+            </MudItem>
+
+            @* --- SAĞ: SEÇİM PANELİ --- *@
+            <MudItem xs="12" lg="4" Class="gb-pk-panel-col">
+                <div class="gb-pk-panel">
+
+                    @* ÜRÜN BAŞLIĞI *@
+                    <div class="gb-pk-urun-baslik">
+                        <MudText Typo="Typo.h5" Class="gb-pk-urun-ad">@_konfigurator.Ad</MudText>
+                        @if (_konfigurator.Fiyat.HasValue)
+                        {
+                            <MudText Typo="Typo.subtitle1" Color="Color.Primary">
+                                @_konfigurator.Fiyat.Value.ToString("N2") ₺
+                                <MudText Typo="Typo.caption" Color="Color.Secondary" Class="d-inline">@dil.T("konfigurator.baslangicFiyat", "başlangıç")</MudText>
+                            </MudText>
+                        }
+                    </div>
+
+                    <MudDivider Class="my-2" />
+
+                    @* SEÇİLİ PARÇA DETAYI *@
+                    @if (_secilenParca != null)
+                    {
+                        <div class="gb-pk-secili-parca">
+                            <div class="gb-pk-secili-baslik">
+                                <MudText Typo="Typo.subtitle2" Color="Color.Primary">
+                                    @dil.T("konfigurator.secilenParca", "Seçilen Parça")
+                                </MudText>
+                                <MudIconButton Icon="@Icons.Material.Filled.Close" Size="Size.Small"
+                                               OnClick="() => _secilenParca = null" />
+                            </div>
+                            <MudText Typo="Typo.body1" Class="gb-font-700">@_secilenParca.GorunenAd</MudText>
+                            @if (!string.IsNullOrEmpty(_secilenParca.ParcaTipi))
+                            {
+                                <MudChip T="string" Text="@_secilenParca.ParcaTipi" Size="Size.Small" Class="mt-1" />
+                            }
+
+                            @* --- RENK SEÇİCİ --- *@
+                            @if (_secilenParca.RenklenebilirMi && _secilenParca.Renkler.Count > 0)
+                            {
+                                <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mt-3 mb-1">
+                                    @dil.T("konfigurator.renkSec", "Renk")
+                                </MudText>
+                                <div class="gb-pk-renk-grid">
+                                    @foreach (var r in _secilenParca.Renkler)
+                                    {
+                                        var seciliMi = _parcaRenkSecimleri.TryGetValue(_secilenParca.Id, out var sr) && sr == r.RenkId;
+                                        <MudTooltip Text="@($"{r.RalAdi} ({r.RalKodu})")">
+                                            <button type="button"
+                                                    class="gb-pk-renk-btn @(seciliMi ? "gb-pk-renk-secili" : "")"
+                                                    style="background-color: @r.HexKodu;"
+                                                    @onclick="() => RenkDegistir(_secilenParca.Id, r.RenkId)"
+                                                    title="@r.RalAdi">
+                                            </button>
+                                        </MudTooltip>
+                                    }
+                                </div>
+                            }
+
+                            @* --- MALZEME SEÇİCİ --- *@
+                            @if (_secilenParca.MalzemeDegisebilirMi && _secilenParca.Malzemeler.Count > 0)
+                            {
+                                <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mt-3 mb-1">
+                                    @dil.T("konfigurator.malzemeSec", "Malzeme")
+                                </MudText>
+                                <div class="gb-pk-malzeme-grid">
+                                    @foreach (var m in _secilenParca.Malzemeler)
+                                    {
+                                        var seciliMi = _parcaMalzemeSecimleri.TryGetValue(_secilenParca.Id, out var sm) && sm == m.MalzemeId;
+                                        <button type="button"
+                                                class="gb-pk-malzeme-btn @(seciliMi ? "gb-pk-malzeme-secili" : "")"
+                                                @onclick="() => MalzemeDegistir(_secilenParca.Id, m.MalzemeId)">
+                                            @if (!string.IsNullOrEmpty(m.TeksurResimUrl))
+                                            {
+                                                <img src="@m.TeksurResimUrl" alt="@m.MalzemeAdi" class="gb-pk-malzeme-resim" />
+                                            }
+                                            <span>@m.MalzemeAdi</span>
+                                        </button>
+                                    }
+                                </div>
+                            }
+
+                            @* --- DOKU/KAPLAMA SEÇİCİ --- *@
+                            @if (_secilenParca.DokuUygulanabilirMi && _secilenParca.Dokular.Count > 0)
+                            {
+                                <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mt-3 mb-1">
+                                    @dil.T("konfigurator.dokuSec", "Doku / Kaplama")
+                                </MudText>
+                                <div class="gb-pk-malzeme-grid">
+                                    @foreach (var d in _secilenParca.Dokular)
+                                    {
+                                        var seciliMi = _parcaKaplamaSecimleri.TryGetValue(_secilenParca.Id, out var sk) && sk == d.KaplamaId;
+                                        <button type="button"
+                                                class="gb-pk-malzeme-btn @(seciliMi ? "gb-pk-malzeme-secili" : "")"
+                                                @onclick="() => KaplamaDegistir(_secilenParca.Id, d.KaplamaId)">
+                                            @if (!string.IsNullOrEmpty(d.TeksurResimUrl))
+                                            {
+                                                <img src="@d.TeksurResimUrl" alt="@d.Ad" class="gb-pk-malzeme-resim" />
+                                            }
+                                            <span>@d.Ad</span>
+                                        </button>
+                                    }
+                                </div>
+                            }
+
+                            @* --- HAREKET KONTROLÜ --- *@
+                            @if (_secilenParca.HareketliMi && !string.IsNullOrEmpty(_secilenParca.HareketTipi) &&
+                                 _secilenParca.HareketTipi != "Sabit")
+                            {
+                                <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mt-3 mb-1">
+                                    @HareketTipiLabel(_secilenParca.HareketTipi)
+                                </MudText>
+                                <MudSlider T="double"
+                                           Value="@(_parcaHareketDegeri.TryGetValue(_secilenParca.Id, out var hd) ? hd : (_secilenParca.VarsayilanDeger ?? 0))"
+                                           ValueChanged="(double v) => HareketDegeriDegistir(_secilenParca.Id, v)"
+                                           Min="@(_secilenParca.MinDeger ?? 0)"
+                                           Max="@(_secilenParca.MaxDeger ?? 100)"
+                                           Step="1"
+                                           Class="mb-2" />
+                            }
+
+                            @* --- GÖRÜNÜRLÜK --- *@
+                            @if (_secilenParca.GizlenebilirMi)
+                            {
+                                var gorunur = _parcaGorunurluk.TryGetValue(_secilenParca.Id, out var gv) && gv;
+                                <MudButton Variant="Variant.Text"
+                                           Size="Size.Small"
+                                           StartIcon="@(gorunur ? Icons.Material.Filled.Visibility : Icons.Material.Filled.VisibilityOff)"
+                                           OnClick="() => GorunurlukToggle(_secilenParca.Id)"
+                                           Class="mt-2">
+                                    @(gorunur ? dil.T("konfigurator.gizle", "Gizle") : dil.T("konfigurator.goster", "Göster"))
+                                </MudButton>
+                            }
+                        </div>
+
+                        <MudDivider Class="my-3" />
+                    }
+
+                    @* --- PARÇA LİSTESİ --- *@
+                    @if (_konfigurator.Parcalar.Count > 0)
+                    {
+                        <MudText Typo="Typo.subtitle2" Class="mb-2">
+                            @dil.T("konfigurator.parcalar", "Parçalar") (@_konfigurator.Parcalar.Count)
+                        </MudText>
+                        <div class="gb-pk-parca-liste">
+                            @foreach (var p in _konfigurator.Parcalar.OrderBy(p => p.SiraNo))
+                            {
+                                var seciliMi = _secilenParca?.Id == p.Id;
+                                <button type="button"
+                                        class="gb-pk-parca-oge @(seciliMi ? "gb-pk-parca-secili" : "")"
+                                        @onclick="() => ParcaSec(p.Id)">
+                                    <div class="gb-pk-parca-bilgi">
+                                        <MudText Typo="Typo.body2" Class="gb-font-600">@p.GorunenAd</MudText>
+                                        @if (!string.IsNullOrEmpty(p.ParcaTipi))
+                                        {
+                                            <MudText Typo="Typo.caption" Color="Color.Secondary">@p.ParcaTipi</MudText>
+                                        }
+                                    </div>
+                                    <div class="gb-pk-parca-durum">
+                                        @if (p.HareketliMi && !string.IsNullOrEmpty(p.HareketTipi) && p.HareketTipi != "Sabit")
+                                        {
+                                            <MudIcon Icon="@Icons.Material.Outlined.OpenWith" Size="Size.Small" Color="Color.Secondary" />
+                                        }
+                                        @if (p.RenklenebilirMi)
+                                        {
+                                            <MudIcon Icon="@Icons.Material.Outlined.Palette" Size="Size.Small" Color="Color.Secondary" />
+                                        }
+                                    </div>
+                                </button>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <MudText Typo="Typo.body2" Color="Color.Secondary">
+                            @dil.T("konfigurator.parcaYok", "Bu ürün için henüz parça tanımlanmamış.")
+                        </MudText>
+                    }
+
+                    <MudDivider Class="my-3" />
+
+                    @* --- SEÇİM ÖZETİ VE KAYDET --- *@
+                    <div class="gb-pk-ozet">
+                        <MudText Typo="Typo.subtitle2" Class="mb-2">
+                            @dil.T("konfigurator.secimOzeti", "Seçim Özeti")
+                        </MudText>
+
+                        @if (_konfigurator.Parcalar.Any(p => _parcaRenkSecimleri.ContainsKey(p.Id) || _parcaMalzemeSecimleri.ContainsKey(p.Id)))
+                        {
+                            <div class="gb-pk-ozet-liste">
+                                @foreach (var p in _konfigurator.Parcalar)
+                                {
+                                    var degisiklikler = new List<string>();
+                                    if (_parcaRenkSecimleri.TryGetValue(p.Id, out var rId) && rId != null)
+                                    {
+                                        var r = p.Renkler.FirstOrDefault(x => x.RenkId == rId.Value);
+                                        if (r != null) degisiklikler.Add($"🎨 {r.RalAdi}");
+                                    }
+                                    if (_parcaMalzemeSecimleri.TryGetValue(p.Id, out var mId) && mId != null)
+                                    {
+                                        var m = p.Malzemeler.FirstOrDefault(x => x.MalzemeId == mId.Value);
+                                        if (m != null) degisiklikler.Add(m.MalzemeAdi);
+                                    }
+                                    if (!_parcaGorunurluk.TryGetValue(p.Id, out var g) || !g)
+                                        degisiklikler.Add(dil.T("konfigurator.gizli", "Gizli"));
+
+                                    if (degisiklikler.Count > 0)
+                                    {
+                                        <div class="gb-pk-ozet-satir">
+                                            <MudText Typo="Typo.caption" Class="gb-font-600">@p.GorunenAd</MudText>
+                                            <MudText Typo="Typo.caption" Color="Color.Secondary">@string.Join(", ", degisiklikler)</MudText>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <MudText Typo="Typo.caption" Color="Color.Secondary">
+                                @dil.T("konfigurator.secimYok", "Henüz bir seçim yapılmadı.")
+                            </MudText>
+                        }
+
+                        @* Müşteri Notu *@
+                        <MudTextField T="string"
+                                      Label="@dil.T("konfigurator.not", "Notunuz (isteğe bağlı)")"
+                                      Variant="Variant.Outlined"
+                                      Lines="2"
+                                      @bind-Value="_musteriNotu"
+                                      Class="mt-3" />
+
+                        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   FullWidth="true"
+                                   OnClick="SecimiKaydet"
+                                   Disabled="_kaydediliyor"
+                                   Class="mt-2">
+                            @if (_kaydediliyor)
+                            {
+                                <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+                            }
+                            @dil.T("konfigurator.kaydet", "Yapılandırmayı Kaydet")
+                        </MudButton>
+                    </div>
+                </div>
+            </MudItem>
+        </MudGrid>
+    }
+</div>

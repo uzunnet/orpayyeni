@@ -1,0 +1,202 @@
+@page "/admin/pdf-katalog-yonetimi"
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using VizitLink3D.Ortak.Modeller
+@using VizitLink3D.Ortak.Modeller.Urunler
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<PageTitle>@dil.T("admin.pdfKatalog.sayfaBasligi", "PDF Katalog Yonetimi") | VizitLink3D Admin</PageTitle>
+
+<MudText Typo="Typo.h4" Class="mb-2">PDF Katalog Yonetimi</MudText>
+<MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-4">@_filtreliListe.Count kayit</MudText>
+
+<MudToolBar Class="mb-4">
+    <MudTextField @bind-Value="_arama"
+                  Placeholder="@dil.T("ortak.ara","Ara...")"
+                  Immediate="true"
+                  OnKeyUp="AramaYap"
+                  Adornment="Adornment.Start"
+                  AdornmentIcon="@Icons.Material.Filled.Search"
+                  Class="flex-grow-1 gb-maxw-400" />
+    <MudSpacer />
+    <MudButton Variant="Variant.Filled"
+               Color="Color.Primary"
+               StartIcon="@Icons.Material.Filled.Add"
+               OnClick="YeniAc">
+        Yeni PDF Katalog
+    </MudButton>
+</MudToolBar>
+
+@if (_yukleniyor)
+{
+    <MudProgressLinear Indeterminate="true" Class="mb-4" />
+}
+
+@if (_formAcik)
+{
+    <MudCard Class="mb-4" Elevation="2">
+        <MudCardContent>
+            <MudText Typo="Typo.h6" Class="mb-4">
+                @(_duzenlemeModu ? "PDF Katalog Duzenle" : "Yeni PDF Katalog")
+            </MudText>
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_form.Ad"
+                                  Label="Ad"
+                                  Required="true"
+                                  Class="mb-3" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_medyaIdMetni"
+                                  Label="Medya ID"
+                                  Required="true"
+                                  Class="mb-3" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="_aciklama"
+                                  Label="Açıklama"
+                                  Lines="3"
+                                  Class="mb-3" />
+                </MudItem>
+            </MudGrid>
+            <MudToolBar>
+                <MudSpacer />
+                <MudButton OnClick="FormIptal"
+                           Color="Color.Secondary"
+                           Disabled="_kaydediliyor">
+                    Iptal
+                </MudButton>
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           OnClick="Kaydet"
+                           Disabled="_kaydediliyor">
+                    Kaydet
+                </MudButton>
+            </MudToolBar>
+        </MudCardContent>
+    </MudCard>
+}
+
+<MudDataGrid Items="@_filtreliListe"
+             Filterable="true"
+             SortMode="SortMode.Multiple"
+             Dense="true"
+             Striped="true"
+             Hover="true">
+    <Columns>
+        <PropertyColumn Property="x => x.Ad" Title="Ad" Sortable="true" Filterable="true" />
+        <PropertyColumn Property="x => x.SayfaSayisi" Title="Sayfa Sayisi" Sortable="true" />
+        <TemplateColumn Title="Cozumleme Durumu">
+            <CellTemplate>
+                <MudChip Size="Size.Small"
+                         Color="@CozumlemeRengi(context.Item.CozumlemeDurumu)"
+                         Variant="Variant.Outlined">
+                    @(context.Item.CozumlemeDurumu ?? "Bekliyor")
+                </MudChip>
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="Olusturulma">
+            <CellTemplate>
+                @context.Item.OlusturulmaTarihi.ToString("dd.MM.yyyy HH:mm")
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="Islemler">
+            <CellTemplate>
+                <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                               Size="Size.Small"
+                               OnClick="() => Duzenle(context.Item)" />
+                <MudIconButton Icon="@Icons.Material.Filled.AutoAwesome"
+                               Size="Size.Small"
+                               Color="Color.Info"
+                               OnClick="() => Cozumle(context.Item)" />
+                <MudIconButton Icon="@Icons.Material.Filled.PhotoLibrary"
+                               Size="Size.Small"
+                               Color="Color.Secondary"
+                               OnClick="() => SayfalariGoster(context.Item)" />
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                               Size="Size.Small"
+                               Color="Color.Error"
+                               OnClick="() => SilOnay(context.Item)" />
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager />
+    </PagerContent>
+</MudDataGrid>
+
+@if (_sayfaGosterilenId.HasValue)
+{
+    <MudCard Class="mt-4" Elevation="2">
+        <MudCardContent>
+            <div class="d-flex align-center mb-4">
+                <MudText Typo="Typo.h6" Class="flex-grow-1">
+                    Sayfalar (PDF ID: @_sayfaGosterilenId)
+                </MudText>
+                <MudIconButton Icon="@Icons.Material.Filled.Close"
+                               Size="Size.Small"
+                               OnClick="SayfalariKapat" />
+            </div>
+            @if (_sayfalarYukleniyor)
+            {
+                <MudProgressLinear Indeterminate="true" Class="mb-4" />
+            }
+            else if (_sayfalar.Count == 0)
+            {
+                <MudText Typo="Typo.body2" Color="Color.Secondary">
+                    Henuz sayfa gorseli bulunmuyor.
+                </MudText>
+            }
+            else
+            {
+                <MudGrid Class="mb-4">
+                    @foreach (var sayfa in _sayfalar.OrderBy(x => x.SayfaNo))
+                    {
+                        <MudItem xs="12" sm="6" md="4" lg="3">
+                            <MudPaper Class="pa-2 h-100" Outlined="true">
+                                <MudText Typo="Typo.subtitle2" Class="mb-2">
+                                    Sayfa @sayfa.SayfaNo
+                                </MudText>
+                                <a href="@SayfaMedyaUrl(sayfa.MedyaId)" target="_blank" rel="noopener noreferrer">
+                                    <img src="@SayfaMedyaUrl(sayfa.MedyaId)"
+                                         alt="@($"PDF Sayfa {sayfa.SayfaNo}")"
+                                         style="width:100%; aspect-ratio:3/4; object-fit:contain; background:#f6f3ed; border-radius:8px;" />
+                                </a>
+                            </MudPaper>
+                        </MudItem>
+                    }
+                </MudGrid>
+
+                <MudDataGrid Items="@_sayfalar"
+                             Dense="true"
+                             Striped="true"
+                             Hover="true">
+                    <Columns>
+                        <PropertyColumn Property="x => x.SayfaNo" Title="Sayfa No" />
+                        <PropertyColumn Property="x => x.MedyaId" Title="Medya ID" />
+                        <PropertyColumn Property="x => x.Aciklama" Title="Açıklama" />
+                        <PropertyColumn Property="x => x.UrunId" Title="Urun ID" />
+                        <TemplateColumn Title="Urune Bagli">
+                            <CellTemplate>
+                                <MudChip Size="Size.Small"
+                                         Color="@(context.Item.UruneBaglandiMi ? Color.Success : Color.Default)"
+                                         Variant="Variant.Outlined">
+                                    @(context.Item.UruneBaglandiMi ? "Evet" : "Hayir")
+                                </MudChip>
+                            </CellTemplate>
+                        </TemplateColumn>
+                        <TemplateColumn Title="Olusturulma">
+                            <CellTemplate>
+                                @context.Item.OlusturulmaTarihi.ToString("dd.MM.yyyy HH:mm")
+                            </CellTemplate>
+                        </TemplateColumn>
+                    </Columns>
+                    <PagerContent>
+                        <MudDataGridPager />
+                    </PagerContent>
+                </MudDataGrid>
+            }
+        </MudCardContent>
+    </MudCard>
+}

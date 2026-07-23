@@ -1,0 +1,113 @@
+@page "/admin/pdf-uygulama-esleme"
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using VizitLink3D.Ortak.Modeller.Urunler
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+
+<PageTitle>PDF Uygulama Görseli Eşleme | VizitLink3D</PageTitle>
+
+<AdminSayfaBasligi Baslik="PDF Uygulama Görseli Eşleme"
+                   Aciklama="Katalog sayfalarından kesilen uygulama fotoğraflarını ürün modellerine atayın."
+                   Ikon="@Icons.Material.Filled.PhotoLibrary" />
+
+<MudPaper Elevation="0" Class="pa-4 mb-4 d-flex align-center gap-4">
+    <MudButton Variant="Variant.Filled"
+               Color="Color.Primary"
+               StartIcon="@Icons.Material.Filled.ContentCut"
+               OnClick="TumunuIsle"
+               Disabled="@_isleniyor">
+        @(_isleniyor ? "İşleniyor..." : "Tüm Sayfaları İşle (Kes & Kaydet)")
+    </MudButton>
+    @if (_isleniyor)
+    {
+        <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="flex-1" />
+    }
+    @if (_liste.Count > 0)
+    {
+        <MudChip T="string" Color="Color.Success">@_liste.Count görsel</MudChip>
+        <MudChip T="string" Color="Color.Info">@_liste.Count(x => x.EslenenUrunId.HasValue) eşlenmiş</MudChip>
+    }
+</MudPaper>
+
+@if (_yukleniyor)
+{
+    <AdminYukleniyorIskeleti SatirSayisi="3" />
+}
+else if (_liste.Count == 0)
+{
+    <AdminBosDurum Icon="@Icons.Material.Filled.PhotoLibrary"
+                   Baslik="Henüz görsel işlenmemiş"
+                   Aciklama="'Tüm Sayfaları İşle' butonuna basarak katalog sayfalarını kesip kaydedin.">
+    </AdminBosDurum>
+}
+else
+{
+    <MudGrid Spacing="3">
+        @foreach (var gorsel in _liste)
+        {
+            var satir = gorsel;
+            <MudItem xs="12" sm="6" md="4" lg="3">
+                <MudCard Elevation="2" Class="h-100 d-flex flex-column">
+                    <MudCardMedia Image="@(satir.GorselUrl.StartsWith('/') ? satir.GorselUrl : $"/{satir.GorselUrl}")"
+                                  Height="180"
+                                  Style="object-fit:cover; background:#f5f5f5" />
+                    <MudCardContent Class="flex-grow-1 pa-3">
+                        <MudText Typo="Typo.caption" Class="mud-text-secondary mb-2">
+                            PDF @satir.PdfKaynagiId · Sayfa @satir.SayfaNo · @satir.Konum
+                        </MudText>
+
+                        @if (satir.EslenenUrunId.HasValue)
+                        {
+                            <MudChip T="string" Color="Color.Success" Size="Size.Small" Class="mb-2">
+                                @satir.EslenenUrunAdi
+                            </MudChip>
+                        }
+
+                        <MudAutocomplete T="UrunOzetDto"
+                                         Label="Ürün Seç"
+                                         @bind-Value="_secimler[satir.MedyaId].SeciliUrun"
+                                         SearchFunc="UrunAra"
+                                         ToStringFunc="u => u?.Ad ?? string.Empty"
+                                         Dense="true"
+                                         Margin="Margin.Dense"
+                                         ResetValueOnEmptyText="true"
+                                         CoerceText="false"
+                                         MinCharacters="1"
+                                         Class="mb-2" />
+
+                        <MudSelect T="int"
+                                   Label="Görsel Sırası"
+                                   @bind-Value="_secimler[satir.MedyaId].SiraNo"
+                                   Dense="true"
+                                   Margin="Margin.Dense">
+                            <MudSelectItem T="int" Value="1">1. Görsel</MudSelectItem>
+                            <MudSelectItem T="int" Value="2">2. Görsel</MudSelectItem>
+                            <MudSelectItem T="int" Value="3">3. Görsel</MudSelectItem>
+                            <MudSelectItem T="int" Value="4">4. Görsel</MudSelectItem>
+                            <MudSelectItem T="int" Value="5">5. Görsel</MudSelectItem>
+                        </MudSelect>
+                    </MudCardContent>
+                    <MudCardActions Class="pa-2 gap-1">
+                        <MudButton Size="Size.Small"
+                                   Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   OnClick="() => Kaydet(satir)"
+                                   Disabled="@(_kaydedilenId == satir.MedyaId || _secimler[satir.MedyaId].SeciliUrun == null)">
+                            @(_kaydedilenId == satir.MedyaId ? "..." : "Kaydet")
+                        </MudButton>
+                        @if (satir.EslenenUrunId.HasValue)
+                        {
+                            <MudButton Size="Size.Small"
+                                       Variant="Variant.Text"
+                                       Color="Color.Error"
+                                       OnClick="() => EslemeKaldir(satir)">
+                                Kaldır
+                            </MudButton>
+                        }
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
+        }
+    </MudGrid>
+}

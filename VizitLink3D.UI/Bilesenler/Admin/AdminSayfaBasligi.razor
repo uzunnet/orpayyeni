@@ -1,0 +1,20 @@
+<div class="admin-sayfa-basligi mb-4">
+    <div class="d-flex align-center">
+        @if (!string.IsNullOrEmpty(Ikon))
+        {
+            <MudIcon Icon="@Ikon" Size="Size.Large" Color="Color.Primary" Class="mr-3" />
+        }
+        <div>
+            <MudText Typo="Typo.h4" Class="mb-1 font-weight-bold">@Baslik</MudText>
+            @if (!string.IsNullOrEmpty(Aciklama))
+            {
+                <MudText Typo="Typo.body2" Color="Color.Secondary">@Aciklama</MudText>
+            }
+        </div>
+        <MudSpacer />
+        @if (ChildContent != null)
+        {
+            @ChildContent
+        }
+    </div>
+</div>

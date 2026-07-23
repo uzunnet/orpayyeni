@@ -1,0 +1,42 @@
+@page "/admin/dil-yonetimi"
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<PageTitle>@dil.T("admin.dilYonetimi.sayfaBasligi", "Dil ve Çeviri Yönetimi") | VizitLink3D Admin</PageTitle>
+
+<div class="d-flex justify-space-between align-center mb-6">
+    <MudText Typo="Typo.h4" Class="font-weight-bold">Dil ve Çeviri Yönetimi</MudText>
+    <MudButton Variant="Variant.Filled" Color="Color.Warning" StartIcon="@Icons.Material.Filled.AutoAwesome" OnClick="TumunuCevir" Disabled="@_yukleniyor">AI ile Tüm İçeriği Çevir</MudButton>
+</div>
+
+<MudCard Class="glass-card mb-6">
+    <MudCardContent>
+        <MudTable Items="@diller" Hover="true" Elevation="0" Class="bg-transparent" Loading="@_yukleniyor">
+            <HeaderContent>
+                <MudTh>Dil Kodu</MudTh>
+                <MudTh>Dil Adı</MudTh>
+                <MudTh>Durum</MudTh>
+                <MudTh>Çeviri Oranı</MudTh>
+                <MudTh>İşlemler</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Dil Kodu"><strong>@context.Kod</strong></MudTd>
+                <MudTd DataLabel="Dil Adı">@context.Ad</MudTd>
+                <MudTd DataLabel="Durum">
+                    @if (context.Aktif) { <MudChip T="string" Color="Color.Success" Size="Size.Small">@dil.T("ortak.aktif","Aktif")</MudChip> }
+                    else { <MudChip T="string" Color="Color.Default" Size="Size.Small">@dil.T("ortak.pasif","Pasif")</MudChip> }
+                </MudTd>
+                <MudTd DataLabel="Çeviri Oranı">
+                    <MudProgressLinear Color="Color.Primary" Value="@context.Oran" Class="my-2" />
+                    <MudText Typo="Typo.caption">%@context.Oran çevrildi</MudText>
+                </MudTd>
+                <MudTd DataLabel="İşlemler">
+                    <MudButton Variant="Variant.Text" Color="Color.Primary" Size="Size.Small">@dil.T("ortak.duzenle","Düzenle")</MudButton>
+                    <MudButton Variant="Variant.Text" Color="Color.Warning" Size="Size.Small" StartIcon="@Icons.Material.Filled.Translate" OnClick="@(() => AiCeviriYap(context))">AI Çeviri</MudButton>
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    </MudCardContent>
+</MudCard>

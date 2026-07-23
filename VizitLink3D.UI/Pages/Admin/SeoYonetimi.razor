@@ -1,0 +1,44 @@
+@page "/admin/seo-yonetimi"
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<PageTitle>@dil.T("admin.seo.sayfaBasligi", "SEO Yönetimi") | VizitLink3D Admin</PageTitle>
+
+<MudText Typo="Typo.h4" Class="mb-4">SEO Yonetimi</MudText>
+
+@if (_yukleniyor)
+{
+    <MudProgressLinear Indeterminate="true" Class="mb-4" />
+}
+
+<MudGrid>
+    <MudItem xs="12" md="4">
+        <MudText Typo="Typo.h6" Class="mb-3">Sayfa Sec</MudText>
+        <MudStack Spacing="1">
+            @foreach (var sayfa in _sayfaListesi)
+            {
+                <MudButton Variant="Variant.Text" Color="@(sayfa == _seciliBolum ? Color.Primary : Color.Default)"
+                           OnClick="() => SeciliSayfaDegisti(sayfa)" FullWidth="true" Class="justify-start text-transform-none">
+                    @sayfa
+                </MudButton>
+            }
+        </MudStack>
+    </MudItem>
+    <MudItem xs="12" md="8">
+        @if (!string.IsNullOrEmpty(_seciliBolum))
+        {
+            <MudCard Elevation="2" Class="pa-4">
+                <MudText Typo="Typo.h6" Class="mb-4">@_seciliBolum — SEO Ayarlari</MudText>
+                <MudTextField @bind-Value="_title" Label="SEO Baslik" Class="mb-3" />
+                <MudTextField @bind-Value="_desc" Label="SEO Aciklama" Lines="3" Class="mb-3" />
+                <MudTextField @bind-Value="_keywords" Label="Anahtar Kelimeler" Lines="2" Class="mb-3" />
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="KaydetAsync"
+                           Disabled="_kaydediliyor" StartIcon="@Icons.Material.Filled.Save">
+                    Kaydet
+                </MudButton>
+            </MudCard>
+        }
+    </MudItem>
+</MudGrid>

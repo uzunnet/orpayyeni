@@ -1,0 +1,70 @@
+@page "/admin/yorum-yonetimi"
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using VizitLink3D.Ortak.Modeller
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+
+<PageTitle>@($"{dil.T("admin.yorum.sayfaBasligi", "Musteri Yorumlari")} | VizitLink3D Admin")</PageTitle>
+
+<AdminSayfaBasligi Baslik="@dil.T("admin.yorum.baslik", "Musteri Yorumlari")"
+                   Aciklama="@dil.T("admin.yorum.aciklama", "Frontend yorum alaninda gorunecek onayli musteri deneyimlerini yonetin.")"
+                   Ikon="@Icons.Material.Filled.RateReview" />
+
+<AdminAracCubugu AramaMetni="@_arama"
+                 AramaMetniDegisti="AramaMetniDegisti"
+                 AramaYerMetni="@dil.T("admin.yorum.aramaYeri", "Musteri adi, sehir veya yorum ara...")" />
+
+@if (_yukleniyor)
+{
+    <AdminYukleniyorIskeleti SatirSayisi="5" />
+}
+else if (_filtreliListe.Count == 0)
+{
+    <AdminBosDurum Icon="@Icons.Material.Filled.RateReview"
+                   Baslik="@dil.T("admin.yorum.bosBaslik", "Yorum bulunamadi")"
+                   Aciklama="@dil.T("admin.yorum.bosAciklama", "Aramanizi degistirin veya yeni yorum geldiginde burada yonetin.")" />
+}
+else
+{
+    <MudDataGrid Items="@_filtreliListe"
+                 Filterable="true"
+                 SortMode="SortMode.Multiple"
+                 Dense="true"
+                 Striped="true"
+                 Hover="true">
+        <Columns>
+            <PropertyColumn Property="x => x.MusteriAdi" Title="@dil.T("admin.yorum.musteri", "Musteri")" Sortable="true" />
+            <PropertyColumn Property="x => x.MusteriSehir" Title="@dil.T("admin.yorum.sehir", "Sehir")" Sortable="true" />
+            <TemplateColumn Title="@dil.T("admin.yorum.puan", "Puan")">
+                <CellTemplate>
+                    <MudRating SelectedValue="@(context.Item.Puan)" Size="Size.Small" ReadOnly="true" />
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title="@dil.T("admin.yorum.yorum", "Yorum")">
+                <CellTemplate>
+                    <MudText Typo="Typo.body2" Class="gb-maxw-300">
+                        @((context.Item.Yorum?.Length > 80 ? context.Item.Yorum[..80] + "..." : context.Item.Yorum))
+                    </MudText>
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title="@dil.T("admin.yorum.onay", "Onay")">
+                <CellTemplate>
+                    <MudSwitch T="bool"
+                               Value="@context.Item.Onaylandi"
+                               ValueChanged="async deger => { context.Item.Onaylandi = deger; await OnayDegistir(context.Item); }"
+                               Color="Color.Success" />
+                </CellTemplate>
+            </TemplateColumn>
+            <PropertyColumn Property="x => x.YorumTarihi" Title="@dil.T("ortak.tarih", "Tarih")" Format="dd.MM.yyyy" Sortable="true" />
+            <TemplateColumn Title="@dil.T("ortak.islemler", "Islemler")">
+                <CellTemplate>
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error" OnClick="() => SilOnay(context.Item)" />
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager />
+        </PagerContent>
+    </MudDataGrid>
+}

@@ -1,0 +1,18 @@
+<MudPaper Elevation="0" Class="admin-arac-cubugu pa-3 mb-4 d-flex align-center flex-wrap">
+    @if (AramaGosterilsinMi)
+    {
+        <MudTextField T="string"
+                      Value="AramaMetni"
+                      ValueChanged="AramaMetniDegistir"
+                      Placeholder="@AramaYerMetni"
+                      Immediate="true"
+                      Variant="Variant.Outlined" Margin="Margin.Dense"
+                      Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search"
+                      Class="admin-arac-cubugu-arama" />
+    }
+    <MudSpacer />
+    @if (ChildContent != null)
+    {
+        @ChildContent
+    }
+</MudPaper>

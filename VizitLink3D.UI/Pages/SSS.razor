@@ -1,0 +1,32 @@
+﻿@page "/sss"
+@layout VizitLink3DDuzen
+
+<PageTitle>@dil.T("sss.sayfaBasligi", "Sıkça Sorulan Sorular | ORPAY")</PageTitle>
+
+<section class="gb-sss-sayfasi">
+    <div class="gb-sss-sayfasi__icerik">
+        <span class="gb-sss-sayfasi__etiket">@dil.T("sss.etiket", "BİLGİ MERKEZİ")</span>
+        <h1 class="gb-sss-sayfasi__baslik">@dil.T("sss.baslik", "Sıkça Sorulan Sorular")</h1>
+        <p class="gb-sss-sayfasi__aciklama">@dil.T("sss.aciklama", "ORPAY ürünleri, projelendirme, teslimat ve satış sonrası destek hakkında merak ettiklerinizi burada bulabilirsiniz.")</p>
+
+        @if (_yukleniyor)
+        {
+            <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
+        }
+        else if (_sss.Count == 0)
+        {
+            <MudAlert Severity="Severity.Info">@dil.T("sss.bos", "Henüz yayınlanmış bir soru-cevap kaydı bulunmuyor.")</MudAlert>
+        }
+        else
+        {
+            <MudExpansionPanels MultiExpansion="true" Class="gb-sss-sayfasi__liste">
+                @foreach (var soru in _sss)
+                {
+                    <MudExpansionPanel Text="@soru.Soru">
+                        <MudText>@soru.Cevap</MudText>
+                    </MudExpansionPanel>
+                }
+            </MudExpansionPanels>
+        }
+    </div>
+</section>

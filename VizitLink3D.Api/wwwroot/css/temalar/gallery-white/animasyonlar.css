@@ -1,0 +1,19 @@
+﻿/*
+ * Gallery White — animasyonlar.css
+ * Tema-özgü motion presetleri CokluTemaServisi tarafından üretilir.
+ */
+
+@keyframes tema-marka-akis-gallery-white {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+:root[data-tema-id="gallery-white"] .marka-parilti {
+    background: linear-gradient(135deg, var(--tema-vurgu), var(--tema-vurgu-acik), var(--tema-vurgu));
+    background-size: 200% 200%;
+    animation: tema-marka-akis-gallery-white 3s ease infinite;
+}
+
+:root[data-tema-id="gallery-white"] .gecis-tum {
+    transition: all var(--tema-gecis-normal);
+}

@@ -1,0 +1,17 @@
+@* ReferansSeridi — Aurelian Onyx logo grid *@
+
+<section class="referans-bolum">
+    <div class="section-container">
+        <div class="referans-grid">
+            @foreach (var referans in _referanslar)
+            {
+                <a href="/referanslar" class="referans-logo anim-reveal-up">
+                    <img src="@TamUrl(referans.Logo)"
+                         alt="@referans.Ad"
+                         class="referans-logo__img"
+                         loading="lazy" />
+                </a>
+            }
+        </div>
+    </div>
+</section>

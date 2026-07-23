@@ -1,0 +1,170 @@
+/*
+ * Konfigurator Studio — Admin 3 Kolon Layout Stilleri
+ * ===================================================
+ * Bu CSS, /admin/konfigurator-studio sayfasina ozgu stilleri icerir.
+ * Tum renkler tokens.css uzerinden var(--degisken) ile alinir.
+ */
+
+.gb-konfigurator-studio {
+  min-height: 70vh;
+}
+
+.gb-ks-sol-panel,
+.gb-ks-sag-panel {
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  background: var(--arkaplan-yumusak);
+  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid var(--konfigurator-cizgi-kalin);
+}
+
+.gb-ks-orta-panel {
+  min-height: 500px;
+  border: 1px solid var(--konfigurator-cizgi-kalin);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--ana-renk);
+  position: relative;
+}
+
+.gb-ks-viewer-sarici {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  min-height: 500px;
+}
+
+.gb-ks-bos-durum {
+  text-align: center;
+  padding: 48px 16px;
+  color: var(--metin-acik);
+  font-style: italic;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.gb-ks-parca-listesi {
+  max-height: 400px;
+  overflow-y: auto;
+  list-style: none;
+  padding: 0;
+  margin: 8px 0;
+}
+
+.gb-ks-parca-oge {
+  padding: 8px 12px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+  border-bottom: 1px solid var(--konfigurator-cizgi);
+}
+
+.gb-ks-parca-oge:hover {
+  background: var(--konfigurator-hover-arka-plan);
+}
+
+.gb-ks-parca-oge.secilen {
+  border-left-color: var(--ikincil-renk);
+  background: var(--konfigurator-secili-arka-plan);
+}
+
+.gb-ks-form-alani {
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gb-ks-sekme-baslik {
+  font-weight: 600;
+  color: var(--metin);
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--ikincil-renk);
+  margin-bottom: 16px;
+}
+
+.gb-ks-switch-grubu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 8px 0;
+}
+
+.gb-ks-arama {
+  margin: 12px 0;
+  width: 100%;
+}
+
+.gb-ks-model-secimi {
+  margin-bottom: 8px;
+}
+
+.gb-ks-preset-listesi {
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+.gb-ks-preset-tablo {
+  width: 100%;
+  font-size: 0.85rem;
+}
+
+.gb-ks-preset-tablo th {
+  color: var(--metin-acik);
+  font-weight: 600;
+  padding: 6px 8px;
+  text-align: left;
+}
+
+.gb-ks-preset-tablo td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--konfigurator-cizgi);
+}
+
+.gb-ks-preset-bos {
+  text-align: center;
+  padding: 32px;
+  color: var(--metin-acik);
+}
+
+.gb-ks-meta-etiket {
+  font-size: 0.75rem;
+  color: var(--metin-acik);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.gb-ks-yukleniyor {
+  position: absolute;
+  inset: 0;
+  background: var(--konfigurator-overlay-arka-plan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border-radius: 8px;
+}
+
+.gb-ks-kaydet-alani {
+  position: sticky;
+  bottom: 0;
+  background: var(--arkaplan-yumusak);
+  padding: 12px 0;
+  margin-top: 16px;
+  border-top: 1px solid var(--konfigurator-cizgi-orta);
+}
+
+/* Responsive — tablet ve mobil */
+@media (max-width: 1280px) {
+  .gb-ks-sol-panel,
+  .gb-ks-sag-panel {
+    max-height: none;
+  }
+
+  .gb-ks-orta-panel {
+    min-height: 350px;
+  }
+}

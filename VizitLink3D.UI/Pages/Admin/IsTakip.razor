@@ -1,0 +1,149 @@
+@page "/admin/is-takip"
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<PageTitle>@dil.T("istakip.sayfaBasligi", "Is Takip Defteri") | VizitLink3D Admin</PageTitle>
+
+<div class="admin-card mb-4">
+    <div class="admin-card-header">
+        <span class="admin-card-title">@dil.T("istakip.baslik","İş Takip Defteri")</span>
+        <span class="admin-nav-count">@_istatistik.Toplam</span>
+    </div>
+
+    <div class="d-flex gap-3 mb-3 admin-is-filtre">
+        <MudChipSet @bind-SelectedValue="_aktifDurum" Variant="Variant.Text" Size="Size.Small">
+            <MudChip Value="@("Tumu")" Color="Color.Default">@dil.T("ortak.tumu","Tümü") (@_istatistik.Toplam)</MudChip>
+            <MudChip Value="@("Bekliyor")" Color="Color.Warning">@dil.T("istakip.durum.bekliyor","Bekleyen") (@_istatistik.Bekleyen)</MudChip>
+            <MudChip Value="@("Yapiliyor")" Color="Color.Info">@dil.T("istakip.durum.yapiliyor","Yapılıyor") (@_istatistik.Yapiliyor)</MudChip>
+            <MudChip Value="@("Tamamlandi")" Color="Color.Success">@dil.T("istakip.durum.tamamlandi","Tamamlanan") (@_istatistik.Tamamlanan)</MudChip>
+            <MudChip Value="@("Kritik")" Color="Color.Error">@dil.T("istakip.oncelik.kritik","Kritik") (@_istatistik.Kritik)</MudChip>
+        </MudChipSet>
+        <MudSpacer />
+        <MudButton Variant="Variant.Filled" Size="Size.Small" StartIcon="@Icons.Material.Filled.Add" OnClick="YeniAc" Class="admin-btn-primary">
+            @dil.T("istakip.yeniIs","Yeni İş")
+        </MudButton>
+    </div>
+
+    @if (_liste.Any())
+    {
+        <div class="admin-table-wrap">
+            <MudTable Items="@_liste" Hover="true" Elevation="0" Loading="@_yukleniyor">
+                <HeaderContent>
+                    <MudTh>#</MudTh>
+                    <MudTh>@dil.T("istakip.baslikKolon","BAŞLIK")</MudTh>
+                    <MudTh>@dil.T("istakip.kategoriKolon","KATEGORİ")</MudTh>
+                    <MudTh>@dil.T("istakip.durumKolon","DURUM")</MudTh>
+                    <MudTh>@dil.T("istakip.oncelikKolon","ÖNCELİK")</MudTh>
+                    <MudTh>@dil.T("istakip.tarihKolon","TARİH")</MudTh>
+                    <MudTh></MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="#">@context.SiraNo</MudTd>
+                    <MudTd DataLabel="Başlık">
+                        <div>
+                            <MudText Typo="Typo.body2" Class="font-weight-bold">@context.Baslik</MudText>
+                            @if (!string.IsNullOrEmpty(context.Aciklama))
+                            {
+                                <MudText Typo="Typo.caption" Color="Color.Secondary">@context.Aciklama</MudText>
+                            }
+                        </div>
+                    </MudTd>
+                    <MudTd DataLabel="Kategori">
+                        <MudChip T="string" Size="Size.Small" Variant="Variant.Text" Class="admin-kategori-chip">
+                            @dil.T($"istakip.kategori.{context.Kategori.ToLower()}", context.Kategori)
+                        </MudChip>
+                    </MudTd>
+                    <MudTd DataLabel="Durum">
+                        <MudSelect T="string" Value="@context.Durum" ValueChanged="@(v => DurumDegistir(context, v))"
+                                   Variant="Variant.Text" Dense="true" AnchorOrigin="Origin.BottomCenter"
+                                   Class="admin-durum-select">
+                            <MudSelectItem Value="@("Bekliyor")">@dil.T("istakip.durum.bekliyor","Bekliyor")</MudSelectItem>
+                            <MudSelectItem Value="@("Yapiliyor")">@dil.T("istakip.durum.yapiliyor","Yapılıyor")</MudSelectItem>
+                            <MudSelectItem Value="@("Tamamlandi")">@dil.T("istakip.durum.tamamlandi","Tamamlandı")</MudSelectItem>
+                            <MudSelectItem Value="@("İptal")">@dil.T("istakip.durum.iptal","İptal")</MudSelectItem>
+                        </MudSelect>
+                    </MudTd>
+                    <MudTd DataLabel="Öncelik">
+                        <MudChip T="string" Size="Size.Small" Class="@($"admin-oncelik-{context.Oncelik.ToLower()}")">
+                            @dil.T($"istakip.oncelik.{context.Oncelik.ToLower()}", context.Oncelik)
+                        </MudChip>
+                    </MudTd>
+                    <MudTd DataLabel="Tarih">
+                        <MudText Typo="Typo.caption">
+                            @(context.TamamlanmaTarihi?.ToString("dd.MM.yyyy") ?? context.OlusturulmaTarihi.ToString("dd.MM.yyyy"))
+                        </MudText>
+                    </MudTd>
+                    <MudTd>
+                        <MudTooltip Text="Düzenle">
+                            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Edit" OnClick="@(() => DuzenleAc(context))" />
+                        </MudTooltip>
+                        <MudTooltip Text="Sil">
+                            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(() => SilOnay(context))" />
+                        </MudTooltip>
+                    </MudTd>
+                </RowTemplate>
+                <NoRecordsContent>
+                    <MudText>@dil.T("istakip.bos","Henüz iş kaydı yok.")</MudText>
+                </NoRecordsContent>
+            </MudTable>
+        </div>
+    }
+    else
+    {
+        <div class="bos-durum">
+            <div class="bos-ikon">
+                <MudIcon Icon="@Icons.Material.Filled.Assignment" Class="admin-bos-durum-ikon" />
+            </div>
+            <div class="bos-baslik">@dil.T("istakip.bos","Henüz iş kaydı yok.")</div>
+            <div class="bos-aciklama">Yeni bir iş ekleyerek takibe başlayabilirsiniz.</div>
+        </div>
+    }
+</div>
+
+@* Yeni/Düzenle Dialog *@
+<MudDialog @bind-Visible="_dialogAcik" Class="admin-dialog">
+    <TitleContent>
+        <MudText Typo="Typo.h6">@(_duzenlemeModu ? dil.T("istakip.isiDuzenle","İşi Düzenle") : dil.T("istakip.yeniIsEkle","Yeni İş Ekle"))</MudText>
+    </TitleContent>
+    <DialogContent>
+        <div class="d-flex flex-column gap-3 admin-is-dialog-form">
+            <MudTextField @bind-Value="_form.Baslik" Label="@dil.T("istakip.baslikKolon","Başlık")" Variant="Variant.Outlined" />
+            <MudTextField @bind-Value="_form.Aciklama" Label="@dil.T("istakip.aciklama","Açıklama")" Variant="Variant.Outlined" Lines="3" />
+            <div class="d-flex gap-3">
+                <MudSelect @bind-Value="_form.Kategori" Label="@dil.T("istakip.kategoriKolon","Kategori")" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" Class="flex-grow-1">
+                    <MudSelectItem Value="@("Backend")">@dil.T("istakip.kategori.backend","Backend")</MudSelectItem>
+                    <MudSelectItem Value="@("Frontend")">@dil.T("istakip.kategori.frontend","Frontend")</MudSelectItem>
+                    <MudSelectItem Value="@("Tasarim")">@dil.T("istakip.kategori.tasarim","Tasarım")</MudSelectItem>
+                    <MudSelectItem Value="@("Altyapi")">@dil.T("istakip.kategori.altyapi","Altyapı")</MudSelectItem>
+                    <MudSelectItem Value="@("Diger")">@dil.T("istakip.kategori.diger","Diğer")</MudSelectItem>
+                </MudSelect>
+                <MudSelect @bind-Value="_form.Oncelik" Label="@dil.T("istakip.oncelikKolon","Öncelik")" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" Class="flex-grow-1">
+                    <MudSelectItem Value="@("Dusuk")">@dil.T("istakip.oncelik.dusuk","Düşük")</MudSelectItem>
+                    <MudSelectItem Value="@("Orta")">@dil.T("istakip.oncelik.orta","Orta")</MudSelectItem>
+                    <MudSelectItem Value="@("Yuksek")">@dil.T("istakip.oncelik.yuksek","Yüksek")</MudSelectItem>
+                    <MudSelectItem Value="@("Kritik")">@dil.T("istakip.oncelik.kritik","Kritik")</MudSelectItem>
+                </MudSelect>
+            </div>
+        </div>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="DialogKapat" Class="admin-btn-secondary">@dil.T("ortak.iptal","İPTAL")</MudButton>
+        <MudButton Variant="Variant.Filled" OnClick="KaydetAsync" Class="admin-btn-primary">@dil.T("ortak.kaydet","KAYDET")</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@* Silme Onay Dialogu *@
+<MudDialog @bind-Visible="_silDialogAcik" Class="admin-dialog">
+    <TitleContent>
+        <MudText Typo="Typo.h6">Silme Onayı</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudText Typo="Typo.body2">"@_silinecek?.Baslik" iş kaydı silinecek. Emin misiniz?</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@(() => _silDialogAcik = false)" Class="admin-btn-secondary">@dil.T("ortak.iptal","İptal")</MudButton>
+        <MudButton Variant="Variant.Filled" OnClick="SilAsync" Class="admin-btn-danger">@dil.T("ortak.sil","Sil")</MudButton>
+    </DialogActions>
+</MudDialog>

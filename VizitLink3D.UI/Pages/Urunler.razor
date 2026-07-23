@@ -1,0 +1,144 @@
+@page "/urunler"
+@page "/banyo-dolaplari"
+@layout VizitLink3DDuzen
+
+<PageTitle>@dil.T("menu.urunler", "Banyo Dolapları")</PageTitle>
+
+@if (_yukleniyor)
+{
+    <section class="gb-page">
+        <div class="gb-panel">
+            <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
+            <MudText Typo="Typo.h6" Class="mt-4">@dil.T("ortak.yukleniyor", "Yükleniyor...")</MudText>
+        </div>
+    </section>
+}
+else
+{
+    @if (!string.IsNullOrWhiteSpace(HataMesaji))
+    {
+        <section class="gb-page">
+            <div class="gb-panel">
+                <MudText Typo="Typo.h6">@dil.T("ortak.hata", "Bir hata oluştu.")</MudText>
+                <MudText Typo="Typo.body2">@HataMesaji</MudText>
+            </div>
+        </section>
+    }
+
+    <section class="gb-showcase-hero">
+        <div class="gb-showcase-hero__isik"></div>
+        <div class="gb-page gb-showcase-hero__icerik">
+            <div class="gb-showcase-hero__metin">
+                <span class="gb-kicker">@dil.T("menu.urunler", "Banyo Dolapları")</span>
+                <h1 class="gb-showcase-hero__baslik">@dil.T("urunler.heroBaslik", "Banyo dolaplarında altın oran, yumuşak çizgi ve showroom etkisi.")</h1>
+                <p class="gb-showcase-hero__aciklama">
+                    @dil.T("urunler.heroAciklama", "Ürünler artık admin panelinden yönetilen gerçek ürün kayıtlarından beslenen temiz bir vitrin akışıyla sunuluyor. Koleksiyonlara göre gezebilir, her modelin detay sahnesine tek tıkla geçebilirsin.")
+                </p>
+                <div class="gb-showcase-hero__eylemler">
+                    <a class="gb-btn gb-btn--birincil" href="#koleksiyonlar">@dil.T("urunler.koleksiyonlar", "Koleksiyonları İncele")</a>
+                    <a class="gb-btn gb-btn--cami" href="/katalog">@dil.T("menu.katalog", "Katalog")</a>
+                </div>
+            </div>
+
+            <div class="gb-showcase-hero__vitrin">
+                @foreach (var urun in VitrinUrunleri)
+                {
+                    <a class="gb-vitrin-karti gb-glint-hover" href="/banyo-dolabi/@urun.Slug">
+                        <img src="@GorselUrl(urun)" alt="@urun.Ad" />
+                        <div class="gb-vitrin-karti__yazi">
+                            <span>@KoleksiyonAdi(urun)</span>
+                            <strong>@urun.Ad</strong>
+                        </div>
+                    </a>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+<section class="gb-page">
+    <div class="gb-mini-metrik">
+        <div class="gb-mini-metrik__kart">
+            <strong>@ToplamUrun</strong>
+            <span>@dil.T("urunler.model", "Model")</span>
+        </div>
+        <div class="gb-mini-metrik__kart">
+            <strong>@KoleksiyonAdlari.Count()</strong>
+            <span>@dil.T("urunler.koleksiyon", "Koleksiyon")</span>
+        </div>
+        <div class="gb-mini-metrik__kart">
+            <strong>@OneCikanAdedi</strong>
+            <span>@dil.T("urunler.oneCikan", "Öne Çıkan Seri")</span>
+        </div>
+        <div class="gb-mini-metrik__kart">
+            <strong>2026</strong>
+            <span>@dil.T("urunler.sezon", "Katalog Sezonu")</span>
+        </div>
+    </div>
+
+    <div class="gb-urunler-govde" id="koleksiyonlar">
+        <aside class="gb-panel gb-panel--filtre">
+            <span class="gb-kicker">@dil.T("urunler.filtre", "Koleksiyon Filtresi")</span>
+            <h2 class="gb-blok-baslik">@dil.T("urunler.filtreBaslik", "Koleksiyona göre gezinin")</h2>
+
+            <div class="gb-panel--filtre__liste">
+                <button class="@KoleksiyonSinifi(null)" @onclick="@(() => KoleksiyonSec(null))">@dil.T("ortak.tumu", "Tümü")</button>
+                @foreach (var koleksiyonAdi in KoleksiyonAdlari)
+                {
+                    <button class="@KoleksiyonSinifi(SlugaCevir(koleksiyonAdi))" @onclick="@(() => KoleksiyonSec(SlugaCevir(koleksiyonAdi)))">@koleksiyonAdi</button>
+                }
+            </div>
+        </aside>
+
+        <div class="gb-urunler-icerik">
+            @foreach (var grup in Gruplar)
+            {
+                <section class="gb-koleksiyon-blok" id="@grup.Anchor">
+                    <div class="gb-koleksiyon-blok__ust">
+                        <div>
+                            <span class="gb-koleksiyon-rozet">@grup.Ad</span>
+                            <h3 class="gb-koleksiyon-baslik">@($"{grup.Ad} {dil.T("urunler.koleksiyon", "Koleksiyonu")}")</h3>
+                        </div>
+                        <p class="gb-koleksiyon-aciklama">@grup.Aciklama</p>
+                    </div>
+
+                    <div class="gb-product-grid gb-product-grid--iki-sutun">
+                        @foreach (var urun in grup.Urunler)
+                        {
+                            <a class="gb-product-card gb-glint-hover" href="/banyo-dolabi/@urun.Slug">
+                                <div class="gb-product-card__gorsel">
+                                    <img src="@GorselUrl(urun)" alt="@urun.Ad" />
+                                    <div class="gb-product-card__overlay"></div>
+                                    <div class="gb-product-card__rozetler">
+                                        @if (urun.YeniMi)
+                                        {
+                                            <span class="gb-badge">@dil.T("urun.yeni", "Yeni")</span>
+                                        }
+                                        @if (urun.OneCikanMi)
+                                        {
+                                            <span class="gb-badge gb-badge--altin">@dil.T("urun.oneCikan", "Öne Çıkan")</span>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="gb-product-card__icerik">
+                                    <div class="gb-product-card__ust">
+                                        <span class="gb-product-card__koleksiyon">@KoleksiyonAnahtari(urun)</span>
+                                        <span class="gb-product-card__kod">@urun.Kod</span>
+                                    </div>
+                                    <h4 class="gb-product-card__baslik">@urun.Ad</h4>
+                                    <p class="gb-product-card__metin">@OzetMetni(urun)</p>
+
+                                    <div class="gb-product-card__etiketler">
+                                        <span>@KategoriAdi(urun)</span>
+                                    </div>
+
+                                    <span class="gb-product-card__link">@dil.T("urun.detayAc", "Detayları Keşfet")</span>
+                                </div>
+                            </a>
+                        }
+                    </div>
+                </section>
+            }
+        </div>
+    </div>
+</section>

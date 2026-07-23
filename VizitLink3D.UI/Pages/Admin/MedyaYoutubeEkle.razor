@@ -1,0 +1,85 @@
+@page "/admin/medya-youtube-ekle"
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Admin,SuperAdmin")]
+
+<PageTitle>@dil.T("admin.medya.youtubeSayfaBaslik", "YouTube Ekle") | VizitLink3D Admin</PageTitle>
+
+<AdminSayfaBasligi Baslik='@dil.T("admin.medya.youtubeBaslik", "YouTube Ekle")'
+                   Aciklama='@dil.T("admin.medya.youtubeAciklama", "YouTube bağlantısını medya havuzuna ekleyin ve ürün ya da ana sayfada kullanın.")'
+                   Ikon="@Icons.Material.Filled.PlayCircle">
+</AdminSayfaBasligi>
+
+<MudGrid Spacing="3">
+    <MudItem xs="12" md="7">
+        <MudCard Elevation="0" Class="pa-5">
+            <MudStack Spacing="3">
+                <MudTextField T="string"
+                              Label='@dil.T("medya.youtubeUrl", "YouTube URL")'
+                              @bind-Value="_url"
+                              Immediate="true"
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.Link"
+                              Placeholder="https://www.youtube.com/watch?v=... veya https://youtu.be/..."
+                              OnBlur="UrlDogrula"
+                              Variant="Variant.Outlined" />
+
+                <MudTextField T="string"
+                              Label='@dil.T("ortak.baslik", "Başlık")'
+                              @bind-Value="_baslik"
+                              Placeholder='@dil.T("admin.medya.youtubeBaslikIstegeBagli", "İsteğe bağlı video başlığı")'
+                              Variant="Variant.Outlined" />
+
+                @if (!string.IsNullOrEmpty(_hata))
+                {
+                    <MudAlert Severity="Severity.Error" Variant="Variant.Outlined">@_hata</MudAlert>
+                }
+
+                @if (_onizlemeYukleniyor)
+                {
+                    <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+                }
+
+                <div class="d-flex flex-wrap gap-2">
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               StartIcon="@Icons.Material.Filled.AddCircleOutline"
+                               Disabled="@(!_gecerli || _kaydediliyor)"
+                               OnClick="EkleAsync">
+                        @(_kaydediliyor ? dil.T("ortak.kaydediliyor", "Kaydediliyor...") : dil.T("ortak.ekle", "Ekle"))
+                    </MudButton>
+                    <MudButton Variant="Variant.Outlined"
+                               Color="Color.Secondary"
+                               Disabled="@_kaydediliyor"
+                               OnClick="FormuTemizle">
+                        @dil.T("ortak.temizle", "Temizle")
+                    </MudButton>
+                </div>
+            </MudStack>
+        </MudCard>
+    </MudItem>
+
+    <MudItem xs="12" md="5">
+        <MudCard Elevation="0" Class="pa-5">
+            <MudText Typo="Typo.h6">@dil.T("medya.onizleme", "Önizleme")</MudText>
+            <MudDivider Class="my-3" />
+
+            @if (!string.IsNullOrWhiteSpace(_miniaturUrl))
+            {
+                <img src="@_miniaturUrl"
+                     alt="@_videoBaslik"
+                     loading="lazy"
+                     style="width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:16px;border:1px solid rgba(255,255,255,.08);" />
+
+                <MudText Typo="Typo.subtitle2" Class="mt-3">@_videoBaslik</MudText>
+                <MudText Typo="Typo.caption" Color="Color.Secondary">@_videoId</MudText>
+            }
+            else
+            {
+                <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">
+                    @dil.T("admin.medya.youtubeOnizlemeBos", "Geçerli bir YouTube bağlantısı girildiğinde önizleme burada görünecek.")
+                </MudAlert>
+            }
+        </MudCard>
+    </MudItem>
+</MudGrid>

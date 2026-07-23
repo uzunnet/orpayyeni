@@ -1,0 +1,94 @@
+@using VizitLink3D.Ortak.Modeller
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+
+@if (_yukleniyor)
+{
+    <div class="d-flex justify-center align-center" style="min-height:60vh;">
+        <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" />
+    </div>
+}
+else if (_sayfa == null)
+{
+    <div class="text-center py-16">
+        <MudIcon Icon="@Icons.Material.Filled.ErrorOutline" Size="Size.Large" Style="color:var(--gb-text-muted);" />
+        <MudText Typo="Typo.h6" Style="color:var(--gb-text-muted);" Class="mt-4">@dil.T("sayfa.bulunamadi", "Sayfa bulunamadı")</MudText>
+    </div>
+}
+else
+{
+    @foreach (var bolum in _sayfa.Bolumler.OrderBy(b => b.Sira))
+    {
+        <div class="gb-bolum @($"anim-{bolum.AnimasyonTipi}")" style="@(string.IsNullOrEmpty(bolum.ArkaPlanRengi) ? "" : $"background-color:{bolum.ArkaPlanRengi};")">
+            @switch (bolum.BolumTipi)
+            {
+                case "HeroSlider":
+                    <div class="gb-hero" style="min-height:60vh;display:flex;align-items:center;position:relative;overflow:hidden;">
+                        @if (bolum.Bloklar.Any())
+                        {
+                            var slayt = bolum.Bloklar[0];
+                            <div style="position:absolute;inset:0;z-index:0;">
+                                <img src="@(GorselAdresi(slayt.GorselUrl) ?? "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200")" 
+                                     alt="@slayt.Icerik" style="width:100%;height:100%;object-fit:cover;" />
+                                <div style="position:absolute;inset:0;background:rgba(0,0,0,0.4);"></div>
+                            </div>
+                            <MudContainer MaxWidth="MaxWidth.Large" Style="position:relative;z-index:1;">
+                                @if (!string.IsNullOrEmpty(slayt.Ikon)) { <MudChip T="string" Color="Color.Primary" Variant="Variant.Outlined" Size="Size.Small" Style="color:white;border-color:rgba(255,255,255,0.5);">@slayt.Ikon</MudChip> }
+                                <MudText Typo="Typo.h1" Style="color:white;font-weight:700;margin-top:1rem;">@(slayt.Icerik ?? bolum.Baslik)</MudText>
+                                @if (!string.IsNullOrEmpty(bolum.Aciklama)) { <MudText Typo="Typo.body1" Style="color:rgba(255,255,255,0.8);max-width:600px;">@bolum.Aciklama</MudText> }
+                                @if (!string.IsNullOrEmpty(slayt.Link)) { <MudButton Href="@slayt.Link" Variant="Variant.Filled" Color="Color.Primary" Class="mt-4">@(bolum.ButonMetni ?? dil.T("kesfet", "Keşfet"))</MudButton> }
+                            </MudContainer>
+                        }
+                    </div>
+                    break;
+
+                case "KartGrid":
+                    <MudContainer MaxWidth="MaxWidth.Large" Class="py-16">
+                        @if (!string.IsNullOrEmpty(bolum.Baslik)) { <MudText Typo="Typo.h3" Class="text-center mb-8">@bolum.Baslik</MudText> }
+                        <MudGrid Spacing="4">
+                            @foreach (var blok in bolum.Bloklar)
+                            {
+                                <MudItem xs="12" sm="6" md="3">
+                                    <MudCard Elevation="1" Class="gb-kart">
+                                        @if (!string.IsNullOrEmpty(blok.GorselUrl)) { <MudCardMedia Image="@GorselAdresi(blok.GorselUrl)" Height="200" /> }
+                                        <MudCardContent>
+                                            <MudText Typo="Typo.h6">@blok.Icerik</MudText>
+                                        </MudCardContent>
+                                        @if (!string.IsNullOrEmpty(blok.Link))
+                                        {
+                                            <MudCardActions><MudButton Href="@blok.Link" Variant="Variant.Text" Color="Color.Primary">@dil.T("incele", "İncele")</MudButton></MudCardActions>
+                                        }
+                                    </MudCard>
+                                </MudItem>
+                            }
+                        </MudGrid>
+                    </MudContainer>
+                    break;
+
+                case "MetinGorsel":
+                    <MudContainer MaxWidth="MaxWidth.Large" Class="py-16">
+                        <MudGrid>
+                            <MudItem xs="12" md="6">
+                                @if (!string.IsNullOrEmpty(bolum.Baslik)) { <MudText Typo="Typo.h3" Class="mb-4">@bolum.Baslik</MudText> }
+                                @if (!string.IsNullOrEmpty(bolum.Aciklama)) { <MudText Typo="Typo.body1" Style="color:var(--gb-text-secondary);">@bolum.Aciklama</MudText> }
+                                @if (!string.IsNullOrEmpty(bolum.ButonMetni)) { <MudButton Href="@bolum.ButonLink" Variant="Variant.Outlined" Color="Color.Primary" Class="mt-4">@bolum.ButonMetni</MudButton> }
+                            </MudItem>
+                            @if (!string.IsNullOrEmpty(bolum.GorselUrl))
+                            {
+                                <MudItem xs="12" md="6"><img src="@GorselAdresi(bolum.GorselUrl)" alt="@bolum.Baslik" style="width:100%;height:auto;border-radius:8px;" /></MudItem>
+                            }
+                        </MudGrid>
+                    </MudContainer>
+                    break;
+
+                default:
+                    if (!string.IsNullOrEmpty(bolum.Aciklama))
+                    {
+                        <MudContainer MaxWidth="MaxWidth.Large" Class="py-8">
+                            <MudText Typo="Typo.body1">@bolum.Aciklama</MudText>
+                        </MudContainer>
+                    }
+                    break;
+            }
+        </div>
+    }
+}

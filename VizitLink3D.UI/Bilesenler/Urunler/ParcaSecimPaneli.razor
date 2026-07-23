@@ -1,0 +1,49 @@
+@using VizitLink3D.Ortak.Modeller.Urunler
+
+<div class="gb-parca-panel">
+    <MudText Typo="Typo.subtitle1" Class="mb-4">
+        @dil.T("konfigurator.parcaSecimi", "Parça Seçimi")
+    </MudText>
+
+    @if (!Parcalar.Any())
+    {
+        <MudText Typo="Typo.body2" Color="Color.Dark">
+            @dil.T("konfigurator.parcaYok", "Seçilebilir parça bulunmamaktadır.")
+        </MudText>
+    }
+    else
+    {
+        <MudStack Row="false" Spacing="1">
+            @foreach (var parca in Parcalar)
+            {
+                <MudPaper Elevation="@(parca.Id == SeciliParcaId ? 2 : 0)"
+                          Class="@ParcaSinifi(parca)"
+                          @onclick="@(() => ParcaTiklandi(parca))">
+                    <MudGrid Spacing="0" Class="align-center">
+                        <MudItem xs="2" Class="d-flex justify-center">
+                            <MudIcon Icon="@Icons.Material.Filled.Category"
+                                     Color="@(parca.Id == SeciliParcaId ? Color.Primary : Color.Dark)" />
+                        </MudItem>
+                        <MudItem xs="8">
+                            <MudText Typo="Typo.body2" Class="@(parca.Id == SeciliParcaId ? "gb-parca-ad-secili" : "gb-parca-ad")">
+                                @parca.GorunenAd
+                            </MudText>
+                            @if (!string.IsNullOrEmpty(parca.MeshAdi))
+                            {
+                                <MudText Typo="Typo.caption" Color="Color.Dark">
+                                    @parca.MeshAdi
+                                </MudText>
+                            }
+                        </MudItem>
+                        <MudItem xs="2" Class="d-flex justify-end">
+                            @if (parca.Id == SeciliParcaId)
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Primary" Size="Size.Small" />
+                            }
+                        </MudItem>
+                    </MudGrid>
+                </MudPaper>
+            }
+        </MudStack>
+    }
+</div>

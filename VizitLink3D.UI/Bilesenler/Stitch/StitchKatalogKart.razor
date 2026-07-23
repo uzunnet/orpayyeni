@@ -1,0 +1,24 @@
+@* StitchKatalogKart — Aurelian Onyx katalog grid kartı *@
+
+<article class="stitch-katalog-kart">
+    <div class="stitch-katalog-kart__onizleme">
+        <img src="@GorselUrl" alt="@Baslik" loading="lazy" />
+        <span class="stitch-katalog-kart__yil">@Yil</span>
+    </div>
+    <div class="stitch-katalog-kart__govde">
+        <h5 class="stitch-katalog-kart__baslik">@Baslik</h5>
+        @if (!string.IsNullOrEmpty(Aciklama))
+        {
+            <p class="stitch-katalog-kart__aciklama">@Aciklama</p>
+        }
+        <div class="stitch-katalog-kart__aksiyonlar">
+            <a href="@InceleUrl" class="btn-birincil btn-sm">@InceleMetin</a>
+            @if (!string.IsNullOrEmpty(IndirUrl))
+            {
+                <a href="@IndirUrl" target="_blank" class="btn-ghost btn-sm" download>
+                    <span class="material-symbols-outlined">download</span>
+                </a>
+            }
+        </div>
+    </div>
+</article>

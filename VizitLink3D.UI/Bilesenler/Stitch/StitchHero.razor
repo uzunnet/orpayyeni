@@ -1,0 +1,27 @@
+@* StitchHero — Aurelian Onyx fullscreen hero bileşeni *@
+
+<div class="stitch-hero">
+    <div class="stitch-hero__bg" style="@(string.IsNullOrEmpty(GorselUrl) ? "" : $"background-image:url('{GorselUrl}')")"></div>
+    <div class="stitch-hero__overlay"></div>
+    <div class="stitch-hero__icerik">
+        @if (!string.IsNullOrEmpty(UstBaslik))
+        {
+            <span class="stitch-hero__ust-baslik anim-reveal-up">@UstBaslik</span>
+        }
+        <h1 class="stitch-hero__baslik anim-reveal-up stagger-1">@Baslik</h1>
+        @if (!string.IsNullOrEmpty(Aciklama))
+        {
+            <p class="stitch-hero__aciklama anim-reveal-up stagger-2">@Aciklama</p>
+        }
+        <div class="stitch-hero__cta-grup anim-reveal-up stagger-3">
+            @if (!string.IsNullOrEmpty(CtaMetin))
+            {
+                <a href="@CtaUrl" class="stitch-hero__cta btn-birincil anim-marka-akis">@CtaMetin</a>
+            }
+            @if (!string.IsNullOrEmpty(Cta2Metin))
+            {
+                <a href="@Cta2Url" class="stitch-hero__cta btn-ghost">@Cta2Metin</a>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,48 @@
+@page "/pdf-gosterici"
+@layout VizitLink3DDuzen
+
+<PageTitle>@_baslik</PageTitle>
+
+<main class="gb-page gb-pdf-gosterici-sayfasi">
+    <section class="gb-panel gb-pdf-gosterici-ust">
+        <div>
+            <MudText Typo="Typo.overline" Class="gb-pdf-gosterici-etiket">@DilServisi.T("pdfGosterici.etiket", "BELGE GÖSTERİCİ")</MudText>
+            <MudText Typo="Typo.h2" Class="gb-pdf-gosterici-baslik">@_baslik</MudText>
+        </div>
+        <div class="gb-pdf-gosterici-aksiyonlar">
+            <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Filled.ArrowBack" OnClick="GeriDon">
+                @DilServisi.T("ortak.geri", "Geri")
+            </MudButton>
+            @if (!string.IsNullOrWhiteSpace(_belgeUrl))
+            {
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Download" Href="@_belgeUrl" Target="_blank">
+                    @DilServisi.T("pdfGosterici.indir", "PDF İndir")
+                </MudButton>
+            }
+        </div>
+    </section>
+
+    <section class="gb-panel gb-pdf-gosterici-panel">
+        @if (string.IsNullOrWhiteSpace(_belgeUrl))
+        {
+            <div class="gb-pdf-gosterici-bos">
+                <MudIcon Icon="@Icons.Material.Filled.PictureAsPdf" Size="Size.Large" />
+                <MudText Typo="Typo.h5">@DilServisi.T("pdfGosterici.dosyaYok", "PDF dosyası bulunamadı.")</MudText>
+            </div>
+        }
+        else if (_gorselMi)
+        {
+            <div class="gb-pdf-gosterici-gorsel">
+                <img src="@_belgeUrl" alt="@_baslik" />
+            </div>
+        }
+        else
+        {
+            <div class="gb-pdf-gosterici-cerceve">
+                <iframe class="gb-pdf-gosterici-yerel-okuyucu"
+                        src="@_belgeUrl"
+                        title="@_baslik"></iframe>
+            </div>
+        }
+    </section>
+</main>

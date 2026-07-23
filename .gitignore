@@ -1,0 +1,123 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+.vs/
+
+# Blazor WASM
+_framework/
+_framework/*.gz
+_framework/*.br
+
+# NuGet
+*.nupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+*.nuget.props
+*.nuget.targets
+
+# Veritabanı
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
+*.db.bak
+# vizitlink3d.db artik imaja gomulmuyor — uygulama ilk acilista migration+seed
+# ile kendi olusturuyor (bkz. Program.cs, entrypoint.sh). Repo'da tutulmaz
+# (1GB+'a ulasabiliyor, GitHub'in tek dosya limitini asiyor).
+VizitLink3D.Api/vizitlink3d.db
+Yedekler/db/*.db
+
+# AI API Key (güvenlik)
+*.apikey
+ai.config.json
+
+# Ortam Değişkenleri (Gizli Anahtarlar)
+.env
+.env.*
+!.env.example
+appsettings.Production.json
+appsettings.*.local.json
+.codex/config.toml
+
+# Loglar
+*.log
+logs/
+*.trace
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Docker
+.docker/
+
+# Test
+TestResults/
+*.trx
+*.coverage
+
+# Publish çıktısı
+yayin/
+publish/
+publish-*/
+ui-live/
+_ui_serve/
+
+# Python scriptleri (yasak)
+*.py
+
+# Geçici Dosyalar
+*.tmp
+*.temp
+~$*
+tmp/
+*.zip
+*.binlog
+api_*.txt
+ui_*.txt
+*_err.txt
+
+# Yerel ajan ve tarayıcı çalışma çıktıları
+.abacusai/
+.mimocode/
+.playwright-cli/
+.playwright-mcp/
+.artifacts-*/
+
+# Medya dönüşüm yedekleri kaynak depoya girmez
+**/_yedek_*/
+
+# Yedekler (anayasa yedekleri hariç)
+Yedekler/db/
+!Yedekler/db/.gitkeep
+
+# Large 3D files - handled by Docker
+Desadoor.Api/wwwroot/medya/3d/NRD 100_*.glb
+Desadoor.Api/wwwroot/medya/3d/NRD 101_*.glb
+
+# Medya dosyalari (Docker ile tasinir)
+wwwroot/medya/
+wwwroot/lib/
+wwwroot/flags/
+
+# Kutuphane dosyalari (NuGet/CDN ile gelir)
+wwwroot/lib/
+wwwroot/js/lib/
+wwwroot/flags/
+wwwroot/img/
+# Publish artiklari (build artifact, kaynakta durmasin)
+ui-publish/
+Yedekler/
+
+# Python sanal ortam
+UcBoyutMotor/venv/
+

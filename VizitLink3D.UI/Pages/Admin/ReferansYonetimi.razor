@@ -1,0 +1,116 @@
+@page "/admin/referans-yonetimi"
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using VizitLink3D.Ortak.Modeller
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+
+<PageTitle>@($"{dil.T("admin.referans.sayfaBasligi", "Referans Yonetimi")} | VizitLink3D Admin")</PageTitle>
+
+<AdminSayfaBasligi Baslik="@dil.T("admin.referans.baslik", "Referans Yonetimi")"
+                   Aciklama="@dil.T("admin.referans.aciklama", "Frontend referans seridi ve referanslar sayfasinda yayinlanan kayitlari yonetin.")"
+                   Ikon="@Icons.Material.Filled.Handshake" />
+
+<AdminAracCubugu AramaMetni="@_arama"
+                 AramaMetniDegisti="AramaMetniDegisti"
+                 AramaYerMetni="@dil.T("ortak.ara", "Ara...")">
+    <MudButton Variant="Variant.Outlined" Color="Color.Info" StartIcon="@Icons.Material.Filled.GTranslate" OnClick="TumuCevir" Disabled="@(_tumCeviriCalisiyor || _yukleniyor || _filtreliListe.Count == 0)">
+        @(_tumCeviriCalisiyor ? $"{dil.T("admin.ceviri.tumuCeviriliyor", "Tumu cevriliyor...")} {_ceviriIslenen}/{_ceviriToplam}" : dil.T("admin.ceviri.tumuCevir", "Tumu Cevir"))
+    </MudButton>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="YeniAc">
+        @dil.T("admin.referans.yeni", "Yeni Referans")
+    </MudButton>
+</AdminAracCubugu>
+
+@if (!_yukleniyor && _ceviriAnalizi is not null)
+{
+    <AdminCeviriOzetRozetleri Ozet="@_ceviriAnalizi.Ozet" />
+}
+
+@if (_yukleniyor)
+{
+    <AdminYukleniyorIskeleti SatirSayisi="5" />
+}
+
+@if (_formAcik)
+{
+    <MudPaper Elevation="0" Class="admin-form-panel pa-4 mb-4">
+        <MudText Typo="Typo.h6" Class="mb-4">@(_duzenleme ? dil.T("admin.referans.duzenle", "Referans Duzenle") : dil.T("admin.referans.yeni", "Yeni Referans"))</MudText>
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudTextField @bind-Value="_form.Ad" Label="@dil.T("admin.referans.ad", "Ad")" Required="true" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudSelect T="string" @bind-Value="_form.Tip" Label="@dil.T("admin.referans.tip", "Tip")" Required="true">
+                    <MudSelectItem Value="@("Medya")">Medya</MudSelectItem>
+                    <MudSelectItem Value="@("Musteri")">Musteri</MudSelectItem>
+                    <MudSelectItem Value="@("Tedarikci")">Tedarikci</MudSelectItem>
+                    <MudSelectItem Value="@("Sertifika")">Sertifika</MudSelectItem>
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudTextField @bind-Value="_form.Logo" Label="@dil.T("admin.referans.logoUrl", "Logo URL")" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudTextField @bind-Value="_form.WebSite" Label="@dil.T("admin.referans.webSite", "Web Sitesi")" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField @bind-Value="_form.Aciklama" Label="@dil.T("ortak.aciklama", "Açıklama")" Lines="3" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudNumericField @bind-Value="_form.SiraNo" Label="@dil.T("ortak.siraNo", "Sıra No")" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudSwitch @bind-Value="_form.AktifMi" Label="@dil.T("ortak.aktif", "Aktif")" />
+            </MudItem>
+        </MudGrid>
+        <div class="admin-form-actions">
+            <MudButton OnClick="Iptal" Color="Color.Secondary">@dil.T("ortak.iptal", "İptal")</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save" OnClick="Kaydet">@dil.T("ortak.kaydet", "Kaydet")</MudButton>
+        </div>
+    </MudPaper>
+}
+
+@if (!_yukleniyor && _filtreliListe.Count == 0)
+{
+    <AdminBosDurum Icon="@Icons.Material.Filled.Handshake"
+                   Baslik="@dil.T("admin.referans.bosBaslik", "Referans bulunamadi")"
+                   Aciklama="@dil.T("admin.referans.bosAciklama", "Yeni referans ekleyerek frontend referans alanlarini canlandirin.")">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="YeniAc">
+            @dil.T("admin.referans.yeni", "Yeni Referans")
+        </MudButton>
+    </AdminBosDurum>
+}
+else if (!_yukleniyor)
+{
+    <MudDataGrid Items="@_filtreliListe" Filterable="true" SortMode="SortMode.Multiple" Dense="true" Striped="true" Hover="true">
+        <Columns>
+            <PropertyColumn Property="x => x.SiraNo" Title="@dil.T("ortak.sira", "Sıra")" Sortable="true" />
+            <PropertyColumn Property="x => x.Ad" Title="@dil.T("admin.referans.ad", "Ad")" Sortable="true" />
+            <PropertyColumn Property="x => x.Tip" Title="@dil.T("admin.referans.tip", "Tip")" Sortable="true" />
+            <TemplateColumn Title="@dil.T("ortak.aktif", "Aktif")">
+                <CellTemplate>
+                    <MudChip Size="Size.Small" Color="@(context.Item.AktifMi ? Color.Success : Color.Error)" Variant="Variant.Outlined">
+                        @(context.Item.AktifMi ? dil.T("ortak.aktif", "Aktif") : dil.T("ortak.pasif", "Pasif"))
+                    </MudChip>
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title="@dil.T("admin.ceviri.durum", "Ceviri Durumu")">
+                <CellTemplate>
+                    <AdminCeviriDurumRozeti Durum="@(_ceviriAnalizi?.Durumlar.TryGetValue(context.Item.Id, out var durum) == true ? durum : null)" />
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title="@dil.T("ortak.islemler", "Islemler")">
+                <CellTemplate>
+                    <MudIconButton Icon="@Icons.Material.Filled.Translate" Size="Size.Small" Color="Color.Info" OnClick="() => AICeviriDialogAc(context.Item)" />
+                    <MudIconButton Icon="@Icons.Material.Filled.AutoAwesome" Size="Size.Small" Color="Color.Primary" Disabled="@_tumCeviriCalisiyor" OnClick="() => KaydiTumDillerdeCevir(context.Item)" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="() => Duzenle(context.Item)" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error" OnClick="() => SilOnay(context.Item)" />
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager />
+        </PagerContent>
+    </MudDataGrid>
+}

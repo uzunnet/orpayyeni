@@ -1,0 +1,18 @@
+@using VizitLink3D.UI.Models
+
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">@dil.T("ortak.onayGerekiyor", "Onay Gerekiyor")</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudText>@dil.T("ortak.silmeOnayMesaji", "Bu islem geri alinamaz. Devam etmek istiyor musunuz?")</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Iptal">@dil.T("ortak.iptal", "İptal")</MudButton>
+        <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="Onayla">@dil.T("ortak.evetSil", "Evet, Sil")</MudButton>
+    </DialogActions>
+</MudDialog>
+
+

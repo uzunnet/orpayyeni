@@ -1,0 +1,17 @@
+@namespace VizitLink3D.UI.Bilesenler
+
+<PageTitle>@SayfaBasligiEtiketi</PageTitle>
+
+<section class="gb-page gb-yakinda-sayfa">
+    <div class="gb-panel gb-yakinda-sayfa__panel">
+        <span class="gb-yakinda-sayfa__ikon">
+            <MudIcon Icon="@Ikon" Size="Size.Large" />
+        </span>
+        <span class="gb-kicker">@Ustbaslik</span>
+        @if (!_dinamikIcerikVar)
+        {
+            <h1 class="gb-yakinda-sayfa__baslik">@Baslik</h1>
+        }
+        <div class="gb-detail-aciklama">@((MarkupString)Aciklama)</div>
+    </div>
+</section>

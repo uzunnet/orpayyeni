@@ -1,0 +1,24 @@
+@namespace VizitLink3D.UI.Bilesenler
+@inject IJSRuntime js
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.subtitle1">@dil.T("galeri.gorsel", "Görsel") @(Index + 1) / @Toplam</MudText>
+    </TitleContent>
+    <DialogContent>
+        <div class="galeri-dialog-icerik">
+            @if (!string.IsNullOrEmpty(GorselUrl))
+            {
+                <img src="@GorselUrl" alt="@dil.T("galeri.gorselAlt", "Galeri gorseli")" class="galeri-dialog-gorsel" />
+            }
+            else
+            {
+                <MudText>@dil.T("galeri.gorselYuklenemedi", "Görsel yüklenemedi.")</MudText>
+            }
+        </div>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Kapat" Variant="Variant.Text">@dil.T("ortak.kapat", "Kapat")</MudButton>
+    </DialogActions>
+</MudDialog>

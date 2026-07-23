@@ -1,0 +1,106 @@
+@page "/admin/konfigurasyon-sablonu-yonetimi"
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using VizitLink3D.Ortak.Modeller.Urunler
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<PageTitle>@dil.T("admin.konfigurasyonSablonu.sayfaBasligi", "Konfigürasyon Şablon Yönetimi") | VizitLink3D Admin</PageTitle>
+
+<MudText Typo="Typo.h4" Class="mb-2">Konfigürasyon Şablon Yönetimi</MudText>
+<MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-4">Her ürün için detay sayfası şablonlarını yönetin.</MudText>
+
+@if (_yukleniyor)
+{
+    <MudProgressLinear Indeterminate="true" Class="mb-4" />
+}
+
+<MudGrid Class="mb-4">
+    <MudItem xs="12" md="6">
+        <MudSelect @bind-Value="_seciliUrunId" Label="Ürün Seçin" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" Required="true">
+            @foreach (var urun in _urunListesi)
+            {
+                <MudSelectItem Value="@urun.Id">@urun.Ad (@urun.Kod)</MudSelectItem>
+            }
+        </MudSelect>
+    </MudItem>
+</MudGrid>
+
+@if (_seciliUrunId > 0 && _sablonYukleniyor)
+{
+    <MudProgressLinear Indeterminate="true" Class="mb-4" />
+}
+
+@if (_seciliUrunId > 0 && _sablon != null && !_sablonYukleniyor)
+{
+    <MudCard Class="mb-4" Elevation="2">
+        <MudCardContent>
+            <MudText Typo="Typo.h6" Class="mb-4">
+                @(_seciliUrun?.Ad ?? "Ürün") — Konfigürasyon Şablonu
+                <MudText Typo="Typo.overline" Color="@(_sablon.Id > 0 ? Color.Success : Color.Warning)" Class="ml-4" Style="display:inline">
+                    @(_sablon.Id > 0 ? "Kayıtlı" : "Yeni")
+                </MudText>
+            </MudText>
+
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudSelect @bind-Value="_sablon.DetaySablonu" Label="Detay Şablonu" Variant="Variant.Outlined" Required="true" Class="mb-3">
+                        <MudSelectItem Value="@("Endustriyel3D")">Endüstriyel 3D</MudSelectItem>
+                        <MudSelectItem Value="@("KatalogGorselAgirlikli")">Katalog Görsel Ağırlıklı</MudSelectItem>
+                        <MudSelectItem Value="@("MinimalTeklif")">Minimal Teklif</MudSelectItem>
+                        <MudSelectItem Value="@("TeknikOzellikAgirlikli")">Teknik Özellik Ağırlıklı</MudSelectItem>
+                        <MudSelectItem Value="@("BanyoKonfigurator")">Banyo Konfigüratör</MudSelectItem>
+                        <MudSelectItem Value="@("DusakabinKonfigurator")">Duşakabin Konfigüratör</MudSelectItem>
+                        <MudSelectItem Value="@("KapiKonfigurator")">Kapı Konfigüratör</MudSelectItem>
+                        <MudSelectItem Value="@("KapakKonfigurator")">Kapak Konfigüratör</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_sablon.AnimasyonTipi" Label="Animasyon Tipi" Variant="Variant.Outlined" Class="mb-3" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudSelect @bind-Value="_sablon.RenkPaneliKonumu" Label="Renk Paneli Konumu" Variant="Variant.Outlined" Class="mb-3">
+                        <MudSelectItem Value="@("sag")">Sağ</MudSelectItem>
+                        <MudSelectItem Value="@("sol")">Sol</MudSelectItem>
+                        <MudSelectItem Value="@("alt")">Alt</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudSelect @bind-Value="_sablon.MobilPanelDavranisi" Label="Mobil Panel Davranışı" Variant="Variant.Outlined" Class="mb-3">
+                        <MudSelectItem Value="@("sheet")">Sheet</MudSelectItem>
+                        <MudSelectItem Value="@("full")">Full</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+            </MudGrid>
+
+            <MudText Typo="Typo.subtitle1" Class="mt-2 mb-3">Bölüm Aktifliği</MudText>
+            <MudGrid>
+                <MudItem xs="12" sm="6" md="3">
+                    <MudSwitch @bind-Value="_sablon.HeroAktifMi" Label="Hero" Color="Color.Primary" />
+                </MudItem>
+                <MudItem xs="12" sm="6" md="3">
+                    <MudSwitch @bind-Value="_sablon.UcBoyutIlkAcilacakMi" Label="3D İlk Açılacak" Color="Color.Primary" />
+                </MudItem>
+                <MudItem xs="12" sm="6" md="3">
+                    <MudSwitch @bind-Value="_sablon.TeknikOzellikAktifMi" Label="Teknik Özellik" Color="Color.Primary" />
+                </MudItem>
+                <MudItem xs="12" sm="6" md="3">
+                    <MudSwitch @bind-Value="_sablon.PdfKaynakAktifMi" Label="PDF Kaynak" Color="Color.Primary" />
+                </MudItem>
+                <MudItem xs="12" sm="6" md="3">
+                    <MudSwitch @bind-Value="_sablon.BenzerUrunlerAktifMi" Label="Benzer Ürünler" Color="Color.Primary" />
+                </MudItem>
+                <MudItem xs="12" sm="6" md="3">
+                    <MudSwitch @bind-Value="_sablon.TeklifFormuAktifMi" Label="Teklif Formu" Color="Color.Primary" />
+                </MudItem>
+            </MudGrid>
+
+            <MudToolBar Class="mt-4">
+                <MudSpacer />
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Kaydet" Disabled="_kaydediliyor">
+                    @(_kaydediliyor ? "Kaydediliyor..." : "Kaydet")
+                </MudButton>
+            </MudToolBar>
+        </MudCardContent>
+    </MudCard>
+}

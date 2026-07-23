@@ -1,0 +1,45 @@
+@* KucreselGucBolumu — Aurelian Onyx 3 sütun + alıntı *@
+
+<section class="kucresel-bolum">
+    <div class="section-container">
+        @* Başlık *@
+        <div class="section-baslik-kutu anim-reveal-up">
+            <span class="section-etiket">@dil.T("anasayfa.kucresel.etiket", "Küresel Güç, Yerel Zanaat")</span>
+            <h2 class="section-baslik">@Baslik</h2>
+            @if (!string.IsNullOrEmpty(Aciklama))
+            {
+                <p class="section-aciklama">@Aciklama</p>
+            }
+        </div>
+
+        @* 3 Sütun *@
+        @if (Ogeler.Any())
+        {
+            <div class="kucresel-grid">
+                @foreach (var oge in Ogeler)
+                {
+                    <div class="kucresel-oge anim-reveal-up">
+                        <span class="material-symbols-outlined kucresel-oge__ikon">@oge.Ikon</span>
+                        <h3 class="kucresel-oge__baslik">@oge.Baslik</h3>
+                        <p class="kucresel-oge__aciklama">@oge.Aciklama</p>
+                    </div>
+                }
+            </div>
+        }
+
+        @* Alıntı *@
+        @if (!string.IsNullOrEmpty(OneCikanAlinti))
+        {
+            <div class="kucresel-alinti anim-reveal-up">
+                <span class="material-symbols-outlined kucresel-alinti__ikon">format_quote</span>
+                <blockquote class="kucresel-alinti__metin">
+                    @OneCikanAlinti
+                </blockquote>
+                @if (!string.IsNullOrEmpty(AlintiSahibi))
+                {
+                    <cite class="kucresel-alinti__sahip">— @AlintiSahibi</cite>
+                }
+            </div>
+        }
+    </div>
+</section>

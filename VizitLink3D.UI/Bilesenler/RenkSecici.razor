@@ -1,0 +1,107 @@
+@using VizitLink3D.Ortak.Modeller.Urunler
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+
+<!--
+    RENK SEÇİCİ BİLEŞENİ
+    RalRengi listesini görsel swatch grid olarak sunar.
+    Renk seçildiğinde üst bileşene SeciliRenkDegisti ile bildirim gönderilir.
+    3D viewer anında güncellenir.
+-->
+
+<div class="gb-renk-secici">
+    <!-- Başlık -->
+    <div class="gb-renk-baslik">
+        <span class="gb-etiket">RENK SEÇİMİ</span>
+        @if (_secilenRenk != null && !CokluSecim)
+        {
+            <div class="gb-renk-secilen-bilgi">
+                <MudPaper Elevation="0" Width="32" Height="32" Class="gb-renk-onizleme" Style="@($"background-color:{_secilenRenk.HexKod}")" />
+                <span class="gb-renk-adi">@_secilenRenk.Ad</span>
+                <span class="gb-renk-hex">@_secilenRenk.HexKod</span>
+            </div>
+        }
+        else if (CokluSecim && SecilenRenkler.Any())
+        {
+            <div class="gb-renk-secilen-bilgi" style="background-color: transparent; border: none; padding: 0;">
+                <span style="font-weight: 600; color: var(--gb-primary); font-size: 0.9rem;">@SecilenRenkler.Count Renk Seçildi</span>
+            </div>
+        }
+    </div>
+
+    <!-- Arama -->
+    <div class="gb-renk-arama-sarici">
+        <input type="text" @bind="_aramaMetni" @bind:event="oninput" placeholder="RAL kodunu veya rengin adını arayın (Örn: 1000)..." class="gb-renk-arama-input" />
+    </div>
+
+    <!-- Renk İçerik Alanı -->
+    <div class="gb-renk-icerik">
+        
+        <!-- Sol Menü (Arama boşken gösterilir) -->
+        @if (string.IsNullOrWhiteSpace(_aramaMetni) && RenkGruplari?.Any() == true)
+        {
+            <div class="gb-renk-grup-menu gb-scroll">
+                @foreach (var grup in RenkGruplari)
+                {
+                    <button @onclick="() => GrupSec(grup)" 
+                            class="@($"gb-renk-grup-btn {(_aktifGrup == grup ? "aktif" : "")}")">
+                        @grup
+                    </button>
+                }
+            </div>
+        }
+
+        <!-- Sağ Grid -->
+        <div class="gb-renk-icerik-sag">
+            
+            @if (CokluSecim && FiltreleRenkler().Any())
+            {
+                <div class="gb-renk-toplu-secim">
+                    <button @onclick="TumKataloguSecVeyaKaldir" class="gb-btn-outline gb-renk-toplu-btn" style="border-color:var(--mud-palette-secondary);color:var(--mud-palette-secondary);">
+                        <MudIcon Icon="@Icons.Material.Filled.CollectionsBookmark" Size="Size.Small" Style="margin-right:4px;font-size:1rem;vertical-align:middle;" />
+                        @(Renkler.All(r => SecilenRenkler.Any(sr => sr.Id == r.Id)) ? "Katalogdaki Tümünü Kaldır" : "Katalogdaki Tümünü Seç")
+                    </button>
+                    <button @onclick="AktifGrubuSecVeyaKaldir" class="gb-btn-outline gb-renk-toplu-btn" style="border-color:var(--gb-primary);color:var(--gb-primary);">
+                        <MudIcon Icon="@Icons.Material.Filled.SelectAll" Size="Size.Small" Style="margin-right:4px;font-size:1rem;vertical-align:middle;" />
+                        @(FiltreleRenkler().All(gr => SecilenRenkler.Any(sr => sr.Id == gr.Id)) ? "Gruptaki Tümünü Kaldır" : "Gruptaki Tümünü Seç")
+                    </button>
+                </div>
+            }
+
+            <div class="gb-renk-grid gb-renk-grid-sarici">
+                @foreach (var renk in FiltreleRenkler())
+                {
+                    <div class="gb-renk-kutu-wrap" @onclick="() => RenkSec(renk)" title="@renk.Ad">
+                        
+                        <MudPaper Elevation="@(RenkSeciliMi(renk) ? 4 : 1)"
+                                  Class="@($"gb-renk-swatch {(RenkSeciliMi(renk) ? "secili" : "")}")"
+                                  Style="@($"background-color:{renk.HexKod};")">
+                            
+                            @if (RenkSeciliMi(renk))
+                            {
+                                <svg class="gb-renk-checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                    <polyline points="20 6 9 17 4 12"/>
+                                </svg>
+                            }
+                        </MudPaper>
+                        
+                        <span class="gb-renk-kod">
+                            @(renk.Kod?.StartsWith("RAL") == true ? renk.Kod : $"RAL {renk.Kod}")
+                        </span>
+                    </div>
+                }
+            </div>
+            
+            @if (!FiltreleRenkler().Any())
+            {
+                <div class="gb-renk-bos-sonuc">
+                    @dil.T("renk.sonuc_bulunamadi", "Sonuç bulunamadı.")
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Renk Sayısı Bilgisi -->
+    <div class="gb-renk-adet">
+        <span>@string.Format(dil.T("renk.secenek_sayisi", "{0} renk seçeneği mevcut"), FiltreleRenkler().Count())</span>
+    </div>
+</div>

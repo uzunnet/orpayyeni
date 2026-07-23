@@ -1,0 +1,5 @@
+/* Butonlar — VizitLink3D */
+.vizit-btn-birincil{padding:12px 32px;background:var(--vizit-accent, #C8952A);color:#fff;border:none;font-weight:600;cursor:pointer;transition:all .3s ease;letter-spacing:.05em}
+.vizit-btn-birincil:hover{background:var(--vizit-primary, #1A1A27);transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,0,0,.15)}
+.vizit-btn-ikincil{padding:12px 32px;border:1px solid var(--vizit-primary, #1A1A27);background:transparent;color:var(--vizit-primary, #1A1A27);font-weight:600;cursor:pointer;transition:all .3s ease}
+.vizit-btn-ikincil:hover{background:var(--vizit-primary, #1A1A27);color:#fff}

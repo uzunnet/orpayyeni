@@ -1,0 +1,12 @@
+# OpenCode kendi config klasörü — tüm node_modules okuma israfını engelle
+node_modules/
+*/node_modules/
+**/node_modules/
+.git/
+*.log
+logs/
+tmp/
+temp/
+*.tmp
+Thumbs.db
+.DS_Store

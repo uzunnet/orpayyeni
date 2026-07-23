@@ -1,0 +1,294 @@
+@page "/admin/uc-boyut-model-yonetimi"
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using VizitLink3D.Ortak.Modeller.Urunler
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject VizitLink3D.UI.Servisler.DilServisi DilServisi
+
+<PageTitle>@DilServisi.T("admin.3d.modelSayfaBaslik", "3D Model Yönetimi") | VizitLink3D Admin</PageTitle>
+
+<AdminSayfaBasligi Baslik='@DilServisi.T("admin.3d.modelSayfaBaslik", "3D Model Yönetimi")'
+                   Aciklama='@DilServisi.T("admin.3d.modelSayfaAciklama", "Ürünlere bağlı GLB modellerini, sahne ayarlarını ve yayın durumunu yönetin.")'
+                   Ikon="@Icons.Material.Filled.ViewInAr">
+    <MudButton Variant="Variant.Filled"
+               Color="Color.Primary"
+               StartIcon="@Icons.Material.Filled.Add"
+               OnClick="YeniAc">
+        @DilServisi.T("admin.3d.yeniModel", "Yeni Model")
+    </MudButton>
+</AdminSayfaBasligi>
+
+<AdminAracCubugu AramaGosterilsinMi="true"
+                 AramaMetni="@_arama"
+                 AramaMetniDegisti="@(deger => _arama = deger)"
+                 AramaYapildi="AramaYap"
+                 AramaYerMetni='@DilServisi.T("admin.3d.modelAra", "Model ara...")'>
+    <MudChip T="string" Color="Color.Primary" Variant="Variant.Outlined" Size="Size.Small">
+        @DilServisi.T("ortak.toplam", "Toplam") @_filtreliListe.Count
+    </MudChip>
+</AdminAracCubugu>
+
+@if (_yukleniyor)
+{
+    <AdminYukleniyorIskeleti />
+}
+
+@if (_formAcik)
+{
+    <MudCard Class="admin-form-panel mb-4">
+        <MudCardContent>
+            <MudText Typo="Typo.h6" Class="mb-4">
+                @(_duzenlemeModu
+                    ? DilServisi.T("admin.3d.modelDuzenle", "3D Model Düzenle")
+                    : DilServisi.T("admin.3d.modelYeni", "Yeni 3D Model"))
+            </MudText>
+            <MudGrid>
+                <MudItem xs="12" md="4">
+                    <MudSelect T="int" @bind-Value="_form.UrunId" Label='@DilServisi.T("admin.3d.urunSec", "Ürün seçiniz")' Required="true" Class="mb-3 admin-select">
+                        @foreach (var u in _urunler)
+                        {
+                            <MudSelectItem Value="@u.Id">@u.Ad (@u.Kod)</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudTextField @bind-Value="_form.ModelAdi" Label='@DilServisi.T("admin.3d.modelAdi", "Model adı")' Class="mb-3 admin-textfield" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudTextField @bind-Value="_form.ModelDosyaYolu" Label='@DilServisi.T("admin.3d.modelYolu", "Model yolu")' Class="mb-3 admin-textfield" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudSelect @bind-Value="_form.ModelTipi" Label='@DilServisi.T("admin.3d.modelTipi", "Model tipi")' Class="mb-3 admin-select">
+                        <MudSelectItem Value="@("Glb")">GLB</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudNumericField @bind-Value="_form.Versiyon" Label='@DilServisi.T("admin.3d.versiyon", "Versiyon")' Class="mb-3 admin-textfield" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudFileUpload T="IBrowserFile" FilesChanged="DosyaSecildi" Accept=".glb">
+                        <CustomContent Context="context">
+                            <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Upload" OnClick="context.OpenFilePickerAsync">
+                                @DilServisi.T("admin.3d.dosyaSec", "GLB dosyası seç")
+                            </MudButton>
+                        </CustomContent>
+                    </MudFileUpload>
+                    @if (_secilenDosya is not null)
+                    {
+                        <MudChip T="string" Size="Size.Small" Class="mt-1">@_secilenDosya.Name (@(_secilenDosya.Size / 1024) KB)</MudChip>
+                    }
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudNumericField T="long" @bind-Value="_form.DosyaBoyutuByte" Label='@DilServisi.T("admin.3d.dosyaBoyutu", "Dosya boyutu")' Class="mb-3 admin-textfield" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudSwitch @bind-Value="_form.VarsayilanMi" Label='@DilServisi.T("admin.3d.varsayilan", "Varsayılan")' Class="mt-4 admin-switch" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudSwitch @bind-Value="_form.AktifMi" Label='@DilServisi.T("ortak.aktif", "Aktif")' Class="mt-4 admin-switch" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_form.KameraAyarJson"
+                                  Label='@DilServisi.T("admin.3d.kameraAyar", "Kamera ayarı JSON")'
+                                  Lines="4"
+                                  Class="mb-3 admin-textfield admin-mono-field" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_form.IsikAyarJson"
+                                  Label='@DilServisi.T("admin.3d.isikAyar", "Işık ayarı JSON")'
+                                  Lines="4"
+                                  Class="mb-3 admin-textfield admin-mono-field" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudSelect @bind-Value="_form.CevreAyarJson" Label='@DilServisi.T("admin.3d.hdriOrtam", "HDRI ortam")' Class="mb-3 admin-select">
+                        <MudSelectItem Value="@("")">@DilServisi.T("admin.3d.ortamVarsayilan", "Varsayılan iç mekan")</MudSelectItem>
+                        <MudSelectItem Value="@("banyo")">@DilServisi.T("admin.3d.ortamBanyo", "Banyo")</MudSelectItem>
+                        <MudSelectItem Value="@("mutfak")">@DilServisi.T("admin.3d.ortamMutfak", "Mutfak")</MudSelectItem>
+                        <MudSelectItem Value="@("fabrika")">@DilServisi.T("admin.3d.ortamFabrika", "Endüstriyel stüdyo")</MudSelectItem>
+                        <MudSelectItem Value="@("icmekan")">@DilServisi.T("admin.3d.ortamIcMekan", "Stüdyo iç mekan")</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+            </MudGrid>
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton OnClick="FormIptal" Disabled="@_kaydediliyor">@DilServisi.T("ortak.iptal", "İptal")</MudButton>
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       OnClick="Kaydet"
+                       Disabled="@_kaydediliyor">
+                @(_kaydediliyor ? DilServisi.T("ortak.kaydediliyor", "Kaydediliyor...") : DilServisi.T("ortak.kaydet", "Kaydet"))
+            </MudButton>
+        </MudCardActions>
+    </MudCard>
+}
+
+@if (!_yukleniyor && _filtreliListe.Count == 0)
+{
+    <AdminBosDurum Icon="@Icons.Material.Filled.ViewInAr"
+                   Baslik='@DilServisi.T("admin.3d.modelBosBaslik", "Model kaydı bulunamadı")'
+                   Aciklama='@DilServisi.T("admin.3d.modelBosAciklama", "Bu ekrandan ürünlere bağlı 3D modeller ekleyebilirsiniz.")'>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="YeniAc">
+            @DilServisi.T("admin.3d.yeniModel", "Yeni Model")
+        </MudButton>
+    </AdminBosDurum>
+}
+else
+{
+    <MudDataGrid Items="@_filtreliListe"
+                 Filterable="true"
+                 SortMode="SortMode.Multiple"
+                 Dense="true"
+                 Striped="true"
+                 Hover="true"
+                 Class="admin-table-wrap">
+        <Columns>
+            <TemplateColumn Title="" Sortable="false" Filterable="false" CellStyle="width: 60px;">
+                <CellTemplate>
+                    <MudTooltip Placement="Placement.Right">
+                        <ChildContent>
+                            <img src="@UrunResimUrlGetir(context.Item.UrunId)"
+                                 width="44" height="44"
+                                 style="object-fit:cover;border-radius:4px;cursor:zoom-in;"
+                                 onerror="this.onerror=null;this.src='/medya/vizitlink3d_default.png';" />
+                        </ChildContent>
+                        <TooltipContent>
+                            <img src="@UrunResimUrlGetir(context.Item.UrunId)" width="280"
+                                 style="object-fit:contain;border-radius:6px;"
+                                 onerror="this.onerror=null;this.src='/medya/vizitlink3d_default.png';" />
+                        </TooltipContent>
+                    </MudTooltip>
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title='@DilServisi.T("admin.3d.urun", "Ürün")' Sortable="true" Filterable="true">
+                <CellTemplate>@UrunAdiGetir(context.Item.UrunId)</CellTemplate>
+            </TemplateColumn>
+            <PropertyColumn Property="x => x.ModelAdi" Title='@DilServisi.T("admin.3d.modelAdi", "Model adı")' Sortable="true" Filterable="true" />
+            <TemplateColumn Title='@DilServisi.T("admin.3d.modelTipi", "Model tipi")' Sortable="true">
+                <CellTemplate>
+                    <MudChip T="string" Size="Size.Small" Color="Color.Primary" Variant="Variant.Outlined">@context.Item.ModelTipi</MudChip>
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title='@DilServisi.T("admin.3d.onizleme", "Önizleme")' Sortable="false" Filterable="false" CellStyle="width: 70px;">
+                <CellTemplate>
+                    @{
+                        var modelUrl = ModelOnizlemeUrlGetir(context.Item);
+                    }
+                    @if (!string.IsNullOrEmpty(modelUrl))
+                    {
+                        <MudTooltip Placement="Placement.Right">
+                            <ChildContent>
+                                <img src="@modelUrl" width="44" height="44"
+                                     style="object-fit:cover;border-radius:4px;cursor:zoom-in;"
+                                     onerror="this.onerror=null;this.src='/medya/vizitlink3d_default.png';" />
+                            </ChildContent>
+                            <TooltipContent>
+                                <img src="@modelUrl" width="280"
+                                     style="object-fit:contain;border-radius:6px;"
+                                     onerror="this.onerror=null;this.src='/medya/vizitlink3d_default.png';" />
+                            </TooltipContent>
+                        </MudTooltip>
+                    }
+                    else
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.ViewInAr" Size="Size.Small" Color="Color.Tertiary" />
+                    }
+                </CellTemplate>
+            </TemplateColumn>
+            <PropertyColumn Property="x => x.Versiyon" Title='@DilServisi.T("admin.3d.versiyon", "Versiyon")' Sortable="true" />
+            <PropertyColumn Property="x => x.DosyaBoyutuByte" Title='@DilServisi.T("admin.3d.dosyaBoyutu", "Dosya boyutu")' Sortable="true" />
+            <TemplateColumn Title='@DilServisi.T("admin.3d.varsayilan", "Varsayılan")'>
+                <CellTemplate>
+                    <MudChip T="string" Color="@(context.Item.VarsayilanMi ? Color.Success : Color.Default)" Size="Size.Small">
+                        @(context.Item.VarsayilanMi ? DilServisi.T("admin.3d.varsayilan", "Varsayılan") : "-")
+                    </MudChip>
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title='@DilServisi.T("ortak.durum", "Durum")'>
+                <CellTemplate>
+                    <MudChip T="string" Color="@(context.Item.AktifMi ? Color.Success : Color.Error)" Size="Size.Small">
+                        @(context.Item.AktifMi ? DilServisi.T("ortak.aktif", "Aktif") : DilServisi.T("ortak.pasif", "Pasif"))
+                    </MudChip>
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title='@DilServisi.T("ortak.tarih", "Tarih")' Sortable="true">
+                <CellTemplate>@context.Item.OlusturulmaTarihi.ToString("dd.MM.yyyy")</CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title='@DilServisi.T("ortak.islemler", "İşlemler")'>
+                <CellTemplate>
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                   Size="Size.Small"
+                                   OnClick="() => Duzenle(context.Item)"
+                                   title='@DilServisi.T("ortak.duzenle", "Düzenle")' />
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                   Size="Size.Small"
+                                   Color="Color.Error"
+                                   OnClick="() => SilOnay(context.Item)"
+                                   title='@DilServisi.T("ortak.sil", "Sil")' />
+                    <MudIconButton Icon="@Icons.Material.Filled.Info"
+                                   Size="Size.Small"
+                                   Color="Color.Info"
+                                   OnClick="() => OzetGoster(context.Item.UrunId)"
+                                   title='@DilServisi.T("admin.3d.urunOzeti", "Ürün Özeti")' />
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager />
+        </PagerContent>
+    </MudDataGrid>
+
+    @if (_ozetUrunId.HasValue)
+    {
+        var urun = UrunGetir(_ozetUrunId.Value);
+        @if (urun is not null)
+        {
+            <MudCard Class="admin-form-panel mt-4">
+                <MudCardContent>
+                    <MudText Typo="Typo.h6" Class="mb-3">
+                        <MudIcon Icon="@Icons.Material.Filled.Info" Class="mr-2" />
+                        @DilServisi.T("admin.3d.urunOzeti", "Ürün Özeti")
+                    </MudText>
+                    <MudGrid>
+                        <MudItem xs="12" md="3">
+                            <MudText Typo="Typo.caption" Class="admin-label">@DilServisi.T("admin.3d.urun", "Ürün")</MudText>
+                            <MudText Typo="Typo.body1">@urun.Ad (@urun.Kod)</MudText>
+                        </MudItem>
+                        <MudItem xs="12" md="3">
+                            <MudText Typo="Typo.caption" Class="admin-label">@DilServisi.T("admin.3d.slug", "Slug")</MudText>
+                            <MudText Typo="Typo.body1">/@urun.Slug</MudText>
+                        </MudItem>
+                        <MudItem xs="12" md="3">
+                            <MudText Typo="Typo.caption" Class="admin-label">@DilServisi.T("admin.3d.fiyat", "Fiyat")</MudText>
+                            <MudText Typo="Typo.body1">@(urun.Fiyat.HasValue ? $"{urun.Fiyat:N2} {urun.Birim ?? "TL"}" : "-")</MudText>
+                        </MudItem>
+                        <MudItem xs="12" md="3">
+                            <MudText Typo="Typo.caption" Class="admin-label">@DilServisi.T("admin.3d.durum", "Durum")</MudText>
+                            <MudChip T="string" Size="Size.Small" Color="@(urun.AktifMi ? Color.Success : Color.Error)">
+                                @(urun.AktifMi ? DilServisi.T("ortak.aktif", "Aktif") : DilServisi.T("ortak.pasif", "Pasif"))
+                            </MudChip>
+                            @if (urun.OneCikanMi)
+                            {
+                                <MudChip T="string" Size="Size.Small" Color="Color.Warning" Class="ml-1">Öne Çıkan</MudChip>
+                            }
+                            @if (urun.YeniMi)
+                            {
+                                <MudChip T="string" Size="Size.Small" Color="Color.Info" Class="ml-1">Yeni</MudChip>
+                            }
+                        </MudItem>
+                        <MudItem xs="12" md="6">
+                            <MudText Typo="Typo.caption" Class="admin-label">@DilServisi.T("admin.3d.kisaAciklama", "Kısa Açıklama")</MudText>
+                            <MudText Typo="Typo.body2">@(urun.KisaAciklama ?? "-")</MudText>
+                        </MudItem>
+                        <MudItem xs="12" md="6">
+                            <MudText Typo="Typo.caption" Class="admin-label">@DilServisi.T("admin.3d.modelSayisi", "3D Model Sayısı")</MudText>
+                            <MudText Typo="Typo.body1">
+                                @_filtreliListe.Count(m => m.UrunId == _ozetUrunId.Value)
+                                <MudText Typo="Typo.caption" Class="ml-1">adet model</MudText>
+                            </MudText>
+                        </MudItem>
+                    </MudGrid>
+                </MudCardContent>
+            </MudCard>
+        }
+    }
+}

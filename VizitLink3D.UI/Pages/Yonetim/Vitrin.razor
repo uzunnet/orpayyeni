@@ -1,0 +1,57 @@
+@page "/yonetim/vitrin"
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using MudExRichTextEditor
+
+@* 
+ * Eklenti Vitrini (Showcase)
+ * Topluluk MudBlazor eklentilerinin test ve gösterim alanıdır.
+ *@
+
+<PageTitle>Eklenti Vitrini - VizitLink3D</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-6 mb-16">
+    <MudText Typo="Typo.h4" Class="mb-2 font-weight-bold" Style="font-family: 'Noto Serif', serif; color: #000000;">
+        Eklenti Vitrini (Showcase)
+    </MudText>
+    <MudText Typo="Typo.body1" Class="mb-8 gb-color-muted">
+        Admin panelini zenginleştiren topluluk eklentilerinin (RichTextEditor, CodeBeam, vs.) test alanı.
+    </MudText>
+
+    <MudGrid Spacing="4">
+        
+        @* --- 1. MUD EX RICH TEXT EDITOR --- *@
+        <MudItem xs="12">
+            <MudCard Elevation="0" Style="border: 1px solid #EEEEEE; border-radius: 0px;">
+                <MudCardHeader Style="background-color: #F8F8F8; border-bottom: 1px solid #EEEEEE;">
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6" Style="font-weight: 600; color: #1A1C1C;">İçerik Editörü (MudExRichTextEdit)</MudText>
+                        <MudText Typo="Typo.body2" class="gb-color-muted">
+                            MudExRichTextEdit bileşeni, sayfa içerikleri ve haber yazıları için gelişmiş bir WYSIWYG deneyimi sunar.
+                        </MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudExRichTextEdit @bind-Value="_icerik" Placeholder="Haber veya sayfa içeriğini buraya yazın..." />
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudCard Elevation="0" Style="border: 1px dashed #CCCCCC; border-radius: 0px; background-color: #FAFAFA;">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.subtitle2" Style="color: #666666; text-transform: uppercase; letter-spacing: 1px;">
+                            Çıktı (HTML Önizleme):
+                        </MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <div class="mud-typography-body1 p-4" style="background-color: #FFFFFF; border: 1px solid #EEEEEE; min-height: 100px;">
+                        @((MarkupString)_icerik)
+                    </div>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+    </MudGrid>
+</MudContainer>

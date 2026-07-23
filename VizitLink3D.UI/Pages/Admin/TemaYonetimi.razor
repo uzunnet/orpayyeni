@@ -1,0 +1,168 @@
+@page "/admin/tema-yonetimi"
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<PageTitle>@dil.T("admin.tema.sayfaBasligi", "Tema Yönetimi") | @dil.T("admin.ortak.panel", "Yönetim Paneli")</PageTitle>
+
+<div class="admin-card mb-6">
+    <div class="admin-card-header">
+        <span class="admin-card-title">@dil.T("admin.tema.sablonlar", "Tema Şablonları")</span>
+        <span class="admin-nav-count">@_temalar.Count</span>
+    </div>
+
+    <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mb-4">
+        @dil.T("admin.tema.aciklama", "Admin panel temasını seçin; frontend site teması ayrı yönetilir.")
+        <MudButton Href="/admin/site-tema-yonetimi" Variant="Variant.Outlined" Size="Size.Small" Class="ml-3">
+            @dil.T("admin.tema.siteTemaGit", "Site Teması Yönetimi")
+        </MudButton>
+    </MudText>
+
+    <MudGrid Class="mb-4" Spacing="2">
+        <MudItem xs="12" md="6">
+            <MudSelect T="int?"
+                       Value="@_seciliFirmaId"
+                       ValueChanged="FirmaSecildiAsync"
+                       Label="@dil.T("admin.tema.firmaSec", "Firma")"
+                       Variant="Variant.Outlined"
+                       Dense="true"
+                       Disabled="@_firmalarYukleniyor">
+                @foreach (var firma in _firmalar)
+                {
+                    <MudSelectItem T="int?" Value="@((int?)firma.FirmaId)">@firma.Ad</MudSelectItem>
+                }
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudAlert Severity="Severity.Info" Variant="Variant.Outlined" Dense="true">
+                @dil.T("admin.tema.taslakBilgi", "Kart seçimi yalnızca taslak oluşturur; firma ataması Onayla ve Uygula ile yapılır.")
+            </MudAlert>
+        </MudItem>
+    </MudGrid>
+
+    @if (_yukleniyor)
+    {
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="180px" Class="mb-3" />
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="180px" />
+    }
+    else if (_temalar.Count == 0)
+    {
+        <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined">
+            @dil.T("admin.tema.katalogBos", "Tema kataloğu henüz boş veya API yanıtı alınamadı.")
+        </MudAlert>
+    }
+    else
+    {
+        <div class="dl-theme-grid">
+            @foreach (var tema in _temalar)
+            {
+                var aktif = _aktifTemaSlug == tema.Slug;
+                var taslak = _taslakTemaSlug == tema.Slug;
+                <div class="dl-theme-card dl-theme-card-clickable @(taslak ? "dl-theme-card-active" : "")"
+                     role="button"
+                     tabindex="0"
+                     @onclick="@(() => TemaTaslakSecAsync(tema))">
+                    <div class="dl-theme-info">
+                        <div class="d-flex align-center justify-space-between">
+                            <span class="dl-theme-name">@TemaAdi(tema)</span>
+                            <div class="d-flex align-center gap-2">
+                                @if (aktif)
+                                {
+                                    <span class="dl-theme-badge">@dil.T("ortak.aktif", "Aktif")</span>
+                                }
+                                @if (taslak && !aktif)
+                                {
+                                    <span class="dl-theme-badge">@dil.T("admin.tema.taslak", "Taslak")</span>
+                                }
+                            </div>
+                        </div>
+                        <span class="dl-theme-desc">@TemaAciklama(tema)</span>
+                    </div>
+
+                    @if (!string.IsNullOrWhiteSpace(tema.ThumbnailUrl))
+                    {
+                        <img class="dl-theme-preview" src="@tema.ThumbnailUrl" alt="@TemaAdi(tema)" />
+                    }
+                    else
+                    {
+                        <div class="dl-theme-preview">
+                            <MudIcon Icon="@Icons.Material.Filled.Palette" Color="Color.Primary" />
+                            <MudText Typo="Typo.caption">@tema.Slug</MudText>
+                        </div>
+                    }
+
+                    <div class="d-flex align-center gap-2 mt-3">
+                        @if (tema.Premium)
+                        {
+                            <MudChip T="string" Size="Size.Small" Color="Color.Warning" Variant="Variant.Text">
+                                @dil.T("admin.tema.premium", "Premium")
+                            </MudChip>
+                        }
+                        @if (tema.GlassmorphismAktif)
+                        {
+                            <MudChip T="string" Size="Size.Small" Color="Color.Info" Variant="Variant.Text">
+                                @dil.T("admin.tema.camEfekti", "Cam efekti")
+                            </MudChip>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<div class="admin-card">
+    <div class="admin-card-header">
+        <span class="admin-card-title">@dil.T("admin.tema.onizleme", "Önizleme") - @_taslakTemaBaslik</span>
+    </div>
+
+    @if (_taslakTema is null)
+    {
+        <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">
+            @dil.T("admin.tema.taslakYok", "Önizlemek için katalogdan bir tema seçin.")
+        </MudAlert>
+    }
+    else
+    {
+        <MudGrid Spacing="3">
+            <MudItem xs="12" md="7">
+                <div class="dl-theme-preview">
+                    <div class="dl-theme-colors">
+                        <span class="dl-theme-swatch" style="@RenkStili(_onizlemeRenkleri.Birincil)"></span>
+                        <span class="dl-theme-swatch" style="@RenkStili(_onizlemeRenkleri.Vurgu)"></span>
+                        <span class="dl-theme-swatch" style="@RenkStili(_onizlemeRenkleri.ArkaPlan)"></span>
+                        <span class="dl-theme-swatch" style="@RenkStili(_onizlemeRenkleri.Yuzey)"></span>
+                    </div>
+                    <MudText Typo="Typo.h6">@TemaAdi(_taslakTema)</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">@TemaAciklama(_taslakTema)</MudText>
+                    <MudDivider Class="my-3" />
+                    <MudText Typo="Typo.caption" Color="Color.Secondary">
+                        @dil.T("admin.tema.seciliFirma", "Seçili firma"): @_seciliFirmaAdi
+                    </MudText>
+                </div>
+            </MudItem>
+            <MudItem xs="12" md="5">
+                <MudStack Spacing="2">
+                    <MudButton Color="Color.Primary"
+                               Variant="Variant.Filled"
+                               StartIcon="@Icons.Material.Filled.DoneAll"
+                               Disabled="@_uygulaniyor"
+                               OnClick="OnaylaUygulaAsync">
+                        @dil.T("admin.tema.onaylaUygula", "Onayla ve Uygula")
+                    </MudButton>
+                    <MudButton Color="Color.Secondary"
+                               Variant="Variant.Outlined"
+                               StartIcon="@Icons.Material.Filled.Restore"
+                               Disabled="@_uygulaniyor"
+                               OnClick="AktifTemayaDonAsync">
+                        @dil.T("admin.tema.aktifTemayaDon", "Aktif Temaya Dön")
+                    </MudButton>
+                    <MudText Typo="Typo.caption" Color="Color.Secondary">
+                        @dil.T("admin.tema.onayAciklama", "Onay sonrası yalnızca seçili firmanın admin teması değişir; site teması korunur.")
+                    </MudText>
+                </MudStack>
+            </MudItem>
+        </MudGrid>
+    }
+</div>

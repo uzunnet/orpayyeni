@@ -1,0 +1,110 @@
+@page "/admin/ekip-yonetimi"
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using VizitLink3D.Ortak.Modeller
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+
+<PageTitle>@($"{dil.T("admin.ekip.sayfaBasligi", "Ekip Yonetimi")} | VizitLink3D Admin")</PageTitle>
+
+<AdminSayfaBasligi Baslik="@dil.T("admin.ekip.baslik", "Ekip Yonetimi")"
+                   Aciklama="@dil.T("admin.ekip.aciklama", "Hakkimizda ve kurumsal alanlarda gorunen ekip uyelerini yonetin.")"
+                   Ikon="@Icons.Material.Filled.Groups" />
+
+<AdminAracCubugu AramaMetni="@_arama"
+                 AramaMetniDegisti="AramaMetniDegisti"
+                 AramaYerMetni="@dil.T("ortak.ara", "Ara...")">
+    <MudButton Variant="Variant.Outlined" Color="Color.Info" StartIcon="@Icons.Material.Filled.GTranslate" OnClick="TumuCevir" Disabled="@(_tumCeviriCalisiyor || _yukleniyor || _filtreliListe.Count == 0)">
+        @(_tumCeviriCalisiyor ? $"{dil.T("admin.ceviri.tumuCeviriliyor", "Tumu cevriliyor...")} {_ceviriIslenen}/{_ceviriToplam}" : dil.T("admin.ceviri.tumuCevir", "Tumu Cevir"))
+    </MudButton>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="YeniAc">
+        @dil.T("admin.ekip.yeniUye", "Yeni Uye")
+    </MudButton>
+</AdminAracCubugu>
+
+@if (!_yukleniyor && _ceviriAnalizi is not null)
+{
+    <AdminCeviriOzetRozetleri Ozet="@_ceviriAnalizi.Ozet" />
+}
+
+@if (_yukleniyor)
+{
+    <AdminYukleniyorIskeleti SatirSayisi="5" />
+}
+
+@if (_formAcik)
+{
+    <MudPaper Elevation="0" Class="admin-form-panel pa-4 mb-4">
+        <MudText Typo="Typo.h6" Class="mb-4">@(_duzenleme ? dil.T("admin.ekip.duzenle", "Ekip Uyesi Duzenle") : dil.T("admin.ekip.yeniUye", "Yeni Ekip Uyesi"))</MudText>
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudTextField @bind-Value="_form.AdSoyad" Label="@dil.T("ortak.adSoyad", "Ad Soyad")" Required="true" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudTextField @bind-Value="_form.Unvan" Label="@dil.T("admin.ekip.unvan", "Unvan")" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField @bind-Value="_form.Bio" Label="@dil.T("admin.ekip.biyografi", "Biyografi")" Lines="3" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudTextField @bind-Value="_form.Resim" Label="@dil.T("ortak.resimUrl", "Resim URL")" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudTextField @bind-Value="_form.Linkedin" Label="@dil.T("admin.ekip.linkedinUrl", "LinkedIn URL")" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudNumericField @bind-Value="_form.SiraNo" Label="@dil.T("ortak.siraNo", "Sıra No")" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudSwitch @bind-Value="_form.AktifMi" Label="@dil.T("ortak.aktif", "Aktif")" />
+            </MudItem>
+        </MudGrid>
+        <div class="admin-form-actions">
+            <MudButton OnClick="Iptal" Color="Color.Secondary">@dil.T("ortak.iptal", "İptal")</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save" OnClick="Kaydet">@dil.T("ortak.kaydet", "Kaydet")</MudButton>
+        </div>
+    </MudPaper>
+}
+
+@if (!_yukleniyor && _filtreliListe.Count == 0)
+{
+    <AdminBosDurum Icon="@Icons.Material.Filled.Groups"
+                   Baslik="@dil.T("admin.ekip.bosBaslik", "Ekip uyesi bulunamadi")"
+                   Aciklama="@dil.T("admin.ekip.bosAciklama", "Yeni uye ekleyerek kurumsal ekip alanlarini guncel tutun.")">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="YeniAc">
+            @dil.T("admin.ekip.yeniUye", "Yeni Uye")
+        </MudButton>
+    </AdminBosDurum>
+}
+else if (!_yukleniyor)
+{
+    <MudDataGrid Items="@_filtreliListe" Filterable="true" SortMode="SortMode.Multiple" Dense="true" Striped="true" Hover="true">
+        <Columns>
+            <PropertyColumn Property="x => x.AdSoyad" Title="@dil.T("ortak.adSoyad", "Ad Soyad")" Sortable="true" />
+            <PropertyColumn Property="x => x.Unvan" Title="@dil.T("admin.ekip.unvan", "Unvan")" Sortable="true" />
+            <TemplateColumn Title="@dil.T("ortak.aktif", "Aktif")">
+                <CellTemplate>
+                    <MudChip Size="Size.Small" Color="@(context.Item.AktifMi ? Color.Success : Color.Error)" Variant="Variant.Outlined">
+                        @(context.Item.AktifMi ? dil.T("ortak.aktif", "Aktif") : dil.T("ortak.pasif", "Pasif"))
+                    </MudChip>
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title="@dil.T("admin.ceviri.durum", "Ceviri Durumu")">
+                <CellTemplate>
+                    <AdminCeviriDurumRozeti Durum="@(_ceviriAnalizi?.Durumlar.TryGetValue(context.Item.Id, out var durum) == true ? durum : null)" />
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title="@dil.T("ortak.islemler", "Islemler")">
+                <CellTemplate>
+                    <MudIconButton Icon="@Icons.Material.Filled.Translate" Size="Size.Small" Color="Color.Info" OnClick="() => AICeviriDialogAc(context.Item)" />
+                    <MudIconButton Icon="@Icons.Material.Filled.AutoAwesome" Size="Size.Small" Color="Color.Primary" Disabled="@_tumCeviriCalisiyor" OnClick="() => KaydiTumDillerdeCevir(context.Item)" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="() => Duzenle(context.Item)" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error" OnClick="() => SilOnay(context.Item)" />
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager />
+        </PagerContent>
+    </MudDataGrid>
+}

@@ -1,0 +1,1170 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   ADMIN GLOBAL KARANLIK ZORLAMA — tum admin sayfalari icin
+   ═══════════════════════════════════════════════════════════════════════ */
+html[data-tema-mod="koyu"],
+html[data-tema-mod="koyu"] body {
+    background-color: var(--admin-bg, #0a0a0a) !important;
+    color-scheme: dark !important;
+}
+
+/* Public site tema degiskenlerini admin icin sifirla */
+.admin-layout {
+    --vizit-bg-base: #0a0a0a;
+    --vizit-bg-alt: #111111;
+    --vizit-bg-section: #111111;
+    --vizit-surface: #111111;
+    --vizit-surface-hover: #1a1a1a;
+    --vizit-border: rgba(255,255,255,0.06);
+    --vizit-text: #ffffff;
+    --vizit-text-secondary: rgba(255,255,255,0.70);
+    --vizit-text-muted: rgba(255,255,255,0.40);
+}
+
+/*
+ * ═══════════════════════════════════════════════════════════════════════
+ * VIZITLINK3D — ADMIN ENDÜSTRİYEL KARANLIK TEMA (admin-tema.css)
+ * ═══════════════════════════════════════════════════════════════════════
+ * TÜM admin sayfaları TEK bu dosyadan stil alır.
+ * Renkler → degiskenler.css > :root --admin-*
+ * Kural: Hardcoded renk YASAK. Her şey --admin-* token'ı ile.
+ * ═══════════════════════════════════════════════════════════════════════
+ */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   1. ADMIN BODY & LAYOUT BASE
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Sadece admin layout icinde gecerli — her durumda koyu tema */
+.admin-layout body,
+.admin-layout,
+html[data-tema-mod="koyu"] .admin-layout,
+html .admin-layout {
+    background-color: var(--admin-bg) !important;
+    color: var(--admin-text) !important;
+    font-family: var(--admin-font);
+}
+
+/* Body ve html seviyesinde de koyu temayi zorla */
+.admin-layout ~ body,
+.admin-layout body {
+    background-color: var(--admin-bg) !important;
+}
+
+.admin-layout {
+    min-height: 100vh;
+}
+
+.admin-layout .mud-main-content {
+    background-color: var(--admin-bg);
+}
+
+.admin-layout .mud-container {
+    max-width: 1400px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   2. SIDEBAR / DRAWER (SOL MENÜ)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.admin-drawer {
+    background-color: var(--admin-bg) !important;
+    color: var(--admin-text) !important;
+    border-right: 1px solid var(--admin-border) !important;
+}
+
+.admin-drawer .mud-drawer-content {
+    background-color: var(--admin-bg);
+}
+
+.admin-nav-menu {
+    padding-top: 8px !important;
+}
+
+/* Sidebar başlık */
+.admin-sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 20px;
+    margin-bottom: 4px;
+}
+
+.admin-sidebar-brand-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--admin-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.admin-sidebar-brand-text {
+    font-family: var(--vizit-font-serif);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--admin-text);
+    letter-spacing: -0.3px;
+}
+
+.admin-sidebar-divider {
+    border-color: var(--admin-border) !important;
+    margin: 4px 0 !important;
+}
+
+/* Nav group başlığı */
+.admin-drawer .mud-nav-group > .mud-nav-link {
+    font-family: var(--admin-font);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--admin-text-secondary) !important;
+    padding: 10px 20px !important;
+    transition: var(--admin-transition);
+}
+
+.admin-drawer .mud-nav-group > .mud-nav-link:hover {
+    color: var(--admin-text) !important;
+    background-color: var(--admin-surface-hover) !important;
+}
+
+/* Nav group expand icon */
+.admin-drawer .mud-nav-group > .mud-nav-link .mud-nav-link-expand-icon {
+    color: var(--admin-text-muted) !important;
+}
+
+/* Nav menu item count badge */
+.admin-nav-count {
+    font-family: var(--admin-font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--admin-text-dim);
+    background: var(--admin-primary-light);
+    padding: 2px 6px;
+    min-width: 20px;
+    text-align: center;
+}
+
+/* Alt menü linkleri */
+.admin-drawer .mud-nav-link {
+    color: var(--admin-text-secondary) !important;
+    font-family: var(--admin-font);
+    font-size: 13px;
+    padding: 8px 20px 8px 48px !important;
+    transition: var(--admin-transition);
+    border-radius: 0 !important;
+    margin: 0 !important;
+}
+
+.admin-drawer .mud-nav-link:hover {
+    color: var(--admin-text) !important;
+    background-color: var(--admin-surface-hover) !important;
+}
+
+.admin-drawer .mud-nav-link.active {
+    color: var(--admin-accent) !important;
+    background-color: rgba(197,160,89,0.06) !important;
+    border-left: 2px solid var(--admin-accent);
+    padding-left: 46px !important;
+}
+
+.admin-drawer .mud-nav-link .mud-nav-link-icon {
+    color: inherit !important;
+    opacity: 0.6;
+}
+
+.admin-drawer .mud-nav-link.active .mud-nav-link-icon {
+    opacity: 1;
+}
+
+/* Sidebar footer — kullanıcı bilgisi */
+.admin-sidebar-user {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    gap: 10px;
+}
+
+.admin-sidebar-avatar {
+    flex-shrink: 0;
+}
+
+.admin-sidebar-role {
+    color: var(--admin-text-muted) !important;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   3. ÜST BANNER
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.admin-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: var(--admin-surface);
+    border-bottom: 1px solid var(--admin-border);
+    min-height: 56px;
+}
+
+.admin-banner-sol {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+}
+
+.admin-banner-menu-btn {
+    flex-shrink: 0;
+    color: var(--admin-text-secondary) !important;
+}
+
+.admin-banner-menu-btn:hover {
+    color: var(--admin-accent) !important;
+}
+
+.admin-banner-logo {
+    height: 28px;
+    width: auto;
+    flex-shrink: 0;
+    opacity: 0.9;
+    transition: opacity 0.2s;
+}
+.admin-banner-logo:hover { opacity: 1; }
+
+.admin-banner-baslik-alan {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.admin-banner-sayfa-baslik {
+    margin: 0 !important;
+    font-weight: 600 !important;
+    font-size: 16px !important;
+    color: var(--admin-text) !important;
+}
+
+.admin-banner-breadcrumb {
+    font-size: 12px;
+    color: var(--admin-text-muted);
+}
+
+.admin-banner-sag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.admin-banner-super-admin-chip {
+    font-weight: 600;
+    font-size: 10px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   4. KARTLAR
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.admin-card {
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    padding: 24px;
+    transition: var(--admin-transition);
+}
+
+.admin-card:hover {
+    border-color: var(--admin-border-focus);
+    box-shadow: var(--admin-shadow-glow);
+}
+
+.admin-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--admin-border);
+}
+
+.admin-card-title {
+    font-family: var(--admin-font);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--admin-text);
+    letter-spacing: 0.02em;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   5. TABLO / DATAGRID
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.admin-table-wrap {
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+}
+
+.admin-table-wrap .mud-table-container {
+    border: none !important;
+    border-radius: 0 !important;
+}
+
+.admin-table-wrap .mud-table-head th {
+    background: var(--admin-primary-light) !important;
+    color: var(--admin-text-muted) !important;
+    font-family: var(--admin-font);
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 10px 16px !important;
+    border-bottom: 1px solid var(--admin-border) !important;
+}
+
+.admin-table-wrap .mud-table-body td {
+    color: var(--admin-text-secondary) !important;
+    font-family: var(--admin-font);
+    font-size: 13px;
+    padding: 12px 16px !important;
+    border-bottom: 1px solid var(--admin-border-light) !important;
+    background: var(--admin-surface) !important;
+}
+
+.admin-table-wrap .mud-table-body tr:hover td {
+    background: var(--admin-surface-hover) !important;
+}
+
+.admin-table-wrap .mud-table-pagination {
+    background: var(--admin-surface) !important;
+    border-top: 1px solid var(--admin-border) !important;
+    color: var(--admin-text-muted) !important;
+}
+
+/* MudBlazor DataGrid overrides for dark */
+.mud-table-root .mud-table-head th {
+    background: var(--admin-primary-light) !important;
+    color: var(--admin-text-muted) !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    border-bottom: 1px solid var(--admin-border) !important;
+}
+
+.mud-table-root .mud-table-body td {
+    color: var(--admin-text-secondary) !important;
+    border-bottom: 1px solid var(--admin-border-light) !important;
+}
+
+.mud-table-root .mud-table-body tr:hover td {
+    background: var(--admin-surface-hover) !important;
+}
+
+.mud-table-pagination {
+    background: var(--admin-surface) !important;
+    color: var(--admin-text-muted) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   6. FORM ALANLARI
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.admin-form-panel {
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    padding: 24px;
+}
+
+.admin-form-panel .mud-card-header {
+    background: var(--admin-primary-light);
+    border-bottom: 1px solid var(--admin-border);
+}
+
+.admin-form-group {
+    margin-bottom: 20px;
+}
+
+.admin-form-label {
+    display: block;
+    font-family: var(--admin-font);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--admin-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 6px;
+}
+
+/* TextField karanlık tema */
+.admin-textfield .mud-input-slot {
+    background: var(--admin-primary-light) !important;
+    border: 1px solid var(--admin-border);
+    transition: var(--admin-transition);
+}
+
+.admin-textfield .mud-input-slot:focus-within,
+.admin-textfield .mud-input:focus-within .mud-input-slot {
+    border-color: var(--admin-border-focus);
+    box-shadow: 0 0 0 1px rgba(197,160,89,0.1);
+}
+
+.admin-textfield .mud-input-root {
+    color: var(--admin-text) !important;
+    font-family: var(--admin-font);
+    font-size: 14px;
+}
+
+.admin-textfield .mud-input-label {
+    color: var(--admin-text-muted) !important;
+}
+
+.admin-textfield input,
+.admin-textfield textarea {
+    color: var(--admin-text) !important;
+    caret-color: var(--admin-accent);
+}
+
+.admin-textfield input::placeholder,
+.admin-textfield textarea::placeholder {
+    color: var(--admin-text-dim) !important;
+}
+
+/* Select karanlık */
+.admin-select .mud-input-slot {
+    background: var(--admin-primary-light) !important;
+    border: 1px solid var(--admin-border);
+}
+
+.admin-select .mud-input-root {
+    color: var(--admin-text) !important;
+}
+
+/* Switch karanlık */
+.admin-switch.mud-switch-track-true {
+    background-color: var(--admin-accent) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   7. BUTONLAR
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.admin-btn-primary {
+    background: var(--admin-accent) !important;
+    color: #0a0a0a !important;
+    font-family: var(--admin-font);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    transition: var(--admin-transition);
+}
+
+.admin-btn-primary:hover {
+    background: var(--admin-accent-light) !important;
+    box-shadow: 0 8px 24px rgba(197,160,89,0.2) !important;
+}
+
+.admin-btn-secondary {
+    background: transparent !important;
+    color: var(--admin-text-secondary) !important;
+    border: 1px solid var(--admin-border) !important;
+    font-family: var(--admin-font);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    transition: var(--admin-transition);
+}
+
+.admin-btn-secondary:hover {
+    border-color: var(--admin-accent) !important;
+    color: var(--admin-accent) !important;
+    background: rgba(197,160,89,0.05) !important;
+}
+
+.admin-btn-danger {
+    background: transparent !important;
+    color: var(--admin-danger) !important;
+    border: 1px solid rgba(220,38,38,0.2) !important;
+    font-family: var(--admin-font);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+.admin-btn-danger:hover {
+    background: rgba(220,38,38,0.08) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   8. DIALOG / POPUP
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.admin-dialog .mud-dialog {
+    background: var(--admin-surface) !important;
+    border: 1px solid var(--admin-border) !important;
+    border-radius: 0 !important;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.5) !important;
+    color: var(--admin-text) !important;
+}
+
+.admin-dialog .mud-dialog-title {
+    padding: 20px 24px 12px !important;
+    font-weight: 700 !important;
+    font-size: 15px !important;
+    color: var(--admin-text) !important;
+    border-bottom: 1px solid var(--admin-border);
+}
+
+.admin-dialog .mud-dialog-content {
+    padding: 20px 24px !important;
+    color: var(--admin-text-secondary) !important;
+}
+
+.admin-dialog .mud-dialog-actions {
+    padding: 12px 24px 20px !important;
+    border-top: 1px solid var(--admin-border);
+    gap: 8px;
+}
+
+/* Onay dialogu */
+.onay-dialog .onay-ikon.silme {
+    background: rgba(220,38,38,0.1);
+    color: var(--admin-danger);
+}
+
+.onay-dialog .onay-ikon.bilgi {
+    background: rgba(59,130,246,0.1);
+    color: var(--admin-info);
+}
+
+.onay-dialog .onay-ikon.basarili {
+    background: rgba(34,197,94,0.1);
+    color: var(--admin-success);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   9. İSTATİSTİK KARTLARI
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.admin-stats-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.admin-stat-card {
+    flex: 1;
+    min-width: 180px;
+    padding: 20px 24px;
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    transition: var(--admin-transition);
+}
+
+.admin-stat-card:hover {
+    border-color: var(--admin-border-focus);
+    box-shadow: var(--admin-shadow-glow);
+}
+
+.admin-stat-card .stat-value {
+    font-family: var(--vizit-font-serif);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--admin-accent);
+    line-height: 1;
+}
+
+.admin-stat-card .stat-label {
+    font-family: var(--admin-font);
+    font-size: 10px;
+    color: var(--admin-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 8px;
+}
+
+.stat-icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(197,160,89,0.08);
+    color: var(--admin-accent);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   10. TOOLBAR
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.admin-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 0;
+}
+
+.admin-toolbar .mud-toolbar {
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   11. BOŞ DURUM
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.bos-durum {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 64px 24px;
+    text-align: center;
+    color: var(--admin-text-muted);
+}
+
+.bos-durum .bos-ikon {
+    font-size: 48px;
+    color: var(--admin-text-dim);
+    margin-bottom: 16px;
+}
+
+.bos-durum .bos-baslik {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--admin-text-secondary);
+    margin-bottom: 8px;
+}
+
+.bos-durum .bos-aciklama {
+    font-size: 13px;
+    color: var(--admin-text-muted);
+    max-width: 320px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   12. SKELETON LOADING
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.admin-skeleton {
+    background: linear-gradient(90deg, var(--admin-primary-light) 25%, var(--admin-surface-hover) 50%, var(--admin-primary-light) 75%);
+    background-size: 200% 100%;
+    animation: admin-skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes admin-skeleton-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   13. SAĞ AKTİVİTE PANELİ
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.admin-drawer-right {
+    background: var(--admin-surface) !important;
+    border-left: 1px solid var(--admin-border) !important;
+}
+
+.activity-panel {
+    padding: 20px 16px;
+}
+
+.activity-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+}
+
+.activity-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+}
+
+.activity-dot.info { background: var(--admin-info); }
+.activity-dot.success { background: var(--admin-success); }
+.activity-dot.warning { background: var(--admin-warning); }
+
+.activity-item-body {
+    flex: 1;
+}
+
+.system-health-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+.system-health-dot.online { background: var(--admin-success); }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   14. MUDBLAZOR KÜRESEL KARANLIK OVERRIDE
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* MudPaper/MudCard karanlık */
+.admin-layout .mud-paper {
+    background-color: var(--admin-surface);
+    color: var(--admin-text);
+}
+
+.admin-layout .mud-card {
+    background-color: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+}
+
+/* MudAlert karanlık */
+.admin-layout .mud-alert {
+    border-radius: 0;
+}
+
+/* MudChip */
+.admin-layout .mud-chip {
+    border-radius: 0;
+}
+
+/* MudDivider */
+.admin-layout .mud-divider {
+    border-color: var(--admin-border) !important;
+}
+
+/* MudIconButton */
+.admin-layout .mud-icon-button {
+    color: var(--admin-text-secondary) !important;
+}
+
+.admin-layout .mud-icon-button:hover {
+    color: var(--admin-accent) !important;
+    background-color: var(--admin-surface-hover) !important;
+}
+
+/* MudTextField global dark */
+.mud-input-slot {
+    background-color: var(--admin-primary-light);
+}
+
+.mud-input-root {
+    color: var(--admin-text);
+}
+
+/* MudSelect listesi */
+.mud-list-item {
+    color: var(--admin-text-secondary);
+}
+
+.mud-list-item:hover {
+    background-color: var(--admin-surface-hover);
+}
+
+/* MudMenu popover */
+.mud-popover .mud-paper {
+    background-color: var(--admin-surface) !important;
+    border: 1px solid var(--admin-border) !important;
+}
+
+.mud-menu-item {
+    color: var(--admin-text-secondary) !important;
+}
+
+.mud-menu-item:hover {
+    background-color: var(--admin-surface-hover) !important;
+    color: var(--admin-text) !important;
+}
+
+/* MudTabs */
+.mud-tabs-toolbar {
+    background-color: transparent !important;
+}
+
+.mud-tab {
+    color: var(--admin-text-muted) !important;
+    font-family: var(--admin-font);
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+}
+
+.mud-tab.active {
+    color: var(--admin-accent) !important;
+}
+
+.mud-tab-slider {
+    background-color: var(--admin-accent) !important;
+}
+
+/* MudTooltip */
+.mud-tooltip {
+    background: var(--admin-primary-light) !important;
+    color: var(--admin-text) !important;
+    border: 1px solid var(--admin-border);
+    border-radius: 0;
+}
+
+/* MudBadge */
+.mud-badge {
+    font-family: var(--admin-font);
+    font-size: 10px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .admin-banner {
+        padding: 8px 12px;
+    }
+
+    .admin-banner-baslik-alan {
+        display: none;
+    }
+
+    .admin-banner-super-admin-chip {
+        display: none;
+    }
+
+    .admin-stats-row {
+        gap: 8px;
+    }
+
+    .admin-stat-card {
+        min-width: 140px;
+        padding: 14px 16px;
+    }
+
+    .admin-table-wrap .mud-table-head th,
+    .admin-table-wrap .mud-table-body td {
+        padding: 8px 10px !important;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   15. TEMA ŞABLON KARTLARI (TemaYonetimi sayfası)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.dl-theme-card {
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    transition: all var(--admin-transition);
+    overflow: hidden;
+}
+
+.dl-theme-card:hover {
+    border-color: var(--admin-border-focus);
+    box-shadow: var(--admin-shadow-glow);
+    transform: translateY(-2px);
+}
+
+.dl-theme-card-active {
+    border-color: var(--admin-accent);
+    box-shadow: 0 0 0 1px rgba(197,160,89,0.15), var(--admin-shadow-glow);
+}
+
+.dl-theme-colors {
+    display: flex;
+    height: 8px;
+}
+
+.dl-theme-swatch {
+    flex: 1;
+}
+
+.dl-theme-info {
+    padding: 14px 16px 10px;
+}
+
+.dl-theme-name {
+    font-family: var(--admin-font);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--admin-text);
+}
+
+.dl-theme-badge {
+    font-family: var(--admin-font);
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--admin-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 2px 8px;
+    background: rgba(197,160,89,0.1);
+}
+
+.dl-theme-desc {
+    display: block;
+    font-family: var(--admin-font);
+    font-size: 11px;
+    color: var(--admin-text-muted);
+    margin-top: 4px;
+}
+
+.dl-theme-preview {
+    padding: 12px 16px;
+    margin: 0 12px 14px;
+    border: 1px solid var(--admin-border);
+}
+
+/* İş Takip Öncelik çipleri */
+.admin-oncelik-kritik { background: rgba(220,38,38,0.1) !important; color: #DC2626 !important; font-weight: 700; font-size: 10px; }
+.admin-oncelik-yuksek { background: rgba(245,158,11,0.1) !important; color: #F59E0B !important; font-weight: 600; font-size: 10px; }
+.admin-oncelik-orta { background: rgba(59,130,246,0.1) !important; color: #3B82F6 !important; font-size: 10px; }
+.admin-oncelik-dusuk { background: rgba(255,255,255,0.04) !important; color: var(--admin-text-muted); font-size: 10px; }
+.admin-kategori-chip { font-size: 10px; color: var(--admin-text-muted) !important; }
+.admin-durum-select { width: 130px; }
+
+/* Admin dil butonlari */
+.admin-dil-btn {
+    min-width: auto !important;
+    padding: 2px 6px !important;
+    font-size: 13px !important;
+    border-radius: 4px !important;
+    transition: all 0.2s;
+}
+.admin-dil-btn:hover {
+    background: var(--admin-surface-hover) !important;
+    color: var(--admin-accent) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   16. DİL YÖNETİMİ (CeviriYonetimi sayfası)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Dil kartları grid */
+.admin-dil-kartlari {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+/* Tek dil kartı */
+.admin-dil-karti {
+    background: var(--admin-surface) !important;
+    border: 1px solid var(--admin-border) !important;
+    transition: var(--admin-transition);
+}
+
+.admin-dil-karti:hover {
+    border-color: var(--admin-border-focus) !important;
+    box-shadow: var(--admin-shadow-glow);
+}
+
+/* Dil kartı içerik düzeni */
+.admin-dil-karti-icerik {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Bayrak ikonu */
+.admin-dil-bayrak {
+    font-size: 24px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+/* Dil kartı metin alanı */
+.admin-dil-karti-metin {
+    flex: 1;
+    min-width: 0;
+}
+
+/* MudSwitch override — logo rengi (admin accent) */
+.admin-dil-karti .mud-switch-track-true {
+    background-color: var(--admin-accent) !important;
+}
+
+.admin-dil-karti .mud-icon-button {
+    color: var(--admin-text-secondary) !important;
+}
+
+.admin-dil-karti .mud-icon-button:hover {
+    color: var(--admin-accent) !important;
+}
+
+/* Çeviri form paneli */
+.admin-ceviri-form {
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    padding: 24px;
+}
+
+/* Çeviri filtre toolbar */
+.admin-ceviri-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* Çeviri DataGrid satır hover */
+.admin-ceviri-satir:hover {
+    background: var(--admin-surface-hover) !important;
+}
+
+/* Sayfa başlığı — admin karanlık temada görünür */
+.admin-layout .mud-typography-h4,
+.admin-layout .mud-typography.mud-typography-h4,
+.admin-layout h4 {
+    color: var(--admin-text) !important;
+}
+
+/* MudCard karanlık override — dil kartları için */
+.admin-dil-karti .mud-card {
+    background: var(--admin-surface) !important;
+    border: 1px solid var(--admin-border) !important;
+}
+
+.admin-dil-karti .mud-card-content {
+    color: var(--admin-text) !important;
+}
+
+/* MudSwitch track rengi — logo accent */
+.admin-layout .mud-switch.mud-switch-true .mud-switch-track {
+    background-color: var(--admin-accent) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   17. MUDBLAZOR GENEL KARANLIK TEMA OVERRIDE
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* MudButton filled — gold accent */
+.admin-layout .mud-button-filled.mud-button-warning {
+    background-color: var(--admin-accent) !important;
+    color: #0a0a0a !important;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: 0 !important;
+}
+.admin-layout .mud-button-filled.mud-button-warning:hover {
+    background-color: var(--admin-accent-light) !important;
+    box-shadow: 0 4px 16px rgba(197,160,89,0.25) !important;
+}
+
+/* MudButton outlined — nötr */
+.admin-layout .mud-button-outlined {
+    border-color: var(--admin-border) !important;
+    color: var(--admin-text-secondary) !important;
+}
+.admin-layout .mud-button-outlined:hover {
+    border-color: var(--admin-accent) !important;
+    color: var(--admin-accent) !important;
+    background: rgba(197,160,89,0.05) !important;
+}
+
+/* MudSelect karanlık */
+.admin-layout .mud-select .mud-input-slot {
+    background-color: var(--admin-primary-light) !important;
+    border-color: var(--admin-border) !important;
+    color: var(--admin-text) !important;
+}
+.admin-layout .mud-select .mud-input:focus-within .mud-input-slot {
+    border-color: var(--admin-accent) !important;
+}
+.admin-layout .mud-select .mud-input-label {
+    color: var(--admin-text-muted) !important;
+}
+.admin-layout .mud-select .mud-input-root {
+    color: var(--admin-text) !important;
+}
+.admin-layout .mud-select-icon {
+    color: var(--admin-text-muted) !important;
+}
+
+/* MudTextField karanlık */
+.admin-layout .mud-input-slot {
+    background-color: var(--admin-primary-light) !important;
+    border: 1px solid var(--admin-border);
+}
+.admin-layout .mud-input:focus-within .mud-input-slot {
+    border-color: var(--admin-accent) !important;
+}
+.admin-layout .mud-input-label {
+    color: var(--admin-text-muted) !important;
+}
+.admin-layout .mud-input-root {
+    color: var(--admin-text) !important;
+}
+.admin-layout .mud-input-adornment {
+    color: var(--admin-text-muted) !important;
+}
+
+/* MudDataGrid karanlık override */
+.admin-layout .mud-datagrid .mud-table-head th {
+    background: var(--admin-primary-light) !important;
+    color: var(--admin-text-muted) !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    border-bottom: 1px solid var(--admin-border) !important;
+}
+.admin-layout .mud-datagrid .mud-table-body td {
+    color: var(--admin-text-secondary) !important;
+    background: var(--admin-surface) !important;
+    border-bottom: 1px solid var(--admin-border-light) !important;
+    font-size: 13px !important;
+}
+.admin-layout .mud-datagrid .mud-table-body tr:hover td {
+    background: var(--admin-surface-hover) !important;
+}
+.admin-layout .mud-datagrid .mud-table-body tr:nth-child(even) td {
+    background: var(--admin-primary-light) !important;
+}
+.admin-layout .mud-datagrid .mud-table-pagination {
+    background: var(--admin-surface) !important;
+    color: var(--admin-text-muted) !important;
+    border-top: 1px solid var(--admin-border) !important;
+}
+
+/* MudDataGrid filter icon */
+.admin-layout .mud-datagrid .mud-menu-icon {
+    color: var(--admin-text-muted) !important;
+}
+.admin-layout .mud-datagrid .mud-menu-icon:hover {
+    color: var(--admin-accent) !important;
+}
+
+/* MudIconButton genel */
+.admin-layout .mud-icon-button.mud-icon-button-size-small {
+    color: var(--admin-text-secondary) !important;
+}
+.admin-layout .mud-icon-button.mud-icon-button-size-small:hover {
+    color: var(--admin-accent) !important;
+    background-color: var(--admin-surface-hover) !important;
+}
+
+/* MudProgressLinear */
+.admin-layout .mud-progress-linear {
+    background-color: var(--admin-primary-light) !important;
+}
+.admin-layout .mud-progress-linear .mud-progress-linear-bar {
+    background-color: var(--admin-accent) !important;
+}
+
+/* MudDivider */
+.admin-layout .mud-divider {
+    border-color: var(--admin-border) !important;
+}
+
+/* Kayıt sayacı — nötr renk */
+.admin-layout .mud-typography-body2 {
+    color: var(--admin-text-muted) !important;
+}

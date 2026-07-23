@@ -1,0 +1,121 @@
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+@page "/admin/malzeme-yonetimi"
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using VizitLink3D.Ortak.Modeller.Urunler
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<PageTitle>@dil.T("admin.malzeme.sayfaBasligi", "Malzeme Yonetimi") | VizitLink3D Admin</PageTitle>
+
+<AdminSayfaBasligi Baslik='@dil.T("admin.malzeme.baslik", "Malzeme Yonetimi")'
+                   Aciklama='@dil.T("admin.malzeme.aciklama", "3D parcalar, kaplama secenekleri ve katalog filtreleri icin malzeme havuzunu yonetin.")'
+                   Ikon="@Icons.Material.Filled.Texture">
+    <MudChip T="string" Size="Size.Small" Color="Color.Primary" Variant="Variant.Outlined">
+        @_filtreliListe.Count @dil.T("ortak.kayit", "kayit")
+    </MudChip>
+</AdminSayfaBasligi>
+
+<AdminAracCubugu AramaYerMetni='@dil.T("admin.malzeme.ara", "Malzeme, tip veya aciklama ara...")'
+                 AramaMetni="@_arama"
+                 AramaMetniDegisti="AramaDegisti"
+                 AramaYapildi="AramaUygula">
+    <MudButton Variant="Variant.Filled"
+               Color="Color.Primary"
+               StartIcon="@Icons.Material.Filled.Add"
+               OnClick="YeniAc">
+        @dil.T("admin.malzeme.yeniMalzeme", "Yeni malzeme")
+    </MudButton>
+</AdminAracCubugu>
+
+@if (_yukleniyor)
+{
+    <AdminYukleniyorIskeleti SatirSayisi="5" />
+}
+
+@if (_formAcik)
+{
+    <MudCard Class="mb-4" Elevation="2">
+        <MudCardContent>
+            <MudText Typo="Typo.h6" Class="mb-4">
+                @(_duzenlemeModu ? dil.T("admin.malzeme.duzenle", "Malzeme duzenle") : dil.T("admin.malzeme.yeniMalzeme", "Yeni malzeme"))
+            </MudText>
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_form.Ad" Label='@dil.T("ortak.ad", "Ad")' Required="true" Class="mb-3" />
+                </MudItem>
+                <MudItem xs="12" md="3">
+                    <MudSelect T="string" @bind-Value="_form.Tip" Label='@dil.T("admin.malzeme.tip", "Tip")' Required="true" Class="mb-3">
+                        @foreach (var tip in MalzemeTipleri)
+                        {
+                            <MudSelectItem Value="@tip.Deger">@DilServisi.T(tip.DilAnahtari, tip.Varsayilan)</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" md="3">
+                    <MudNumericField @bind-Value="_form.SiraNo" Label='@dil.T("ortak.siraNo", "Sıra No")' Class="mb-3" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="_form.Aciklama" Label='@dil.T("ortak.aciklama", "Açıklama")' Lines="3" Class="mb-3" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudSwitch @bind-Value="_form.AktifMi" Label='@dil.T("ortak.aktif", "Aktif")' Color="Color.Primary" Class="mt-4" />
+                </MudItem>
+            </MudGrid>
+            <div class="admin-form-actions">
+                <MudButton OnClick="FormIptal" Color="Color.Secondary" Disabled="_kaydediliyor">
+                    @dil.T("ortak.iptal", "İptal")
+                </MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Kaydet" Disabled="_kaydediliyor">
+                    @dil.T("ortak.kaydet", "Kaydet")
+                </MudButton>
+            </div>
+        </MudCardContent>
+    </MudCard>
+}
+
+@if (!_yukleniyor && _filtreliListe.Count == 0)
+{
+    <AdminBosDurum Icon="@Icons.Material.Filled.Texture"
+                   Baslik='@dil.T("admin.malzeme.bosBaslik", "Malzeme bulunamadi")'
+                   Aciklama='@dil.T("admin.malzeme.bosAciklama", "Yeni malzeme ekleyerek 3D ve kaplama seceneklerini besleyin.")'>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="YeniAc">
+            @dil.T("admin.malzeme.yeniMalzeme", "Yeni malzeme")
+        </MudButton>
+    </AdminBosDurum>
+}
+else if (!_yukleniyor)
+{
+    <MudDataGrid Items="@_filtreliListe" Filterable="true" SortMode="SortMode.Multiple" Dense="true" Striped="true" Hover="true" Class="admin-table-wrap">
+        <Columns>
+            <PropertyColumn Property="x => x.Ad" Title='@dil.T("ortak.ad", "Ad")' />
+            <TemplateColumn Title='@dil.T("admin.malzeme.tip", "Tip")'>
+                <CellTemplate>
+                    <MudChip T="string" Size="Size.Small" Color="Color.Info" Variant="Variant.Outlined">
+                        @TipEtiketi(context.Item.Tip)
+                    </MudChip>
+                </CellTemplate>
+            </TemplateColumn>
+            <PropertyColumn Property="x => x.SiraNo" Title='@dil.T("ortak.siraNo", "Sıra No")' />
+            <TemplateColumn Title='@dil.T("ortak.durum", "Durum")'>
+                <CellTemplate>
+                    <MudChip T="string" Size="Size.Small" Color="@(context.Item.AktifMi ? Color.Success : Color.Error)" Variant="Variant.Outlined">
+                        @(context.Item.AktifMi ? dil.T("ortak.aktif", "Aktif") : dil.T("ortak.pasif", "Pasif"))
+                    </MudChip>
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title='@dil.T("ortak.islemler", "Islemler")'>
+                <CellTemplate>
+                    <MudTooltip Text='@dil.T("ortak.duzenle", "Düzenle")'>
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="() => Duzenle(context.Item)" />
+                    </MudTooltip>
+                    <MudTooltip Text='@dil.T("ortak.yayindanKaldir", "Yayindan kaldir")'>
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error" OnClick="() => SilOnay(context.Item)" />
+                    </MudTooltip>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager />
+        </PagerContent>
+    </MudDataGrid>
+}

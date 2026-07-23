@@ -1,0 +1,176 @@
+﻿@page "/"
+@layout VizitLink3DDuzen
+
+<PageTitle>@DilServisi.T("anasayfa.title", "ORPAY | Orman Ürünleri")</PageTitle>
+
+<!-- ═══ HERO SLIDER ═══ -->
+<HeroSlider SayfaKodu="anasayfa" />
+
+<!-- ═══ METRİK BAR ═══ -->
+<section class="gb-metrik">
+    <div class="gb-metrik__grid">
+        <div class="gb-reveal">
+            <div class="gb-metrik__sayi">@DilServisi.T("anasayfa.metrik.yilTecrubeSayi", "35+")</div>
+            <div class="gb-metrik__etiket">@DilServisi.T("anasayfa.metrik.yilTecrubeEtiket", "Yıl Tecrübe")</div>
+        </div>
+        <div class="gb-reveal">
+            <div class="gb-metrik__sayi">@DilServisi.T("anasayfa.metrik.projeSayi", "10K+")</div>
+            <div class="gb-metrik__etiket">@DilServisi.T("anasayfa.metrik.projeEtiket", "Proje")</div>
+        </div>
+        <div class="gb-reveal">
+            <div class="gb-metrik__sayi">@DilServisi.T("anasayfa.metrik.ozelKoleksiyonSayi", "20+")</div>
+            <div class="gb-metrik__etiket">@DilServisi.T("anasayfa.metrik.ozelKoleksiyonEtiket", "Özel Koleksiyon")</div>
+        </div>
+        <div class="gb-reveal">
+            <div class="gb-metrik__sayi">@DilServisi.T("anasayfa.metrik.ihracatAgiSayi", "Global")</div>
+            <div class="gb-metrik__etiket">@DilServisi.T("anasayfa.metrik.ihracatAgiEtiket", "İhracat Ağı")</div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ KOLEKSİYON BENTO ═══ -->
+<section class="gb-bolum--koyu" style="padding: 80px 0;">
+    <div class="gb-bolum__ic">
+        <h2 class="gb-bolum__baslik gb-reveal">@DilServisi.T("anasayfa.koleksiyon.baslik", "Koleksiyonlar")</h2>
+        <div class="gb-bento">
+            <!-- Gold Exclusive (Geniş) -->
+            <a class="gb-bento__kart gb-bento__kart--genis gb-glint-hover gb-reveal" href="/banyo-dolaplari#exclusive">
+                <div class="gb-bento__gorsel">
+                    <img src="/medya/placeholder.svg" alt="Gold Exclusive koleksiyonu" />
+                </div>
+                <div class="gb-bento__kaplama"></div>
+                <div class="gb-bento__yazi">
+                    <span class="gb-bento__yazi-etiket">@DilServisi.T("anasayfa.koleksiyon.exclusiveEtiket", "Premium Seri")</span>
+                    <h3 class="gb-bento__yazi-baslik">@DilServisi.T("anasayfa.koleksiyon.exclusiveBaslik", "Gold Exclusive")</h3>
+                    <p class="gb-bento__yazi-aciklama">@DilServisi.T("anasayfa.koleksiyon.exclusiveAciklama", "Sınırları zorlayan mimari çizgiler.")</p>
+                </div>
+            </a>
+
+            <!-- Premium (Dar) -->
+            <a class="gb-bento__kart gb-bento__kart--dar gb-glint-hover gb-reveal" href="/banyo-dolaplari#premium">
+                <div class="gb-bento__gorsel">
+                    <img src="/medya/placeholder.svg" alt="Gold Premium koleksiyonu" />
+                </div>
+                <div class="gb-bento__kaplama"></div>
+                <div class="gb-bento__yazi">
+                    <h3 class="gb-bento__yazi-baslik">@DilServisi.T("anasayfa.koleksiyon.premiumBaslik", "Premium Serisi")</h3>
+                    <p class="gb-bento__yazi-aciklama">@DilServisi.T("anasayfa.koleksiyon.premiumAciklama", "Zarafet ve fonksiyonellik.")</p>
+                </div>
+            </a>
+
+            <!-- Trend (Orta) -->
+            <a class="gb-bento__kart gb-bento__kart--orta gb-glint-hover gb-reveal" href="/banyo-dolaplari#trend">
+                <div class="gb-bento__gorsel">
+                    <img src="/medya/placeholder.svg" alt="Gold Trend koleksiyonu" />
+                </div>
+                <div class="gb-bento__kaplama"></div>
+                <div class="gb-bento__yazi">
+                    <h3 class="gb-bento__yazi-baslik">@DilServisi.T("anasayfa.koleksiyon.trendBaslik", "Trend Serisi")</h3>
+                    <p class="gb-bento__yazi-aciklama">@DilServisi.T("anasayfa.koleksiyon.trendAciklama", "Modern yaşam alanları için.")</p>
+                </div>
+            </a>
+
+            <!-- Standard (Orta) -->
+            <a class="gb-bento__kart gb-bento__kart--orta gb-glint-hover gb-reveal" href="/banyo-dolaplari#standart">
+                <div class="gb-bento__gorsel">
+                    <img src="/medya/placeholder.svg" alt="Gold Standart koleksiyonu" />
+                </div>
+                <div class="gb-bento__kaplama"></div>
+                <div class="gb-bento__yazi">
+                    <h3 class="gb-bento__yazi-baslik">@DilServisi.T("anasayfa.koleksiyon.standartBaslik", "Standart Seri")</h3>
+                    <p class="gb-bento__yazi-aciklama">@DilServisi.T("anasayfa.koleksiyon.standartAciklama", "Zamansız klasikler.")</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ HAREKETLİ KOLEKSİYON SAHNESİ ═══ -->
+<section class="gb-koleksiyon-sahne">
+    <div class="gb-koleksiyon-sahne__arka">
+        <img src="/medya/anasayfa/uretim.jpg" alt="ORPAY üretim sahnesi" />
+    </div>
+    <div class="gb-koleksiyon-sahne__icerik">
+        <div class="gb-koleksiyon-sahne__metin gb-reveal">
+            <span class="gb-hero__etiket" style="animation: none; opacity: 1; transform: none;">@DilServisi.T("anasayfa.uretim.etiket", "Üretim & İşçilik")</span>
+            <h2>@DilServisi.T("anasayfa.uretim.baslik1", "Endüstriyel Lüksün")<br />@DilServisi.T("anasayfa.uretim.baslik2", "Adresi")</h2>
+            <p>
+                @DilServisi.T("anasayfa.uretim.aciklama", "10.000 m² kapalı alanda, son teknoloji CNC tezgahları ve ustalık geleneğinin buluştuğu nokta. Her banyo dolabı, titiz bir kalite kontrol sürecinden geçer.")
+            </p>
+            <a class="gb-btn gb-btn--birincil" href="/fabrikamiz">@DilServisi.T("anasayfa.uretim.buton", "Fabrikamızı Keşfedin")</a>
+        </div>
+        <div class="gb-koleksiyon-sahne__gorsel gb-reveal">
+            <img src="/medya/placeholder.svg" alt="ORPAY işçilik detayı" style="width:100%; border-radius: 8px;" />
+        </div>
+    </div>
+</section>
+
+<!-- ═══ ÖNE ÇIKAN ÜRÜNLER ═══ -->
+<section class="gb-bolum">
+    <h2 class="gb-bolum__baslik gb-reveal">@DilServisi.T("anasayfa.onecikanModeller.baslik", "Öne Çıkan Modeller")</h2>
+    <div class="gb-urun-grid">
+        <a class="gb-urun-kart gb-reveal" href="/banyo-dolabi/diago-100">
+            <div class="gb-urun-kart__gorsel">
+                <img src="/medya/placeholder.svg" alt="Diago 100 banyo dolabı" />
+            </div>
+            <div class="gb-urun-kart__bilgi">
+                <span class="gb-urun-kart__kod">@DilServisi.T("anasayfa.onecikanModeller.diago100Kod", "Diago 100")</span>
+                <h3 class="gb-urun-kart__ad">@DilServisi.T("anasayfa.onecikanModeller.diago100Ad", "Diago 100 Canlı Detay")</h3>
+                <p class="gb-urun-kart__aciklama">@DilServisi.T("anasayfa.onecikanModeller.diago100Aciklama", "Çarpıcı geometrik çizgiler ve lüks yüzeyler.")</p>
+            </div>
+        </a>
+
+        <a class="gb-urun-kart gb-reveal" href="/banyo-dolabi/giorgio-100">
+            <div class="gb-urun-kart__gorsel">
+                <img src="/medya/placeholder.svg" alt="Giorgio 100 banyo dolabı" />
+            </div>
+            <div class="gb-urun-kart__bilgi">
+                <span class="gb-urun-kart__kod">@DilServisi.T("anasayfa.onecikanModeller.giorgio100Kod", "Giorgio 100")</span>
+                <h3 class="gb-urun-kart__ad">@DilServisi.T("anasayfa.onecikanModeller.giorgio100Ad", "Giorgio 100 Hareketli Detay")</h3>
+                <p class="gb-urun-kart__aciklama">@DilServisi.T("anasayfa.onecikanModeller.giorgio100Aciklama", "Zarif form ve işlevsellik bir arada.")</p>
+            </div>
+        </a>
+
+        <a class="gb-urun-kart gb-reveal" href="/banyo-dolabi/hermes-120">
+            <div class="gb-urun-kart__gorsel">
+                <img src="/medya/placeholder.svg" alt="Hermes 120 banyo dolabı" />
+            </div>
+            <div class="gb-urun-kart__bilgi">
+                <span class="gb-urun-kart__kod">@DilServisi.T("anasayfa.onecikanModeller.hermes120Kod", "Hermes 120")</span>
+                <h3 class="gb-urun-kart__ad">@DilServisi.T("anasayfa.onecikanModeller.hermes120Ad", "Hermes 120 Exclusive")</h3>
+                <p class="gb-urun-kart__aciklama">@DilServisi.T("anasayfa.onecikanModeller.hermes120Aciklama", "Stone lavabo ve dokunmatik ledli ayna ile üstün zarafet.")</p>
+            </div>
+        </a>
+    </div>
+</section>
+
+<!-- ═══ KATALOG ═══ -->
+<section class="gb-katalog">
+    <h2 class="gb-katalog__baslik gb-reveal">@DilServisi.T("anasayfa.katalog.baslik", "2026 Kataloğumuz")</h2>
+    <p class="gb-katalog__aciklama gb-reveal">
+        @DilServisi.T("anasayfa.katalog.aciklama", "Tüm koleksiyonlarımızı ve teknik detayları dijital kataloğumuzda inceleyin.")
+    </p>
+    <div class="gb-reveal">
+        <a class="gb-btn gb-btn--birincil" href="/katalog">@DilServisi.T("anasayfa.katalog.buton", "Kataloğu İncele")</a>
+    </div>
+</section>
+
+<!-- ═══ NASIL ÇALIŞIYORUZ? — 3 ADIM ═══ -->
+<HizmetSureciBolumu />
+
+<!-- ═══ BİZİ TERCİH EDENLER / MÜŞTERİ YORUMLARI ═══ -->
+<MusteriYorumlariCarousel />
+
+<!-- ═══ CTA BANDI ═══ -->
+<section class="gb-cta-bandi">
+    <h2 class="gb-cta-bandi__baslik gb-reveal">@DilServisi.T("anasayfa.cta.baslik", "Banyonuz İçin Teklif Alın")</h2>
+    <p class="gb-cta-bandi__aciklama gb-reveal">
+        @DilServisi.T("anasayfa.cta.aciklama", "Uzman ekibimiz, mekanınıza en uygun koleksiyonu önermek için sizinle iletişime geçsin.")
+    </p>
+    <div class="gb-reveal">
+        <a class="gb-btn gb-btn--birincil" href="/iletisim">@DilServisi.T("anasayfa.cta.buton", "İletişime Geçin")</a>
+    </div>
+</section>
+
+<!-- ═══ SSS — SIKÇA SORULAN SORULAR ═══ -->
+<SSSBolumu />

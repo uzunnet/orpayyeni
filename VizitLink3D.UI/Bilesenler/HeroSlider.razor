@@ -1,0 +1,94 @@
+<link href="css/sistem/bilesenler/hero-slider.css" rel="stylesheet" />
+
+@using VizitLink3D.Ortak.Modeller
+@inject Servisler.DilServisi dil
+@inject Servisler.ApiIstemcisi api
+
+@* 
+ * HeroSlider — Ana sayfa icin tam ekran slider bileseni.
+ * API'den Slayt listesini ceker ve GSAP/ScrollTrigger ile
+ * otomatik gecis animasyonlari sunar.
+ * Anayasa §28 uyumlu — Three.js/GSAP wrapper uzerinden.
+ *@
+
+@{
+    var slaytlar = _slaytlar.Count > 0 ? _slaytlar : _varsayilanSlaytlar;
+
+    var aktif = slaytlar[Math.Clamp(_aktifIndex, 0, slaytlar.Count - 1)];
+}
+
+<div class="hero-slider-wrapper">
+    @if (_yukleniyor)
+    {
+        <div class="hero-bg" style="background-image: linear-gradient(135deg, rgba(12,12,12,0.9), rgba(64,46,24,0.6));"></div>
+    }
+    else
+    {
+        <div class="hero-bg" style="background-image: url('@ResimUrl(aktif.ArkaplanResim)');"></div>
+    }
+
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="px-6 hero-container">
+        <MudGrid Class="align-center hero-grid-inner" Spacing="6">
+            <MudItem xs="12" md="8" Class="hero-content">
+                @if (!string.IsNullOrEmpty(aktif.AltBaslik))
+                {
+                    <MudText Typo="Typo.overline" Class="mb-4 d-block hero-subtitle anim-reveal-up" Style="animation-delay: 0.1s;">
+                        @aktif.AltBaslik
+                    </MudText>
+                }
+
+                <MudText Typo="Typo.h1" Class="mb-6 hero-title anim-reveal-up" Style="animation-delay: 0.2s;">
+                    @aktif.Baslik
+                </MudText>
+
+                @if (!string.IsNullOrEmpty(aktif.Aciklama))
+                {
+                    <MudText Typo="Typo.body1" Class="mb-10 hero-desc anim-reveal-up" Style="animation-delay: 0.3s;">
+                        @aktif.Aciklama
+                    </MudText>
+                }
+
+                <MudStack Row="true" Spacing="4" Wrap="Wrap.Wrap">
+                    @if (!string.IsNullOrEmpty(aktif.ButonMetni1))
+                    {
+                        <MudButton Href="@aktif.ButonLink1"
+                                   Variant="Variant.Filled"
+                                   Class="vizit-btn-birincil anim-reveal-up"
+                                   Style="animation-delay: 0.4s;"
+                                   EndIcon="@Icons.Material.Outlined.ArrowOutward">
+                            @aktif.ButonMetni1
+                        </MudButton>
+                    }
+                    @if (!string.IsNullOrEmpty(aktif.ButonMetni2))
+                    {
+                        <MudButton Href="@aktif.ButonLink2"
+                                   Variant="Variant.Outlined"
+                                   Class="vizit-btn-ikincil anim-reveal-up"
+                                   Style="animation-delay: 0.5s;">
+                            @aktif.ButonMetni2
+                        </MudButton>
+                    }
+                </MudStack>
+            </MudItem>
+        </MudGrid>
+    </MudContainer>
+
+    @if (slaytlar.Count > 1)
+    {
+        <div class="hero-nav-dots">
+            @for (int i = 0; i < slaytlar.Count; i++)
+            {
+                var index = i;
+                <div @onclick="() => SlaytaGit(index)"
+                     class="hero-nav-dot"
+                     style="width: @(i == _aktifIndex ? "32px" : "8px"); background: @(i == _aktifIndex ? "var(--gb-accent)" : "var(--gb-border)");">
+                </div>
+            }
+        </div>
+    }
+
+    <div class="hero-scroll-indicator">
+        <MudIcon Icon="@Icons.Material.Outlined.KeyboardArrowDown" Class="hero-scroll-icon" />
+    </div>
+</div>
+

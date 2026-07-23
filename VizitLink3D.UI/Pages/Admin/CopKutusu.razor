@@ -1,0 +1,66 @@
+@page "/admin/cop-kutusu"
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "SuperAdmin")]
+
+<PageTitle>@dil.T("admin.copKutusu.sayfaBasligi", "Cop Kutusu") | VizitLink3D Admin</PageTitle>
+
+<MudText Typo="Typo.h4" Class="mb-2">@dil.T("admin.copKutusu.baslik", "Cop Kutusu")</MudText>
+<MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-4">@dil.T("admin.copKutusu.aciklama", "Silinmis kayitlari goruntuleyin ve geri alin.")</MudText>
+
+@if (_yukleniyor) { <MudProgressLinear Indeterminate="true" Class="mb-4" /> }
+
+<MudTabs Elevation="1" Outlined="true" Class="mb-4">
+    <MudTabPanel Text="@($"Urunler ({_silinmisUrunler.Count})")" Icon="@Icons.Material.Filled.Inventory">
+        <MudTable Items="@_silinmisUrunler" Hover="true" Dense="true" Elevation="0" Class="mt-2">
+            <HeaderContent>
+                <MudTh>@dil.T("ortak.ad", "Ad")</MudTh><MudTh>@dil.T("ortak.kod", "Kod")</MudTh><MudTh>@dil.T("admin.silinmeTarihi", "Silinme Tarihi")</MudTh><MudTh>@dil.T("ortak.islem", "İşlem")</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd>@context.Ad</MudTd>
+                <MudTd>@context.Kod</MudTd>
+                <MudTd>@(context.SilinmeTarihi?.ToString("dd.MM.yyyy HH:mm") ?? "-")</MudTd>
+                <MudTd>
+                    <MudButton Variant="Variant.Filled" Color="Color.Success" Size="Size.Small" StartIcon="@Icons.Material.Filled.Restore" OnClick="@(() => UrunGeriAl(context))">@dil.T("admin.geriAl","Geri Al")</MudButton>
+                </MudTd>
+            </RowTemplate>
+            <NoRecordsContent><MudText Class="pa-4">@dil.T("admin.copKutusu.urunYok", "Silinmis urun yok.")</MudText></NoRecordsContent>
+        </MudTable>
+    </MudTabPanel>
+
+    <MudTabPanel Text="@($"Menuler ({_silinmisMenuler.Count})")" Icon="@Icons.Material.Filled.Menu">
+        <MudTable Items="@_silinmisMenuler" Hover="true" Dense="true" Elevation="0" Class="mt-2">
+            <HeaderContent>
+                <MudTh>@dil.T("ortak.baslik", "Başlık")</MudTh><MudTh>URL</MudTh><MudTh>@dil.T("admin.konum", "Konum")</MudTh><MudTh>@dil.T("admin.silinme", "Silinme")</MudTh><MudTh>@dil.T("ortak.islem", "İşlem")</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd>@context.Baslik</MudTd>
+                <MudTd>@context.Url</MudTd>
+                <MudTd>@context.Konum</MudTd>
+                <MudTd>@(context.SilinmeTarihi?.ToString("dd.MM.yyyy") ?? "-")</MudTd>
+                <MudTd>
+                    <MudButton Variant="Variant.Filled" Color="Color.Success" Size="Size.Small" StartIcon="@Icons.Material.Filled.Restore" OnClick="@(() => MenuGeriAl(context))">@dil.T("admin.geriAl","Geri Al")</MudButton>
+                </MudTd>
+            </RowTemplate>
+            <NoRecordsContent><MudText Class="pa-4">@dil.T("admin.copKutusu.menuYok", "Silinmis menu yok.")</MudText></NoRecordsContent>
+        </MudTable>
+    </MudTabPanel>
+
+    <MudTabPanel Text="@($"3D Modeller ({_silinmisModeller.Count})")" Icon="@Icons.Material.Filled.ViewInAr">
+        <MudTable Items="@_silinmisModeller" Hover="true" Dense="true" Elevation="0" Class="mt-2">
+            <HeaderContent>
+                <MudTh>@dil.T("admin.modelAdi", "Model Adı")</MudTh><MudTh>@dil.T("ortak.yol", "Yol")</MudTh><MudTh>@dil.T("admin.silinme", "Silinme")</MudTh><MudTh>@dil.T("ortak.islem", "İşlem")</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd>@context.ModelAdi</MudTd>
+                <MudTd>@context.ModelYolu</MudTd>
+                <MudTd>@(context.SilinmeTarihi?.ToString("dd.MM.yyyy") ?? "-")</MudTd>
+                <MudTd>
+                    <MudButton Variant="Variant.Filled" Color="Color.Success" Size="Size.Small" StartIcon="@Icons.Material.Filled.Restore" OnClick="@(() => ModelGeriAl(context))">@dil.T("admin.geriAl","Geri Al")</MudButton>
+                </MudTd>
+            </RowTemplate>
+            <NoRecordsContent><MudText Class="pa-4">@dil.T("admin.copKutusu.modelYok", "Silinmis model yok.")</MudText></NoRecordsContent>
+        </MudTable>
+    </MudTabPanel>
+</MudTabs>

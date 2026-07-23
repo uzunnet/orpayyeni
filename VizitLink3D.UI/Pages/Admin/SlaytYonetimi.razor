@@ -1,0 +1,240 @@
+@page "/admin/slayt-yonetimi"
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using VizitLink3D.Ortak.Modeller
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+
+<PageTitle>@($"{dil.T("admin.slayt.sayfaBasligi", "Slayt Yönetimi")} | VizitLink3D Admin")</PageTitle>
+
+<AdminSayfaBasligi Baslik="@dil.T("admin.slayt.baslik", "Slayt Yönetimi")"
+                   Aciklama="@dil.T("admin.slayt.aciklamaMetni", "Ana sayfa hero slider içeriklerini, görsellerini ve yayın durumlarını yönetin.")"
+                   Ikon="@Icons.Material.Filled.ViewCarousel" />
+
+<AdminAracCubugu AramaMetni="@_arama"
+                 AramaMetniDegisti="AramaMetniDegisti"
+                 AramaYerMetni="@dil.T("admin.slayt.aramaYeri", "Slayt ara...")">
+    <MudButton Variant="Variant.Outlined" Color="Color.Info" StartIcon="@Icons.Material.Filled.GTranslate" OnClick="TumuCevir" Disabled="@(_tumCeviriCalisiyor || _yukleniyor || _filtreliListe.Count == 0)">
+        @(_tumCeviriCalisiyor ? $"{dil.T("admin.ceviri.tumuCeviriliyor", "Tümü çevriliyor...")} {_ceviriIslenen}/{_ceviriToplam}" : dil.T("admin.ceviri.tumuCevir", "Tümü Çevir"))
+    </MudButton>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="YeniAc">
+        @dil.T("ortak.yeni", "Yeni")
+    </MudButton>
+</AdminAracCubugu>
+
+@if (!_yukleniyor && _ceviriAnalizi is not null)
+{
+    <AdminCeviriOzetRozetleri Ozet="@_ceviriAnalizi.Ozet" />
+}
+
+@if (_yukleniyor)
+{
+    <AdminYukleniyorIskeleti SatirSayisi="5" />
+}
+
+@if (_formAcik)
+{
+    <MudPaper Elevation="0" Class="admin-form-panel pa-4 mb-4">
+        <MudText Typo="Typo.h6" Class="mb-4">
+            @(_duzenlemeModu ? dil.T("admin.slayt.duzenle", "Slayt Düzenle") : dil.T("admin.slayt.yeni", "Yeni Slayt"))
+        </MudText>
+        <MudGrid>
+            <MudItem xs="12" md="12">
+                <MudSelect @bind-Value="_form.SayfaKodu" Label="@dil.T("admin.slayt.sayfaSecimi", "Sayfa Seçimi")" AnchorOrigin="Origin.BottomCenter">
+                    <MudSelectItem Value="@("anasayfa")">@dil.T("ortak.anasayfa", "Ana Sayfa")</MudSelectItem>
+                    <MudSelectItem Value="@("hakkimizda")">@dil.T("sayfalar.hakkimizda", "Hakkımızda")</MudSelectItem>
+                    <MudSelectItem Value="@("fabrikamiz")">@dil.T("sayfalar.fabrikamiz", "Fabrikamız")</MudSelectItem>
+                    <MudSelectItem Value="@("ekibimiz")">@dil.T("sayfalar.ekibimiz", "Ekibimiz")</MudSelectItem>
+                    <MudSelectItem Value="@("vizyon-misyon")">@dil.T("sayfalar.vizyonMisyon", "Vizyon & Misyon")</MudSelectItem>
+                    <MudSelectItem Value="@("urunler")">@dil.T("sayfalar.urunler", "Ürünler")</MudSelectItem>
+                    <MudSelectItem Value="@("kapak-sistemleri")">@dil.T("sayfalar.kapakSistemleri", "Kapak Sistemleri")</MudSelectItem>
+                    <MudSelectItem Value="@("kapi-modelleri")">@dil.T("sayfalar.kapiModelleri", "Kapı Modelleri")</MudSelectItem>
+                    <MudSelectItem Value="@("katalog")">@dil.T("sayfalar.katalog", "Katalog")</MudSelectItem>
+                    <MudSelectItem Value="@("sertifikalar")">@dil.T("sayfalar.sertifikalar", "Sertifikalar")</MudSelectItem>
+                    <MudSelectItem Value="@("projeler")">@dil.T("sayfalar.projeler", "Projeler")</MudSelectItem>
+                    <MudSelectItem Value="@("referanslar")">@dil.T("sayfalar.referanslar", "Referanslar")</MudSelectItem>
+                    <MudSelectItem Value="@("haber")">@dil.T("sayfalar.haberler", "Haberler")</MudSelectItem>
+                    <MudSelectItem Value="@("bayiler")">@dil.T("sayfalar.bayiler", "Bayiler")</MudSelectItem>
+                    <MudSelectItem Value="@("iletisim")">@dil.T("sayfalar.iletisim", "İletişim")</MudSelectItem>
+                    <MudSelectItem Value="@("sss")">@dil.T("sayfalar.sss", "S.S.S.")</MudSelectItem>
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudTextField @bind-Value="_form.Baslik" Label="@dil.T("ortak.baslik", "Başlık")" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudTextField @bind-Value="_form.AltBaslik" Label="@dil.T("admin.slayt.altBaslik", "Alt Başlık")" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField @bind-Value="_form.Aciklama" Label="@dil.T("admin.slayt.aciklama", "Açıklama")" Lines="3" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudTextField @bind-Value="_form.ArkaplanResim" Label="@dil.T("admin.slayt.arkaplanResim", "Arka Plan Görsel URL")"
+                              Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Image"
+                              OnAdornmentClick="@(() => GaleriAc("arkaplan"))" />
+                <MudStack Row="true" Spacing="2" Class="mt-1">
+                    <MudFileUpload T="IBrowserFile" FilesChanged="@((IBrowserFile dosya) => GorselYukle("arkaplan", dosya))" Accept=".jpg,.jpeg,.png,.webp">
+                        <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.CloudUpload" Size="Size.Small" Disabled="@_gorselYukleniyor">
+                            @(_gorselYukleniyor ? "Yükleniyor..." : "Dosyadan Yükle")
+                        </MudButton>
+                    </MudFileUpload>
+                    <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.PhotoLibrary" Size="Size.Small" OnClick="@(() => GaleriAc("arkaplan"))">
+                        Galeri
+                    </MudButton>
+                </MudStack>
+                @if (!string.IsNullOrWhiteSpace(_form.ArkaplanResim))
+                {
+                    <MudImage Src="@TamUrl(_form.ArkaplanResim)" Alt="Arka Plan Önizleme" Fluid="true" Class="rounded-lg mt-2" Style="max-height:120px; object-fit:cover;" />
+                }
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudTextField @bind-Value="_form.ArkaplanResimMobil" Label="@dil.T("admin.slayt.arkaplanResimMobil", "Mobil Görsel URL")"
+                              Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Image"
+                              OnAdornmentClick="@(() => GaleriAc("mobil"))" />
+                <MudStack Row="true" Spacing="2" Class="mt-1">
+                    <MudFileUpload T="IBrowserFile" FilesChanged="@((IBrowserFile dosya) => GorselYukle("mobil", dosya))" Accept=".jpg,.jpeg,.png,.webp">
+                        <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.CloudUpload" Size="Size.Small" Disabled="@_gorselYukleniyor">
+                            @(_gorselYukleniyor ? "Yükleniyor..." : "Dosyadan Yükle")
+                        </MudButton>
+                    </MudFileUpload>
+                    <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.PhotoLibrary" Size="Size.Small" OnClick="@(() => GaleriAc("mobil"))">
+                        Galeri
+                    </MudButton>
+                </MudStack>
+                @if (!string.IsNullOrWhiteSpace(_form.ArkaplanResimMobil))
+                {
+                    <MudImage Src="@TamUrl(_form.ArkaplanResimMobil)" Alt="Mobil Önizleme" Fluid="true" Class="rounded-lg mt-2" Style="max-height:120px; object-fit:cover;" />
+                }
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudTextField @bind-Value="_form.ButonMetni1" Label="@dil.T("admin.slayt.buton1Metni", "Buton 1 Metni")" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudTextField @bind-Value="_form.ButonLink1" Label="@dil.T("admin.slayt.buton1Link", "Buton 1 Bağlantısı")" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudTextField @bind-Value="_form.ButonMetni2" Label="@dil.T("admin.slayt.buton2Metni", "Buton 2 Metni")" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudTextField @bind-Value="_form.ButonLink2" Label="@dil.T("admin.slayt.buton2Link", "Buton 2 Bağlantısı")" />
+            </MudItem>
+            <MudItem xs="12" md="4">
+                <MudNumericField @bind-Value="_form.SiraNo" Label="@dil.T("ortak.siraNo", "Sıra No")" />
+            </MudItem>
+            <MudItem xs="12" md="4">
+                <MudTextField @bind-Value="_form.Dil" Label="@dil.T("ortak.dil", "Dil")" />
+            </MudItem>
+            <MudItem xs="12" md="4">
+                <MudSwitch @bind-Value="_form.AktifMi" Label="@dil.T("ortak.aktif", "Aktif")" />
+            </MudItem>
+        </MudGrid>
+        <div class="admin-form-actions">
+            <MudButton OnClick="FormIptal" Disabled="@_kaydediliyor">@dil.T("ortak.iptal", "İptal")</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save" OnClick="Kaydet" Disabled="@_kaydediliyor">
+                @(_kaydediliyor ? dil.T("ortak.kaydediliyor", "Kaydediliyor...") : dil.T("ortak.kaydet", "Kaydet"))
+            </MudButton>
+        </div>
+    </MudPaper>
+}
+
+@if (!_yukleniyor && _filtreliListe.Count == 0)
+{
+    <AdminBosDurum Icon="@Icons.Material.Filled.ViewCarousel"
+                   Baslik="@dil.T("admin.slayt.bosBaslik", "Slayt bulunamadı")"
+                   Aciklama="@dil.T("admin.slayt.bosAciklama", "Yeni slayt ekleyerek ana sayfa hero alanını canlı tutun.")">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="YeniAc">
+            @dil.T("ortak.yeni", "Yeni")
+        </MudButton>
+    </AdminBosDurum>
+}
+else if (!_yukleniyor)
+{
+    <MudDataGrid Items="@_filtreliListe" Filterable="true" SortMode="SortMode.Multiple" Dense="true" Striped="true" Hover="true">
+        <Columns>
+            <TemplateColumn Title="@dil.T("admin.slayt.gorsel", "Görsel")" Sortable="false" Filterable="false">
+                <CellTemplate>
+                    @if (!string.IsNullOrWhiteSpace(context.Item.ArkaplanResim))
+                    {
+                        <MudImage Src="@TamUrl(context.Item.ArkaplanResim)" Alt="@context.Item.Baslik" Style="height:40px; width:70px; object-fit:cover; border-radius:6px;" />
+                    }
+                    else
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.ImageNotSupported" Size="Size.Small" Color="Color.Default" />
+                    }
+                </CellTemplate>
+            </TemplateColumn>
+            <PropertyColumn Property="x => x.SayfaKodu" Title="@dil.T("admin.slayt.sayfa", "Sayfa")" Sortable="true" Filterable="true" />
+            <PropertyColumn Property="x => x.SiraNo" Title="@dil.T("ortak.sira", "Sıra")" Sortable="true" />
+            <PropertyColumn Property="x => x.Baslik" Title="@dil.T("ortak.baslik", "Başlık")" Sortable="true" Filterable="true" />
+            <PropertyColumn Property="x => x.AltBaslik" Title="@dil.T("admin.slayt.altBaslik", "Alt Başlık")" Sortable="true" Filterable="true" />
+            <TemplateColumn Title="@dil.T("ortak.aktif", "Aktif")">
+                <CellTemplate>
+                    <MudChip Color="@(context.Item.AktifMi ? Color.Success : Color.Error)" Size="Size.Small">
+                        @(context.Item.AktifMi ? dil.T("ortak.aktif", "Aktif") : dil.T("ortak.pasif", "Pasif"))
+                    </MudChip>
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title="@dil.T("admin.ceviri.durum", "Çeviri Durumu")">
+                <CellTemplate>
+                    <AdminCeviriDurumRozeti Durum="@(_ceviriAnalizi?.Durumlar.TryGetValue(context.Item.Id, out var durum) == true ? durum : null)" />
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title="@dil.T("ortak.islemler", "İşlemler")">
+                <CellTemplate>
+                    <MudIconButton Icon="@Icons.Material.Filled.Translate" Size="Size.Small" Color="Color.Info" OnClick="() => AICeviriDialogAc(context.Item)" />
+                    <MudIconButton Icon="@Icons.Material.Filled.AutoAwesome" Size="Size.Small" Color="Color.Primary" Disabled="@_tumCeviriCalisiyor" OnClick="() => KaydiTumDillerdeCevir(context.Item)" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="() => Duzenle(context.Item)" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error" OnClick="() => SilOnay(context.Item)" />
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager />
+        </PagerContent>
+    </MudDataGrid>
+}
+
+@* Medya Galerisi Seçim Dialog *@
+<MudDialog @bind-Visible="_galeriDialog" Class="admin-dialog">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.PhotoLibrary" Class="mr-2" />
+            Medya Galerisi — @(_galeriHedef == "mobil" ? "Mobil" : "Arka Plan") Görseli Seç
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField @bind-Value="_galeriArama" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search"
+                      Placeholder="Görsel ara..." Variant="Variant.Outlined" Class="mb-4"
+                      TextChanged="GaleriAramaDegisti" Immediate="true" />
+        @if (_galeriYukleniyor)
+        {
+            <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mb-4" />
+        }
+        @if (_galeriListe.Count == 0 && !_galeriYukleniyor)
+        {
+            <MudText Typo="Typo.body1" Align="Align.Center" Class="pa-8">Görsel bulunamadı.</MudText>
+        }
+        else
+        {
+            <MudGrid Spacing="2">
+                @foreach (var medya in _galeriListe)
+                {
+                    <MudItem xs="6" sm="4" md="3" lg="2">
+                        <MudCard Elevation="0" Class="medya-admin-kart" Style="@($"cursor:pointer; {(medya.Id == _galeriSeciliId ? "border: 2px solid var(--mud-palette-primary);" : "")}")">
+                            <button type="button" class="medya-admin-gorsel-btn" @onclick="() => GaleriSec(medya)">
+                                <img src="@MedyaGorselYolu(medya)" alt="@medya.Ad" class="medya-admin-gorsel" />
+                            </button>
+                            <MudCardContent Class="pa-2">
+                                <MudText Typo="Typo.caption" Class="text-truncate font-weight-bold">@medya.Ad</MudText>
+                            </MudCardContent>
+                        </MudCard>
+                    </MudItem>
+                }
+            </MudGrid>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="GaleriKapat">İptal</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(_galeriSeciliId == 0)" OnClick="GaleriOnayla">Seç</MudButton>
+    </DialogActions>
+</MudDialog>

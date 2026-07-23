@@ -1,0 +1,126 @@
+@page "/admin/kullanici-yonetimi"
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using VizitLink3D.Ortak.Modeller
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+
+<PageTitle>@($"{dil.T("admin.kullanici.sayfaBasligi", "Kullanıcı Yönetimi")} | VizitLink3D Admin")</PageTitle>
+
+<MudText Typo="Typo.h4" Class="mb-1 font-weight-bold">@dil.T("admin.kullanici.baslik", "Kullanıcı Yönetimi")</MudText>
+<MudText Typo="Typo.body2" Class="mb-4 admin-kullanici-ozet">
+    Toplam @_liste.Count kayıt
+    <MudChip T="string" Size="Size.Small" Color="Color.Info" Class="ml-2" Variant="Variant.Text">
+        @dil.T("admin.kullanici.aktifSayi", "Aktif"): @_liste.Count(x => x.AktifMi)
+    </MudChip>
+</MudText>
+
+@* â”€â”€â”€ Toolbar â”€â”€â”€ *@
+<MudPaper Elevation="0" Class="mb-4 pa-3 d-flex align-center flex-wrap admin-kullanici-toolbar">
+    <MudTextField @bind-Value="_arama" Placeholder="@dil.T("admin.kullanici.aramaYeri", "Kullanıcı adı, e-posta ara...")" Immediate="true"
+                  Variant="Variant.Outlined" Margin="Margin.Dense" Adornment="Adornment.Start"
+                  AdornmentIcon="@Icons.Material.Filled.Search" OnKeyUp="AramaYap"
+                  Class="admin-kullanici-arama" />
+    <MudSpacer />
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.PersonAdd"
+               OnClick="YeniAc" Disabled="@_formAcik">
+        @dil.T("admin.kullanici.yeniKullanici", "Yeni Kullanıcı")
+    </MudButton>
+</MudPaper>
+
+@* â”€â”€â”€ Inline Form (popup değil!) â”€â”€â”€ *@
+@if (_formAcik)
+{
+    <MudCard Elevation="2" Class="mb-4 admin-form-panel">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h6" class="gb-font-700">@(_duzenlemeModu ? dil.T("admin.kullanici.duzenle", "Kullanıcı Düzenle") : dil.T("admin.kullanici.yeniEkle", "Yeni Kullanıcı Ekle"))</MudText>
+            </CardHeaderContent>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudGrid Spacing="3">
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_form.AdSoyad" Label="@dil.T("ortak.adSoyad", "Ad Soyad")" Variant="Variant.Outlined" Required="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_form.KullaniciAdi" Label="@dil.T("admin.kullanici.kullaniciAdi", "Kullanıcı Adı")" Variant="Variant.Outlined" Required="true" Disabled="@_duzenlemeModu" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_form.Eposta" Label="@dil.T("ortak.eposta", "E-posta")" Variant="Variant.Outlined" Required="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_form.Telefon" Label="@dil.T("ortak.telefon", "Telefon")" Variant="Variant.Outlined" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudSelect @bind-Value="_form.Rol" Label="@dil.T("admin.kullanici.rol", "Rol")" Variant="Variant.Outlined" Required="true">
+                        <MudSelectItem Value="@(Rol.SuperAdmin)">Super Admin</MudSelectItem>
+                        <MudSelectItem Value="@(Rol.Admin)">Admin</MudSelectItem>
+                        <MudSelectItem Value="@(Rol.Editor)">Editör</MudSelectItem>
+                        <MudSelectItem Value="@(Rol.Kullanici)">Kullanıcı</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudSwitch @bind-Value="_form.AktifMi" Label="@dil.T("ortak.aktif", "Aktif")" Color="Color.Success" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudSwitch @bind-Value="_form.EmailDogrulandiMi" Label="@dil.T("admin.kullanici.epostaDogrulandi", "E-posta Doğrulandı")" Color="Color.Info" />
+                </MudItem>
+                @if (!_duzenlemeModu)
+                {
+                    <MudItem xs="12" md="6">
+                        <MudTextField @bind-Value="_yeniSifre" Label="@dil.T("admin.kullanici.sifre", "Åifre")" Variant="Variant.Outlined" InputType="InputType.Password"
+                                      HelperText="@dil.T("admin.kullanici.sifreUyari", "En az 6 karakter")" Required="true" />
+                    </MudItem>
+                }
+            </MudGrid>
+        </MudCardContent>
+        <MudCardActions Class="px-4 pb-4">
+            <MudButton Variant="Variant.Outlined" OnClick="FormIptal">@dil.T("ortak.iptal", "İptal")</MudButton>
+            <MudSpacer />
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Kaydet"
+                       Disabled="@_kaydediliyor" StartIcon="@Icons.Material.Filled.Save">
+                @(_kaydediliyor ? dil.T("ortak.kaydediliyor", "Kaydediliyor...") : dil.T("ortak.kaydet", "Kaydet"))
+            </MudButton>
+        </MudCardActions>
+    </MudCard>
+}
+
+@* â”€â”€â”€ Loading â”€â”€â”€ *@
+@if (_yukleniyor) { <MudProgressLinear Indeterminate="true" Class="mb-4" /> }
+
+@* â”€â”€â”€ DataGrid â”€â”€â”€ *@
+<MudDataGrid Items="@_filtreliListe" Hover="true" Striped="true" Dense="true"
+             Filterable="true" SortMode="SortMode.Multiple" Elevation="0"
+             Class="admin-kullanici-grid">
+    <Columns>
+        <PropertyColumn Property="x => x.KullaniciAdi" Title="@dil.T("admin.kullanici.kullaniciAdi", "Kullanıcı Adı")" Sortable="true" />
+        <PropertyColumn Property="x => x.AdSoyad" Title="@dil.T("ortak.adSoyad", "Ad Soyad")" Sortable="true" />
+        <PropertyColumn Property="x => x.Eposta" Title="@dil.T("ortak.eposta", "E-posta")" Sortable="true" />
+        <TemplateColumn Title="@dil.T("admin.kullanici.rol", "Rol")" Sortable="true" SortBy="x => x.Rol">
+            <CellTemplate>
+                <MudChip T="string" Size="Size.Small" Color="@RolRengi(context.Item.Rol)" Variant="Variant.Text">
+                    @RolAdi(context.Item.Rol)
+                </MudChip>
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="@dil.T("ortak.durum", "Durum")">
+            <CellTemplate>
+                <MudChip T="string" Size="Size.Small" Color="@(context.Item.AktifMi ? Color.Success : Color.Error)" Variant="Variant.Outlined">
+                    @(context.Item.AktifMi ? dil.T("ortak.aktif", "Aktif") : dil.T("ortak.pasif", "Pasif"))
+                </MudChip>
+            </CellTemplate>
+        </TemplateColumn>
+        <PropertyColumn Property="x => x.OlusturulmaTarihi" Title="@dil.T("ortak.kayitTarihi", "Kayıt Tarihi")" Format="dd.MM.yyyy" Sortable="true" />
+        <TemplateColumn Title="@dil.T("ortak.islemler", "İşlemler")">
+            <CellTemplate>
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" Color="Color.Info"
+                               OnClick="() => Duzenle(context.Item)" Disabled="@_formAcik" />
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error"
+                               OnClick="() => SilOnay(context.Item)" Disabled="@_formAcik" />
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager />
+    </PagerContent>
+</MudDataGrid>

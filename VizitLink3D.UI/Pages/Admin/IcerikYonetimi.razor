@@ -1,0 +1,44 @@
+@page "/admin/icerik-yonetimi"
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<PageTitle>@dil.T("admin.icerik.sayfaBasligi", "İçerik Yönetimi") | VizitLink3D Admin</PageTitle>
+
+<div class="admin-card mb-4">
+    <div class="admin-card-header">
+        <span class="admin-card-title">SAYFA İÇERİKLERİ</span>
+        <span class="admin-nav-count">@_bolumler.Count</span>
+    </div>
+    <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mb-3">
+        Bölüm bazlı anahtar-değer çiftleri. Her bölüm bir sayfanın içeriğini tutar.
+    </MudText>
+
+    <div class="admin-table-wrap">
+        <MudTable Items="@_bolumler" Hover="true" Elevation="0" Loading="@_yukleniyor">
+            <HeaderContent>
+                <MudTh>BÖLÜM</MudTh>
+                <MudTh>ANAHTAR SAYISI</MudTh>
+                <MudTh>DİL</MudTh>
+                <MudTh>İŞLEMLER</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Bölüm">@context.Bolum</MudTd>
+                <MudTd DataLabel="Anahtar Sayısı">@context.AnahtarSayisi</MudTd>
+                <MudTd DataLabel="Dil">@context.Dil</MudTd>
+                <MudTd DataLabel="İşlemler">
+                    <MudTooltip Text="Düzenle">
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => Duzenle(context.Bolum))" />
+                    </MudTooltip>
+                    <MudTooltip Text="Sil">
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error" OnClick="@(() => SilAsync(context.Bolum))" />
+                    </MudTooltip>
+                </MudTd>
+            </RowTemplate>
+            <NoRecordsContent>
+                <MudText>Kayıtlı içerik bulunamadı.</MudText>
+            </NoRecordsContent>
+        </MudTable>
+    </div>
+</div>

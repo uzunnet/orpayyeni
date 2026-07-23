@@ -1,0 +1,49 @@
+@using VizitLink3D.Ortak.Modeller.Medya
+@inject Servisler.DilServisi dil
+@inject Servisler.ApiIstemcisi api
+@inject MudBlazor.ISnackbar snackbar
+
+<MudDialog Class="medya-youtube-ekle">
+    <TitleContent>
+        <MudText Typo="Typo.h6">@dil.T("medya.youtubeEkleBaslik", "YouTube Videosu Ekle")</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField T="string"
+                      Label="@dil.T("medya.youtubeUrl", "YouTube URL")"
+                      @bind-Value="_url"
+                      Immediate="true"
+                      Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Link"
+                      Placeholder="https://www.youtube.com/watch?v=... veya https://youtu.be/..."
+                      OnBlur="UrlDogrula"
+                      Variant="Variant.Outlined" />
+
+        @if (!string.IsNullOrEmpty(_hata))
+        {
+            <MudText Typo="Typo.caption" Color="Color.Error" Class="mt-1">@_hata</MudText>
+        }
+
+        @if (_onizlemeYukleniyor)
+        {
+            <MudProgressCircular Indeterminate="true" Size="Size.Small" Class="mt-3" />
+        }
+
+        @if (!string.IsNullOrEmpty(_miniaturUrl))
+        {
+            <div class="medya-youtube-onizleme mt-3">
+                <img src="@_miniaturUrl" alt="@_videoBaslik" loading="lazy" />
+            </div>
+            @if (!string.IsNullOrEmpty(_videoBaslik))
+            {
+                <MudText Typo="Typo.body2" Class="mt-2">@_videoBaslik</MudText>
+            }
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Iptal">@dil.T("ortak.iptal", "İptal")</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                   OnClick="EkleAsync" Disabled="@(!_gecerli)">
+            @dil.T("ortak.ekle", "Ekle")
+        </MudButton>
+    </DialogActions>
+</MudDialog>

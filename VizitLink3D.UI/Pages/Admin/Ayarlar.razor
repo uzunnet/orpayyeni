@@ -1,0 +1,223 @@
+@page "/admin/ayarlar"
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+
+<PageTitle>@($"{dil.T("admin.ayarlar.sayfaBasligi", "Genel Ayarlar")} — {_firmaAdi} Admin")</PageTitle>
+
+<MudText Typo="Typo.h4" Class="mb-2">
+    @dil.T("admin.ayarlar.baslik", "Genel Ayarlar")
+</MudText>
+<MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-4">
+    @dil.T("admin.ayarlar.durum", "Site ayarlarını buradan yönetin")
+</MudText>
+
+@if (_yukleniyorSayfa)
+{
+    <MudProgressLinear Indeterminate="true" Class="mb-4" />
+}
+
+<MudGrid>
+    <MudItem xs="12">
+        <MudCard Elevation="2" Class="mb-4">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@dil.T("admin.ayarlar.logoIkon", "Logo ve İkon")</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">@dil.T("admin.ayarlar.logoIkonAciklama", "Sitede görünen firma logosu ve tarayıcı sekmesi ikonu. Farklı firma olduğunda buradan değiştirilir.")</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudGrid>
+                    <MudItem xs="12" md="8">
+                        <div class="d-flex align-center gap-4 mb-4">
+                            <MudTextField @bind-Value="_logoUrl" Label="@dil.T("admin.ayarlar.logoUrl", "Logo URL")" Variant="Variant.Outlined" Class="flex-grow-1"
+                                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Image"
+                                          HelperText="@dil.T("admin.ayarlar.logoUrlYardim", "Örn: /medya/logo/firma-logo.png veya /img/firma-logo.svg")" />
+                            <MudFileUpload T="IBrowserFile" FilesChanged="LogoYukle" Accept="image/*">
+                                <CustomContent Context="context">
+                                    <MudButton Variant="Variant.Filled" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.CloudUpload" OnClick="context.OpenFilePickerAsync" Style="margin-top: -20px;">
+                                        @dil.T("ortak.yukle", "Yükle")
+                                    </MudButton>
+                                </CustomContent>
+                            </MudFileUpload>
+                        </div>
+                        <div class="d-flex align-center gap-4">
+                            <MudTextField @bind-Value="_faviconUrl" Label="@dil.T("admin.ayarlar.faviconUrl", "İkon (Favicon) URL")" Variant="Variant.Outlined" Class="flex-grow-1"
+                                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Bookmark"
+                                          HelperText="@dil.T("admin.ayarlar.faviconUrlYardim", "Örn: /favicon.png veya /medya/logo/firma-icon.png")" />
+                            <MudFileUpload T="IBrowserFile" FilesChanged="FaviconYukle" Accept="image/png,image/x-icon,image/svg+xml">
+                                <CustomContent Context="context">
+                                    <MudButton Variant="Variant.Filled" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.CloudUpload" OnClick="context.OpenFilePickerAsync" Style="margin-top: -20px;">
+                                        @dil.T("ortak.yukle", "Yükle")
+                                    </MudButton>
+                                </CustomContent>
+                            </MudFileUpload>
+                        </div>
+                    </MudItem>
+                    <MudItem xs="12" md="4" Class="d-flex flex-column gap-4">
+                        <div>
+                            <MudText Typo="Typo.caption" Color="Color.Secondary">@dil.T("admin.ayarlar.logoOnizleme", "Logo Önizleme")</MudText>
+                            <div class="d-flex align-center justify-center pa-3" style="background:#1A1C1C;border-radius:8px;min-height:56px;">
+                                @if (!string.IsNullOrWhiteSpace(_logoUrl))
+                                {
+                                    <img src="@LogoOnizlemeYolu" alt="Logo" style="max-height:40px;width:auto;" />
+                                }
+                            </div>
+                        </div>
+                        <div>
+                            <MudText Typo="Typo.caption" Color="Color.Secondary">@dil.T("admin.ayarlar.ikonOnizleme", "İkon Önizleme")</MudText>
+                            <div class="d-flex align-center justify-center pa-2" style="background:#F9F9F9;border:1px solid #EEE;border-radius:8px;min-height:48px;">
+                                @if (!string.IsNullOrWhiteSpace(_faviconUrl))
+                                {
+                                    <img src="@FaviconOnizlemeYolu" alt="İkon" style="height:32px;width:auto;" />
+                                }
+                            </div>
+                        </div>
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => Kaydet(4)" Disabled="@_yukleniyor">
+                    @(_yukleniyor ? dil.T("ortak.kaydediliyor", "Kaydediliyor...") : dil.T("ortak.kaydet", "Kaydet"))
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+
+    <MudItem xs="12" md="6">
+        <MudCard Elevation="2" Class="mb-4">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@dil.T("admin.ayarlar.siteBilgileri", "Site Bilgileri")</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudTextField @bind-Value="_siteBasligi" Label="@dil.T("admin.ayarlar.siteBasligi", "Site Başlığı")" Variant="Variant.Outlined" Class="mb-4" />
+                <MudTextField @bind-Value="_aciklama" Label="@dil.T("admin.ayarlar.aciklama", "Site Açıklaması (SEO)")" Variant="Variant.Outlined" Lines="3" Class="mb-4" />
+                <MudTextField @bind-Value="_anahtarKelimeler" Label="@dil.T("admin.ayarlar.anahtarKelimeler", "Anahtar Kelimeler")" Variant="Variant.Outlined" Class="mb-4" />
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => Kaydet(1)" Disabled="@_yukleniyor">
+                    @(_yukleniyor ? dil.T("ortak.kaydediliyor", "Kaydediliyor...") : dil.T("ortak.kaydet", "Kaydet"))
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+
+    <MudItem xs="12" md="6">
+        <MudCard Elevation="2" Class="mb-4">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@dil.T("admin.ayarlar.dilVeGorunum", "Dil ve Görünüm")</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">@dil.T("admin.ayarlar.dilVeGorunumAciklama", "Public tarafta ilk açılışta kullanılacak varsayılan dil ve açık/koyu mod.")</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudSelect T="string" @bind-Value="_varsayilanDil" Label="@dil.T("admin.ayarlar.varsayilanDil", "Varsayılan Dil")" Variant="Variant.Outlined" Class="mb-4">
+                    @foreach (var dilBilgisi in dil.DesteklenenDiller)
+                    {
+                        <MudSelectItem T="string" Value="@dilBilgisi.Kod">@dilBilgisi.Ad (@dilBilgisi.Kod.ToUpper())</MudSelectItem>
+                    }
+                </MudSelect>
+
+                <MudSelect T="string" @bind-Value="_temaModu" Label="@dil.T("admin.ayarlar.temaModu", "Varsayılan Tema Modu")" Variant="Variant.Outlined">
+                    <MudSelectItem T="string" Value="@("koyu")">@dil.T("ortak.koyu", "Koyu")</MudSelectItem>
+                    <MudSelectItem T="string" Value="@("acik")">@dil.T("ortak.acik", "Açık")</MudSelectItem>
+                </MudSelect>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => Kaydet(5)" Disabled="@_yukleniyor">
+                    @(_yukleniyor ? dil.T("ortak.kaydediliyor", "Kaydediliyor...") : dil.T("ortak.kaydet", "Kaydet"))
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+
+    <MudItem xs="12" md="6">
+        <MudCard Elevation="2" Class="mb-4">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@dil.T("admin.ayarlar.iletisimBilgileri", "İletişim Bilgileri")</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudTextField @bind-Value="_telefon" Label="@dil.T("admin.ayarlar.telefon", "Telefon Numarası")" Variant="Variant.Outlined" Class="mb-4" />
+                <MudTextField @bind-Value="_eposta" Label="@dil.T("admin.ayarlar.eposta", "E-Posta Adresi")" Variant="Variant.Outlined" Class="mb-4" />
+                <MudTextField @bind-Value="_adres" Label="@dil.T("admin.ayarlar.adres", "Adres")" Variant="Variant.Outlined" Lines="2" Class="mb-4" />
+                <MudTextField @bind-Value="_whatsapp" Label="@dil.T("admin.ayarlar.whatsapp", "WhatsApp Numarası")" Variant="Variant.Outlined" Class="mb-4" />
+                <MudGrid>
+                    <MudItem xs="12" md="6">
+                        <MudTextField @bind-Value="_enlem" Label="@dil.T("admin.ayarlar.enlem", "Enlem")" Variant="Variant.Outlined" Class="mb-4" Placeholder="40.2025" />
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudTextField @bind-Value="_boylam" Label="@dil.T("admin.ayarlar.boylam", "Boylam")" Variant="Variant.Outlined" Class="mb-4" Placeholder="28.8871" />
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => Kaydet(2)" Disabled="@_yukleniyor">
+                    @(_yukleniyor ? dil.T("ortak.kaydediliyor", "Kaydediliyor...") : dil.T("ortak.kaydet", "Kaydet"))
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+
+    <MudItem xs="12" md="6">
+        <MudCard Elevation="2" Class="mb-4">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@dil.T("admin.ayarlar.sosyalMedya", "Sosyal Medya")</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudTextField @bind-Value="_instagram" Label="@dil.T("admin.ayarlar.instagram", "Instagram")" Variant="Variant.Outlined" Class="mb-4" />
+                <MudTextField @bind-Value="_facebook" Label="@dil.T("admin.ayarlar.facebook", "Facebook")" Variant="Variant.Outlined" Class="mb-4" />
+                <MudTextField @bind-Value="_youtube" Label="@dil.T("admin.ayarlar.youtube", "YouTube")" Variant="Variant.Outlined" Class="mb-4" />
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => Kaydet(3)" Disabled="@_yukleniyor">
+                    @(_yukleniyor ? dil.T("ortak.kaydediliyor", "Kaydediliyor...") : dil.T("ortak.kaydet", "Kaydet"))
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+
+    <MudItem xs="12">
+        <MudCard Elevation="2" Class="mb-4">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@dil.T("ayar.resimOptimizasyonu.baslik", "Görsel Optimizasyonu")</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">@dil.T("ayar.resimOptimizasyonu.aciklama", "Yüklenen görsellerin otomatik boyutlandırma ve WebP dönüşüm ayarları.")</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudGrid>
+                    <MudItem xs="12" md="6">
+                        <MudText Typo="Typo.body2" Class="mb-2">
+                            @dil.T("ayar.resimOptimizasyonu.maksimumKenar", "Maksimum Kenar (px):") <strong>@_resimMaksimumKenar</strong>
+                        </MudText>
+                        <MudSlider @bind-Value="_resimMaksimumKenar" Min="256" Max="4096" Step="64" Class="mb-4" />
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudText Typo="Typo.body2" Class="mb-2">
+                            @dil.T("ayar.resimOptimizasyonu.kalite", "WebP Kalitesi:") <strong>@_resimKalite</strong>
+                        </MudText>
+                        <MudSlider @bind-Value="_resimKalite" Min="50" Max="100" Step="1" Class="mb-4" />
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudSwitch T="bool" @bind-Checked="_resimWebpZorunlu" Label="@dil.T("ayar.resimOptimizasyonu.webpZorunlu", "Tüm görselleri WebP formatına dönüştür")" Color="Color.Primary" Class="mb-4" />
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ResimAyarlariKaydet" Disabled="@_yukleniyor">
+                    @(_yukleniyor ? dil.T("ortak.kaydediliyor", "Kaydediliyor...") : dil.T("ortak.kaydet", "Kaydet"))
+                </MudButton>
+                <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="TopluYenidenBoyutlandir" Disabled="@_yukleniyor">
+                    @dil.T("ayar.resimOptimizasyonu.topluIslem", "Tüm Mevcut Görselleri Şimdi Yeniden Boyutlandır")
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+</MudGrid>

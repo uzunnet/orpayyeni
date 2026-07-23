@@ -1,0 +1,14 @@
+@* StitchUrunKart — Aurelian Onyx glassmorphism ürün kartı *@
+
+<div class="stitch-urun-kart urun-kart" @onclick="UrunTiklandi" role="button" tabindex="0">
+    <div class="stitch-urun-kart__gorsel urun-kart-gorsel-kutu">
+        <img src="@Urun.AnaGorselUrl" alt="@Urun.Ad" class="urun-kart-gorsel" loading="lazy" />
+    </div>
+    <div class="stitch-urun-kart__govde">
+        <h3 class="stitch-urun-kart__baslik urun-kart-baslik">@Urun.Ad</h3>
+        @if (!string.IsNullOrEmpty(Urun.KisaAciklama))
+        {
+            <p class="stitch-urun-kart__aciklama">@Urun.KisaAciklama</p>
+        }
+    </div>
+</div>

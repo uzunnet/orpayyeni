@@ -1,0 +1,12 @@
+@using VizitLink3D.UI.Servisler
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+
+@if (Ozet is not null)
+{
+    <MudStack Row="true" Spacing="1" Class="@Class">
+        <MudChip T="string" Color="Color.Success" Variant="Variant.Outlined">@dil.T("admin.ceviri.guncel", "Guncel"): @Ozet.Guncel</MudChip>
+        <MudChip T="string" Color="Color.Warning" Variant="Variant.Outlined">@dil.T("admin.ceviri.kaynakDegisti", "Kaynak Degisti"): @Ozet.KaynakDegisti</MudChip>
+        <MudChip T="string" Color="Color.Info" Variant="Variant.Outlined">@dil.T("admin.ceviri.eksik", "Eksik"): @Ozet.Eksik</MudChip>
+        <MudChip T="string" Color="Color.Error" Variant="Variant.Outlined">@dil.T("admin.ceviri.hata", "Hata"): @Ozet.Hata</MudChip>
+    </MudStack>
+}

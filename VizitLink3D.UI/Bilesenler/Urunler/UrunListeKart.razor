@@ -1,0 +1,46 @@
+@using VizitLink3D.Ortak.Modeller.Urunler
+
+<div class="gb-urun-kart @_temaClass cursor-pointer" @onclick="@Tiklandi">
+    <MudCard Elevation="2">
+        <div class="gb-urun-kart-gorsel-sarici">
+            <img src="@_gorselUrl" alt="@Urun.Ad"
+                 onerror="this.onerror=null;this.src='/medya/vizitlink3d_default.png';" />
+        </div>
+
+
+        <div class="gb-urun-kart-rozetler">
+            @if (!string.IsNullOrWhiteSpace(_koleksiyonGrubu))
+            {
+                <span class="gb-rozet gb-rozet-koleksiyon">@_koleksiyonGrubu</span>
+            }
+            @if (Urun.VarsayilanUcBoyutModeliId != null)
+            {
+                <span class="gb-rozet gb-rozet-3d">3D</span>
+            }
+            @if (Urun.YeniMi)
+            {
+                <span class="gb-rozet gb-rozet-yeni">@dil.T("urun.yeni", "Yeni")</span>
+            }
+        </div>
+
+        <MudCardContent>
+            <MudText Typo="Typo.h6" Class="mb-2">
+                @Urun.Ad
+            </MudText>
+            @if (!string.IsNullOrEmpty(Urun.KisaAciklama))
+            {
+                <MudText Typo="Typo.body2" Color="Color.Dark" Class="gb-urun-kart-aciklama">
+                    @Urun.KisaAciklama
+                </MudText>
+            }
+        </MudCardContent>
+
+        <MudCardActions Class="pa-4 pt-0">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small"
+                       StartIcon="@Icons.Material.Filled.Visibility"
+                       OnClick="@HakkindaIste" FullWidth="true">
+                @dil.T("urun.incele", "İncele")
+            </MudButton>
+        </MudCardActions>
+    </MudCard>
+</div>

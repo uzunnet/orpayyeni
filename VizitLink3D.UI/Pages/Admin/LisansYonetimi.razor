@@ -1,0 +1,82 @@
+﻿@page "/admin/lisans-yonetimi"
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<PageTitle>@dil.T("admin.lisans.sayfaBasligi", "Lisans Yönetimi") | ORPAY Admin</PageTitle>
+
+<div class="admin-card mb-6">
+    <div class="admin-card-header">
+        <span class="admin-card-title">@dil.T("admin.lisans.durum", "Lisans Durumu")</span>
+        <span class="admin-nav-count">@(_durum?.LisansTipi ?? "-")</span>
+    </div>
+
+    @if (_yukleniyor)
+    {
+        <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+    }
+    else if (_durum is null)
+    {
+        <MudAlert Severity="Severity.Warning">@dil.T("admin.lisans.bulunamadi", "Lisans bilgisi alınamadı.")</MudAlert>
+    }
+    else
+    {
+        <MudGrid>
+            <MudItem xs="12" md="3">
+                <MudText Typo="Typo.caption">@dil.T("ortak.firma", "Firma")</MudText>
+                <MudText Typo="Typo.h6">@_durum.FirmaAdi</MudText>
+            </MudItem>
+            <MudItem xs="12" md="3">
+                <MudText Typo="Typo.caption">@dil.T("admin.lisans.tip", "Lisans Tipi")</MudText>
+                <MudChip T="string" Color="@DurumRengi" Variant="Variant.Filled">@LisansTipiMetni(_durum.LisansTipi)</MudChip>
+            </MudItem>
+            <MudItem xs="12" md="3">
+                <MudText Typo="Typo.caption">@dil.T("admin.lisans.kalan", "Kalan Süre")</MudText>
+                <MudText Typo="Typo.h6">@KalanSureMetni</MudText>
+            </MudItem>
+            <MudItem xs="12" md="3">
+                <MudText Typo="Typo.caption">@dil.T("ortak.durum", "Durum")</MudText>
+                <MudChip T="string" Color="@DurumRengi" Variant="Variant.Outlined">@DurumMetni</MudChip>
+            </MudItem>
+        </MudGrid>
+    }
+</div>
+
+<div class="admin-card">
+    <div class="admin-card-header">
+        <span class="admin-card-title">@dil.T("admin.lisans.plan", "Plan ve Süre")</span>
+    </div>
+
+    <MudGrid>
+        <MudItem xs="12" md="4">
+            <MudSelect T="string" @bind-Value="_form.LisansTipi" Label="@dil.T("admin.lisans.planSec", "Plan Seçimi")" Variant="Variant.Outlined">
+                <MudSelectItem Value="@("Demo")">@dil.T("admin.lisans.demo", "Demo")</MudSelectItem>
+                <MudSelectItem Value="@("Yillik")">@dil.T("admin.lisans.yillik", "1 Yıllık")</MudSelectItem>
+                <MudSelectItem Value="@("IkiYillik")">@dil.T("admin.lisans.ikiYillik", "2 Yıllık")</MudSelectItem>
+                <MudSelectItem Value="@("UcYillik")">@dil.T("admin.lisans.ucYillik", "3 Yıllık")</MudSelectItem>
+                <MudSelectItem Value="@("Suresiz")">@dil.T("admin.lisans.suresiz", "Süresiz")</MudSelectItem>
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="12" md="4">
+            <MudTextField @bind-Value="_form.BirincilDomain" Label="@dil.T("admin.lisans.birincilDomain", "Birincil Domain")" Variant="Variant.Outlined" />
+        </MudItem>
+        <MudItem xs="12" md="4">
+            <MudTextField @bind-Value="_form.YedekDomain" Label="@dil.T("admin.lisans.yedekDomain", "Yedek Domain")" Variant="Variant.Outlined" />
+        </MudItem>
+        <MudItem xs="12" md="4">
+            <MudDatePicker @bind-Date="_baslangicTarihi" Label="@dil.T("admin.lisans.baslangic", "Başlangıç")" Variant="Variant.Outlined" />
+        </MudItem>
+        <MudItem xs="12" md="4">
+            <MudDatePicker @bind-Date="_bitisTarihi" Label="@dil.T("admin.lisans.ozelBitis", "Özel Bitiş")" Variant="Variant.Outlined" Disabled="@(_form.LisansTipi == "Suresiz")" />
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex align-center">
+            <MudSwitch @bind-Value="_form.AktifMi" Color="Color.Success" Label="@dil.T("ortak.aktif", "Aktif")" />
+        </MudItem>
+    </MudGrid>
+
+    <div class="d-flex justify-end mt-4">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.VerifiedUser" Disabled="_kaydediliyor" OnClick="KaydetAsync">
+            @dil.T("ortak.kaydet", "Kaydet")
+        </MudButton>
+    </div>
+</div>

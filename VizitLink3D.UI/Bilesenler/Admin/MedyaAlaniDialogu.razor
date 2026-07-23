@@ -1,0 +1,187 @@
+@namespace VizitLink3D.UI.Bilesenler.Admin
+@using VizitLink3D.Ortak.Modeller.Medya
+@using Microsoft.AspNetCore.Components.Forms
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">Medya Seç</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTabs Elevation="0" @bind-ActivePanelIndex="_aktifSekme" ApplyEffectsToContainer="true">
+
+            <!-- TAB 1: Havuzdan Seç -->
+            <MudTabPanel Text="Havuzdan Seç" Icon="@Icons.Material.Filled.PhotoLibrary">
+                <div class="d-flex gap-2 flex-wrap align-center mb-3 mt-2">
+                    <MudTextField @bind-Value="_arama"
+                                  Placeholder="Ara..."
+                                  Adornment="Adornment.Start"
+                                  AdornmentIcon="@Icons.Material.Filled.Search"
+                                  Immediate="true"
+                                  DebounceInterval="350"
+                                  OnDebounceIntervalElapsed="@(async () => await MedyaYukleAsync())"
+                                  Style="flex:1;min-width:160px;"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense" />
+
+                    @if (IzinliTip == null)
+                    {
+                        <MudSelect T="string"
+                                   Value="@_tipFiltre"
+                                   ValueChanged="@(async (string v) => { _tipFiltre = v; await MedyaYukleAsync(); })"
+                                   Label="Tür"
+                                   Clearable="true"
+                                   Style="min-width:110px;"
+                                   Variant="Variant.Outlined"
+                                   Margin="Margin.Dense">
+                            <MudSelectItem Value="@("")">Tümü</MudSelectItem>
+                            <MudSelectItem Value="@("Resim")">Resim</MudSelectItem>
+                            <MudSelectItem Value="@("Glb")">3D</MudSelectItem>
+                            <MudSelectItem Value="@("Pdf")">PDF</MudSelectItem>
+                            <MudSelectItem Value="@("Video")">Video</MudSelectItem>
+                        </MudSelect>
+                    }
+                </div>
+
+                @if (_yukleniyor)
+                {
+                    <MudProgressLinear Indeterminate="true" Class="mb-2" />
+                }
+
+                <div style="max-height:52vh;overflow-y:auto;" class="pr-1">
+                    <MudGrid Spacing="2">
+                        @foreach (var m in _medyaListesi)
+                        {
+                            var medya = m;
+                            var secili = _secilenMedya?.Id == medya.Id;
+                            <MudItem xs="4" sm="3" md="2">
+                                <div class="@("medya-alani-kart" + (secili ? " medya-alani-kart-secili" : ""))"
+                                     @onclick="() => MedyaSecildi(medya)">
+                                    <div class="medya-kart-thumb" style="position:relative;">
+                                        @if (medya.Tip == MedyaTipi.Glb)
+                                        {
+                                            <div class="medya-kart-3d">
+                                                <MudIcon Icon="@Icons.Material.Filled.ViewInAr" Size="Size.Large" />
+                                            </div>
+                                            <span class="medya-kart-tip">3D</span>
+                                        }
+                                        else if (medya.Tip == MedyaTipi.Pdf)
+                                        {
+                                            <div class="medya-kart-pdf">
+                                                <MudIcon Icon="@Icons.Material.Filled.PictureAsPdf" Size="Size.Large" />
+                                            </div>
+                                            <span class="medya-kart-tip">PDF</span>
+                                        }
+                                        else if (medya.Tip == MedyaTipi.Video)
+                                        {
+                                            <img src="@(medya.MiniaturYolu ?? "/medya/vizitlink3d_default.png")"
+                                                 alt="@medya.Ad" loading="lazy"
+                                                 style="width:100%;height:100%;object-fit:cover;" />
+                                            <div class="medya-kart-play">
+                                                <MudIcon Icon="@Icons.Material.Filled.PlayCircle" Size="Size.Large" />
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <img src="@($"/api/medya/dosya/{medya.Id}")"
+                                                 alt="@medya.Ad" loading="lazy"
+                                                 style="width:100%;height:100%;object-fit:cover;"
+                                                 onerror="this.src='/medya/vizitlink3d_default.png'" />
+                                        }
+
+                                        @if (secili)
+                                        {
+                                            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);">
+                                                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Primary" Size="Size.Large" Style="filter:drop-shadow(0 0 4px white);" />
+                                            </div>
+                                        }
+                                    </div>
+                                    <div style="padding:4px 6px;">
+                                        <MudText Typo="Typo.caption" Class="text-truncate d-block">@medya.Ad</MudText>
+                                    </div>
+                                </div>
+                            </MudItem>
+                        }
+
+                        @if (!_yukleniyor && _medyaListesi.Count == 0)
+                        {
+                            <MudItem xs="12">
+                                <MudText Typo="Typo.body2" Align="Align.Center" Color="Color.Secondary" Class="py-10">
+                                    Medya havuzu boş veya arama sonucu yok.
+                                </MudText>
+                            </MudItem>
+                        }
+                    </MudGrid>
+                </div>
+            </MudTabPanel>
+
+            <!-- TAB 2: Diskten Yükle -->
+            <MudTabPanel Text="Diskten Yükle" Icon="@Icons.Material.Filled.CloudUpload">
+                <div class="pa-3">
+                    <MudFileUpload T="IReadOnlyList<IBrowserFile>"
+                                   FilesChanged="DosyaYuklendi"
+                                   Accept="@KabulEdilenTurler"
+                                   Disabled="@_dosyaYukleniyor">
+                        <CustomContent Context="ctx">
+                            <div class="medya-yukleyici-zone @(_dosyaYukleniyor ? "" : "")"
+                                 @onclick="ctx.OpenFilePickerAsync"
+                                 style="cursor:pointer;">
+                                <MudIcon Icon="@Icons.Material.Filled.CloudUpload" Size="Size.Large" Color="Color.Secondary" />
+                                <MudText Typo="Typo.body1" Class="mt-2">Dosya seç veya sürükleyip bırak</MudText>
+                                <MudText Typo="Typo.caption" Color="Color.Secondary">@KabulEdilenAciklama</MudText>
+                            </div>
+                        </CustomContent>
+                    </MudFileUpload>
+
+                    @if (_dosyaYukleniyor)
+                    {
+                        <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mt-3" />
+                        <MudText Typo="Typo.caption" Align="Align.Center" Class="mt-1">Yükleniyor...</MudText>
+                    }
+                </div>
+            </MudTabPanel>
+        </MudTabs>
+
+        <!-- Seçilen dosya özeti -->
+        @if (_secilenYol != null)
+        {
+            <MudDivider Class="my-3" />
+            <div class="d-flex align-center gap-3 flex-wrap">
+                @if (SecilenResimMi())
+                {
+                    <img src="@OnizlemeSrc(_secilenYol)"
+                         alt="önizleme"
+                         style="width:80px;height:60px;object-fit:cover;border-radius:6px;border:1px solid var(--gb-border);"
+                         onerror="this.style.display='none'" />
+                }
+                else if (Secilen3DMi())
+                {
+                    <div style="width:80px;height:60px;display:flex;align-items:center;justify-content:center;background:var(--gb-bg-alt);border-radius:6px;">
+                        <MudIcon Icon="@Icons.Material.Filled.ViewInAr" Color="Color.Primary" />
+                    </div>
+                }
+                else if (SecilenPdfMi())
+                {
+                    <div style="width:80px;height:60px;display:flex;align-items:center;justify-content:center;background:var(--gb-bg-alt);border-radius:6px;">
+                        <MudIcon Icon="@Icons.Material.Filled.PictureAsPdf" Color="Color.Error" />
+                    </div>
+                }
+                <div style="flex:1;min-width:0;">
+                    <MudText Typo="Typo.body2" Style="font-weight:600;">Seçilen dosya</MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Secondary" Class="text-truncate d-block">@_secilenYol</MudText>
+                </div>
+                <MudTooltip Text="Seçimi temizle">
+                    <MudIconButton Icon="@Icons.Material.Filled.Close" Size="Size.Small" Color="Color.Default"
+                                   OnClick="@(() => { _secilenYol = null; _secilenMedya = null; })" />
+                </MudTooltip>
+            </div>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Iptal">İptal</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                   OnClick="Onayla"
+                   Disabled="@(_secilenYol == null)">
+            Seç
+        </MudButton>
+    </DialogActions>
+</MudDialog>

@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>VizitLink3D.UI</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <WasmDebugLevel>0</WasmDebugLevel>
+    <BlazorEnableCompression>false</BlazorEnableCompression>
+    <IncrementalBuild>false</IncrementalBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CodeBeam.MudBlazor.Extensions" Version="9.1.0" />
+    <PackageReference Include="FormCraft" Version="2.5.0" />
+    <PackageReference Include="Gotho.BlazorPdf.MudBlazor" Version="2.2.0" />
+    <PackageReference Include="LiveChartsCore.SkiaSharpView.Blazor" Version="2.0.0-rc4.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.7" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="10.0.7" />
+    <PackageReference Include="MudBlazor" Version="9.4.0" />
+    <PackageReference Include="MudBlazor.ThemeManager" Version="2.1.0" />
+    <PackageReference Include="MudExRichTextEditor" Version="1.2.5" />
+    <!-- CodeBeam.MudBlazor.Extensions'in gecisli getirdigi eski surumlerde bilinen guvenlik acigi var -->
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
+    <PackageReference Include="SharpCompress" Version="0.49.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VizitLink3D.Ortak\VizitLink3D.Ortak.csproj" />
+  </ItemGroup>
+
+</Project>

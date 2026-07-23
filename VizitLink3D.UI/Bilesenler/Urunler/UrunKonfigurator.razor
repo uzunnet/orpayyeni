@@ -1,0 +1,60 @@
+@using VizitLink3D.Ortak.Modeller.Urunler
+@using VizitLink3D.UI.Bilesenler
+
+<div class="gb-konfigurator-sarici">
+    @if (_yukleniyor)
+    {
+        <div class="d-flex justify-center align-center pa-8">
+            <MudProgressCircular Indeterminate="true" />
+        </div>
+    }
+    else
+    {
+        <MudGrid Spacing="4">
+            <!-- Sol Panel: Parça ve Renk Seçimi -->
+            <MudItem xs="12" md="4" lg="3">
+                <div class="gb-konfigurator-sol-panel">
+                    @if (_parcalar.Any())
+                    {
+                        <ParcaSecimPaneli Parcalar="_parcalar"
+                                          SeciliParcaId="_seciliParcaId"
+                                          ParcaSecildi="@ParcaDegisti" />
+
+                        <MudDivider Class="my-4" />
+                    }
+
+                    @if (_renkler.Any())
+                    {
+                        <RenkSecimPaneli Renkler="_renkler"
+                                         SeciliRenkKodu="_secilenRenkKodu"
+                                         RenkSecildi="@RenkDegisti" />
+                    }
+                </div>
+            </MudItem>
+
+            <!-- Sağ Panel: 3D Görüntüleyici -->
+            <MudItem xs="12" md="8" lg="9">
+                <div class="gb-konfigurator-sag-panel">
+                    @if (!string.IsNullOrEmpty(_modelYolu))
+                    {
+                        <UcBoyutGoruntuleyici ModelYolu="@_modelYolu"
+                                              ModelId="@_modelId"
+                                              BaslangicRenk="@_secilenRenkKodu"
+                                              SecilenRenk="@_secilenRenkKodu"
+                                              KameraAyarJson="@_kameraAyarJson"
+                                              IsikAyarJson="@_isikAyarJson"
+                                              CevreAyarJson="@_cevreAyarJson" />
+                    }
+                    else
+                    {
+                        <MudPaper Elevation="1" Class="pa-6 text-center">
+                            <MudText Typo="Typo.body1" Color="Color.Dark">
+                                @dil.T("konfigurator.3dModelYok", "Bu ürün için 3D model bulunmamaktadır.")
+                            </MudText>
+                        </MudPaper>
+                    }
+                </div>
+            </MudItem>
+        </MudGrid>
+    }
+</div>

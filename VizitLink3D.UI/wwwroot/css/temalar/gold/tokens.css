@@ -1,0 +1,151 @@
+/*
+ * GOLD — tokens.css
+ * Altın yoğunluklu lüks tema (aurelian-onyx mirası + canlı altın)
+ * CokluTemaServisi tarafından otomatik üretilir, manifest.json'dan.
+ */
+
+:root[data-tema-id="gold"] {
+    /* === RENK PALETİ (altın yoğunluk) === */
+    --tema-birincil: #0a0a0a;
+    --tema-ikincil: #1a1a1a;
+    --tema-vurgu: #FFD700;
+    --tema-vurgu-acik: #FFED4E;
+    --tema-vurgu-koyu: #B8860B;
+    --tema-arkaplan: #0a0a0a;
+    --tema-arkaplan-2: #161616;
+    --tema-yuzey: #1a1a1a;
+    --tema-yuzey-hover: #242424;
+    --tema-cizgi: rgba(255, 215, 0, 0.20);
+    --tema-cizgi-acik: rgba(255, 215, 0, 0.10);
+    --tema-metin: #f5e6c8;
+    --tema-metin-ikincil: #d4af37;
+    --tema-metin-soluk: #8a7530;
+    --tema-metin-ters: #0a0a0a;
+    --tema-basari: #4a7c59;
+    --tema-uyari: #FFD700;
+    --tema-hata: #ffb4ab;
+    --tema-bilgi: #4a6c8c;
+
+    /* === TİPOGRAFİ === */
+    --tema-font-baslik: 'Playfair Display', 'Noto Serif', 'Cormorant Garamond', serif;
+    --tema-font-govde: 'Manrope', 'Inter', system-ui, sans-serif;
+    --tema-font-vurgu: 'Cormorant Garamond', serif;
+    --tema-font-mono: 'JetBrains Mono', monospace;
+    --tema-baslik-agirlik: 700;
+    --tema-baslik-harf-araligi: -0.02em;
+
+    /* === BOŞLUK === */
+    --tema-bosluk-xs: 0.25rem;
+    --tema-bosluk-sm: 0.5rem;
+    --tema-bosluk-md: 1rem;
+    --tema-bosluk-lg: 1.5rem;
+    --tema-bosluk-xl: 2.5rem;
+    --tema-bosluk-2xl: 4rem;
+    --tema-bosluk-3xl: 6rem;
+
+    /* === GEOMETRİ === */
+    --tema-kose-sm: 2px;
+    --tema-kose-md: 4px;
+    --tema-kose-lg: 8px;
+    --tema-kose-xl: 16px;
+    --tema-kose-tam: 9999px;
+    --tema-border-kalinlik: 1px;
+    --tema-border-stil: solid;
+
+    /* === GÖLGE (altın glow) === */
+    --tema-golge-sm: 0 2px 8px rgba(0, 0, 0, 0.5);
+    --tema-golge-md: 0 4px 20px rgba(0, 0, 0, 0.6);
+    --tema-golge-lg: 0 10px 40px rgba(0, 0, 0, 0.7);
+    --tema-golge-xl: 0 20px 60px rgba(0, 0, 0, 0.8);
+    --tema-golge-vurgu: 0 0 20px rgba(255, 215, 0, 0.40);
+    --tema-golge-vurgu-guclu: 0 0 40px rgba(255, 215, 0, 0.60);
+
+    /* === GLASSMORPHİSM (altın vurgu) === */
+    --tema-cam-bg: rgba(255, 215, 0, 0.04);
+    --tema-cam-cizgi: rgba(255, 215, 0, 0.25);
+    --tema-cam-blur: blur(20px) saturate(180%);
+    --tema-cam-glow: 0 0 20px rgba(255, 215, 0, 0.30);
+    --tema-cam-glow-guclu: 0 0 35px rgba(255, 215, 0, 0.50);
+
+    /* === ANİMASYON === */
+    --tema-gecis-hizli: 0.2s ease;
+    --tema-gecis-normal: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --tema-gecis-yavas: 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    --tema-bezier: cubic-bezier(0.22, 1, 0.36, 1);
+
+    /* === LAYOUT === */
+    --tema-icerik-genislik: 1440px;
+    --tema-kenar-bosluk: 80px;
+    --tema-sutun-sayisi: 4;
+
+    /* === ALTIN GRADIENT (özel) === */
+    --tema-altin-gradient: linear-gradient(135deg,
+        #B8860B 0%,
+        #FFD700 30%,
+        #FFED4E 50%,
+        #FFD700 70%,
+        #B8860B 100%);
+    --tema-altin-gradient-yazi: linear-gradient(90deg, #B8860B 0%, #FFD700 50%, #B8860B 100%);
+    --tema-altin-shadow-yazi: 0 0 20px rgba(255, 215, 0, 0.40);
+
+    /* === LEGACY UYUMLULUK (eski --vizit-* kullanımları) === */
+    --vizit-primary: var(--tema-birincil);
+    --vizit-accent: var(--tema-vurgu);
+    --vizit-bg-base: var(--tema-arkaplan);
+    --vizit-text: var(--tema-metin);
+    --vizit-text-inverse: var(--tema-metin-ters);
+    --vizit-font-serif: var(--tema-font-baslik);
+    --vizit-font-sans: var(--tema-font-govde);
+    --vizit-radius-md: var(--tema-kose-md);
+    --vizit-transition: var(--tema-gecis-normal);
+    --vizit-shadow-md: var(--tema-golge-md);
+    --vizit-shadow-lux: var(--tema-golge-vurgu);
+    --vizit-border: var(--tema-cizgi);
+    --aureli-glass-bg: var(--tema-cam-bg);
+    --aureli-glass-border: var(--tema-cam-cizgi);
+    --aureli-glow: var(--tema-cam-glow);
+    --aureli-blur: 20px;
+}
+
+/* === AÇIK MOD (gündüz varyantı) === */
+:root[data-tema-id="gold"][data-tema-mod="acik"] {
+    --tema-birincil: #F5EFE0;
+    --tema-ikincil: #E8DFC9;
+    --tema-vurgu: #C8952A;
+    --tema-vurgu-acik: #E0B455;
+    --tema-vurgu-koyu: #8B6914;
+    --tema-arkaplan: #FBF7EE;
+    --tema-arkaplan-2: #FFFFFF;
+    --tema-yuzey: #FFFFFF;
+    --tema-yuzey-hover: #FAF6EC;
+    --tema-cizgi: rgba(200, 149, 42, 0.20);
+    --tema-cizgi-acik: rgba(200, 149, 42, 0.08);
+    --tema-metin: #1F1A14;
+    --tema-metin-ikincil: #5B5240;
+    --tema-metin-soluk: #8B826E;
+    --tema-metin-ters: #FFFFFF;
+    --tema-basari: #4a7c59;
+    --tema-uyari: #c9a449;
+    --tema-hata: #9b3d3d;
+    --tema-bilgi: #4a6c8c;
+
+    --tema-golge-sm: 0 2px 8px rgba(31, 26, 20, 0.08);
+    --tema-golge-md: 0 4px 20px rgba(31, 26, 20, 0.12);
+    --tema-golge-lg: 0 10px 40px rgba(31, 26, 20, 0.15);
+    --tema-golge-xl: 0 20px 60px rgba(31, 26, 20, 0.18);
+    --tema-golge-vurgu: 0 0 12px rgba(200, 149, 42, 0.20);
+    --tema-golge-vurgu-guclu: 0 0 25px rgba(200, 149, 42, 0.35);
+
+    --tema-cam-bg: rgba(255, 255, 255, 0.70);
+    --tema-cam-cizgi: rgba(200, 149, 42, 0.15);
+    --tema-cam-blur: blur(12px) saturate(120%);
+    --tema-cam-glow: 0 0 12px rgba(200, 149, 42, 0.15);
+    --tema-cam-glow-guclu: 0 0 20px rgba(200, 149, 42, 0.25);
+
+    --vizit-primary: var(--tema-birincil);
+    --vizit-accent: var(--tema-vurgu);
+    --vizit-bg-base: var(--tema-arkaplan);
+    --vizit-text: var(--tema-metin);
+    --vizit-text-inverse: var(--tema-metin-ters);
+    --vizit-border: var(--tema-cizgi);
+}

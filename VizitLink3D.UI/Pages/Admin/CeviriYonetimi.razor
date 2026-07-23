@@ -1,0 +1,128 @@
+@page "/admin/ceviri-yonetimi"
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using VizitLink3D.Ortak.Modeller
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<PageTitle>@($"{Dil.T("admin.ceviri.sayfaBasligi", "Dil ve Çeviri Yönetimi")} | VizitLink3D Admin")</PageTitle>
+
+<MudText Typo="Typo.h4" Class="mb-2">@Dil.T("admin.ceviri.baslik", "Dil ve Çeviri Yönetimi")</MudText>
+
+@* ─── DİL YÖNETİMİ ──────────────────────────────────────────────── *@
+<MudGrid Class="mb-4">
+    <MudItem xs="12">
+        <MudText Typo="Typo.h6" Class="mb-2">Diller (@_tumDiller.Count)</MudText>
+        <MudPaper Elevation="1" Class="pa-4">
+            <div class="admin-dil-kartlari">
+                @foreach (var d in _tumDiller)
+                {
+                    <MudCard Elevation="2" Class="admin-dil-karti">
+                        <MudCardContent Class="pa-3">
+                            <div class="admin-dil-karti-icerik">
+                                <span class="admin-dil-bayrak @d.Bayrak"></span>
+                                <MudText Typo="Typo.body2" Class="admin-dil-karti-metin"><strong>@d.Kod.ToUpper()</strong><br/>@d.Ad</MudText>
+                                <MudSwitch T="bool" Value="@d.AktifMi" Color="Color.Warning"
+                                           ValueChanged="@((bool v) => DilAktifDegistir(d, v))" />
+                            </div>
+                        </MudCardContent>
+                    </MudCard>
+                }
+            </div>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+<MudDivider Class="mb-4" />
+
+<MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-4">@($"{_filtreliListe.Count} {Dil.T("admin.ceviri.kayit", "kayıt")}")</MudText>
+
+<MudToolBar Class="mb-4">
+    <MudSelect T="string" Value="_filtreDil" ValueChanged="FiltreDilDegisti" Placeholder="@Dil.T("admin.ceviri.dil", "Dil")" Clearable="true" Class="mr-2 admin-ceviri-dil-filtre">
+        @foreach (var dilKod in _diller)
+        {
+            <MudSelectItem Value="@dilKod">@dilKod</MudSelectItem>
+        }
+    </MudSelect>
+    <MudSelect T="string" Value="_filtreBolum" ValueChanged="FiltreBolumDegisti" Placeholder="@Dil.T("admin.ceviri.bolum", "Bölüm")" Clearable="true" Class="mr-2 admin-ceviri-bolum-filtre">
+        @foreach (var bolum in _bolumler)
+        {
+            <MudSelectItem Value="@bolum">@bolum</MudSelectItem>
+        }
+    </MudSelect>
+    <MudTextField @bind-Value="_arama" Placeholder="@Dil.T("ortak.ara", "Ara...")" Immediate="true" OnKeyUp="AramaYap" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" Class="flex-grow-1 gb-maxw-300" />
+    <MudSpacer />
+<MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add"
+               OnClick="YeniCeviri" Class="mr-2">
+        @Dil.T("admin.ceviri.yeni", "Yeni Çeviri")
+    </MudButton>
+<MudButton Variant="Variant.Filled" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.AutoAwesome"
+               OnClick="AIileTopluCevir" Disabled="_aiCeviriliyor">
+        @(_aiCeviriliyor ? $"AI Ceviriliyor... ({_aiCeviriSayac}/{_aiCeviriToplam})" : "AI ile Cevir")
+    </MudButton>
+</MudToolBar>
+
+@if (_yukleniyor)
+{
+    <MudProgressLinear Indeterminate="true" Class="mb-4" />
+}
+
+@if (_formAcik)
+{
+    <MudCard Class="mb-4" Elevation="2">
+        <MudCardContent>
+            <MudText Typo="Typo.h6" Class="mb-4">
+                @(_duzenlenenId.HasValue
+                    ? Dil.T("admin.ceviri.duzenle", "Çeviri Düzenle")
+                    : Dil.T("admin.ceviri.yeni", "Yeni Çeviri"))
+            </MudText>
+            <MudGrid>
+                <MudItem xs="12" md="4">
+                    <MudTextField Value="@_form.Anahtar" Label="@Dil.T("admin.ceviri.anahtar", "Anahtar")" ReadOnly="true" Class="mb-3" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudTextField @bind-Value="_form.Dil" Label="@Dil.T("admin.ceviri.dil", "Dil")" Class="mb-3" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudTextField @bind-Value="_form.Bolum" Label="@Dil.T("admin.ceviri.bolum", "Bölüm")" Class="mb-3" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="_form.Deger" Label="@Dil.T("admin.ceviri.deger", "Değer")" Lines="3" Class="mb-3" />
+                </MudItem>
+            </MudGrid>
+            <MudToolBar>
+                <MudSpacer />
+                <MudButton OnClick="FormIptal" Color="Color.Secondary" Disabled="_kaydediliyor">@Dil.T("ortak.iptal", "İptal")</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Kaydet" Disabled="_kaydediliyor">@Dil.T("ortak.kaydet", "Kaydet")</MudButton>
+            </MudToolBar>
+        </MudCardContent>
+    </MudCard>
+}
+
+<MudDataGrid Items="@_filtreliListe" Filterable="true" SortMode="SortMode.Multiple"
+             Dense="true" Striped="true" Hover="true" PageSize="15"
+             PageSizeOptions="@(new int[] { 10, 15, 25, 50, 100 })">
+    <Columns>
+        <PropertyColumn Property="x => x.Anahtar" Title="@Dil.T("admin.ceviri.anahtar", "Anahtar")" />
+        <PropertyColumn Property="x => x.Dil" Title="@Dil.T("admin.ceviri.dil", "Dil")" />
+        <PropertyColumn Property="x => x.Bolum" Title="@Dil.T("admin.ceviri.bolum", "Bölüm")" />
+        <TemplateColumn Title="@Dil.T("admin.ceviri.deger", "Değer")">
+            <CellTemplate>
+                <MudText Typo="Typo.body2">
+                    @(context.Item.Deger?.Length > 60 ? context.Item.Deger[..60] + "..." : context.Item.Deger)
+                </MudText>
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="@Dil.T("ortak.islemler", "İşlemler")">
+            <CellTemplate>
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small"
+                               OnClick="() => Duzenle(context.Item)" Class="mr-1" />
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error"
+                               OnClick="() => Sil(context.Item)" />
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager />
+    </PagerContent>
+</MudDataGrid>
+

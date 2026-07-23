@@ -1,0 +1,32 @@
+@inject Servisler.DilServisi dil
+
+<div class="medya-duzenleyici">
+    @if (!string.IsNullOrEmpty(MedyaUrl))
+    {
+        <div class="medya-duzenleyici-onizleme">
+            <img src="@MedyaUrl" alt="@dil.T("medya.duzenlemeOnizleme", "Düzenleme önizleme")" />
+        </div>
+    }
+    else
+    {
+        <MudText Typo="Typo.body2" Align="Align.Center" Color="Color.Secondary" Class="py-6">
+            @dil.T("medya.medyaSecilmedi", "Düzenlemek için bir medya seçin.")
+        </MudText>
+    }
+
+    <div class="medya-duzenleyici-araclar">
+        <MudButton Variant="Variant.Outlined"
+                   StartIcon="@Icons.Material.Filled.RotateRight"
+                   OnClick="Dondur"
+                   Disabled="@(string.IsNullOrEmpty(MedyaUrl))">
+            @dil.T("medya.dondur", "Döndür")
+        </MudButton>
+
+        <MudButton Variant="Variant.Outlined"
+                   StartIcon="@Icons.Material.Filled.Crop"
+                   OnClick="Kirp"
+                   Disabled="@(string.IsNullOrEmpty(MedyaUrl))">
+            @dil.T("medya.kirp", "Kırp")
+        </MudButton>
+    </div>
+</div>

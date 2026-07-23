@@ -1,0 +1,77 @@
+@using VizitLink3D.Ortak.Modeller.Medya
+@inject Servisler.DilServisi dil
+
+<MudPaper Class="@($"medya-kart {(SeciliMi ? "medya-kart-secili" : "")}")" Elevation="0" @onclick="() => Tiklandi.InvokeAsync(MedyaOgesi)">
+    <div class="medya-kart-thumb">
+        @if (MedyaOgesi.Kaynak == MedyaKaynagi.Youtube)
+        {
+            <img src="@MedyaOgesi.MiniaturYolu" alt="@MedyaOgesi.Ad" loading="lazy" />
+            <div class="medya-kart-play">
+                <MudIcon Icon="@Icons.Material.Filled.PlayCircle" Size="Size.Large" />
+            </div>
+            <span class="medya-kart-tip">@dil.T("medya.tip.youtube", "YT")</span>
+        }
+        else if (MedyaOgesi.Tip == MedyaTipi.Video && MedyaOgesi.Kaynak != MedyaKaynagi.Youtube)
+        {
+            <img src="@($"/api/medya/dosya/{MedyaOgesi.Id}")" alt="@MedyaOgesi.Ad" loading="lazy" />
+            <div class="medya-kart-play">
+                <MudIcon Icon="@Icons.Material.Filled.PlayCircle" Size="Size.Large" />
+            </div>
+            <span class="medya-kart-tip">@dil.T("medya.tip.video", "VID")</span>
+        }
+        else if (MedyaOgesi.Tip == MedyaTipi.Pdf)
+        {
+            <div class="medya-kart-pdf">
+                <MudIcon Icon="@Icons.Material.Filled.PictureAsPdf" Size="Size.Large" />
+            </div>
+            <span class="medya-kart-tip">PDF</span>
+        }
+        else if (MedyaOgesi.Tip == MedyaTipi.Glb)
+        {
+            <div class="medya-kart-3d">
+                <MudIcon Icon="@Icons.Material.Filled.ViewInAr" Size="Size.Large" />
+            </div>
+            <span class="medya-kart-tip">3D</span>
+        }
+        else if (MedyaOgesi.Tip == MedyaTipi.Ses)
+        {
+            <div class="medya-kart-3d">
+                <MudIcon Icon="@Icons.Material.Filled.Audiotrack" Size="Size.Large" />
+            </div>
+            <span class="medya-kart-tip">@dil.T("medya.tip.ses", "SES")</span>
+        }
+        else
+        {
+            <img src="@($"/api/medya/dosya/{MedyaOgesi.Id}")" alt="@MedyaOgesi.Ad" loading="lazy" />
+            <span class="medya-kart-tip">IMG</span>
+        }
+    </div>
+
+    <MudTooltip Arrow="true" Placement="Placement.Bottom">
+        <ChildContent>
+            <div class="medya-kart-info">
+                <MudText Typo="Typo.caption" Class="text-truncate">@MedyaOgesi.Ad</MudText>
+                <MudText Typo="Typo.caption" Color="Color.Secondary">@MedyaBoyutu()</MudText>
+            </div>
+        </ChildContent>
+        <TooltipContent>
+            <div class="medya-tooltip-icerik">
+                @if (!string.IsNullOrEmpty(MedyaOgesi.MiniaturYolu) && MedyaOgesi.Tip == MedyaTipi.Resim)
+                {
+                    <img src="@MedyaOgesi.MiniaturYolu" alt="@MedyaOgesi.Ad" loading="lazy" />
+                }
+                <MudText Typo="Typo.body2"><strong>@MedyaOgesi.Ad</strong></MudText>
+                <MudText Typo="Typo.caption" Color="Color.Secondary">
+                    @MedyaBoyutu() @(MedyaOgesi.Genislik.HasValue && MedyaOgesi.Yukseklik.HasValue ? $"| {MedyaOgesi.Genislik}x{MedyaOgesi.Yukseklik} px" : "")
+                </MudText>
+                @if (!string.IsNullOrEmpty(MedyaOgesi.Aciklama))
+                {
+                    <MudText Typo="Typo.caption" Class="mt-1">@MedyaOgesi.Aciklama</MudText>
+                }
+                <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mt-1">
+                    @dil.T("medya.kullanimSayisi", "Kullanım"): @MedyaOgesi.KullanimSayisi
+                </MudText>
+            </div>
+        </TooltipContent>
+    </MudTooltip>
+</MudPaper>

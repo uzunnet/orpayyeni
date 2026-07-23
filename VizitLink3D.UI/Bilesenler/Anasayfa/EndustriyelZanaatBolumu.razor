@@ -1,0 +1,35 @@
+@* EndustriyelZanaatBolumu — Aurelian Onyx ikili bölüm (yazı + görsel) *@
+
+<section class="endustriyel-bolum">
+    <div class="endustriyel-bolum__arka-gradient"></div>
+    <div class="section-container" style="position:relative; z-index:1;">
+        <div class="endustriyel-grid">
+            @* Sol — Metin içeriği *@
+            <div>
+                <span class="section-etiket anim-reveal-up">@dil.T("anasayfa.endustriyel.etiket", "Endüstriyel Zanaat")</span>
+                <h2 class="section-baslik anim-reveal-up">@Baslik</h2>
+                <p class="section-aciklama anim-reveal-up stagger-1" style="text-align:left; margin-left:0;">
+                    @Aciklama
+                </p>
+                <div class="endustriyel-grid__ozellikler anim-reveal-up stagger-2">
+                    @foreach (var oz in Ozellikler)
+                    {
+                        <div class="endustriyel-ozellik">
+                            <span class="endustriyel-ozellik__etiket">@oz.Etiket</span>
+                            <span class="endustriyel-ozellik__deger">@oz.Deger</span>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            @* Sağ — Görsel + Glow *@
+            <div class="anim-reveal-up stagger-2" style="position: relative;">
+                <div class="endustriyel-gorsel-kutu">
+                    <img src="@GorselUrl" alt="@Baslik" class="endustriyel-gorsel-kutu__img" loading="lazy" />
+                    <div class="endustriyel-gorsel-kutu__overlay"></div>
+                </div>
+                <div class="endustriyel-gorsel-kutu__glow"></div>
+            </div>
+        </div>
+    </div>
+</section>

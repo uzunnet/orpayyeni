@@ -1,0 +1,182 @@
+@page "/admin/iletisim-mesajlari"
+@layout AdminDuzen
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<PageTitle>@dil.T("admin.iletisimMesajlari.sayfaBasligi", "Iletisim Mesajlari") | VizitLink3D Admin</PageTitle>
+
+@*
+ * IletisimMesajlari — Admin panelinde iletiþim formu mesajlarý yönetim ekraný.
+ * Tüm mesajlar EF Core veritabanýndan API üzerinden dinamik olarak çekilir.
+ * Okundu iþaretleme ve arþivleme iþlemleri anýnda veritabanýna yansýr.
+ *@
+
+@* ¦¦¦ BAÞLIK ¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦ *@
+<MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mb-6 anim-scroll-yukari">
+    <MudStack Spacing="1">
+        <MudText Typo="Typo.h5" Style="font-family:'Noto Serif',serif; font-weight:700; color:#1A1C1C;">
+            Ýletiþim Mesajlarý
+        </MudText>
+        <MudText Typo="Typo.body2" Style="color:#666; font-family:'Manrope',sans-serif;">
+            Sitedeki iletiþim formundan gelen tüm mesajlar
+            @if (_okunmamisSayi > 0)
+            {
+                <span> — <strong style="color:#C8952A;">@_okunmamisSayi okunmamýþ</strong></span>
+            }
+        </MudText>
+    </MudStack>
+    <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+        <MudSwitch @bind-Value="_sadeceOkunmamis" Color="Color.Warning" ThumbIcon="@Icons.Material.Filled.MarkEmailUnread"
+                   Label="@dil.T("admin.iletisimMesajlari.yalnizcaOkunmamis","Yalnýzca Okunmamýþlar")" Style="font-family:'Manrope',sans-serif;" />
+        <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Outlined.Refresh"
+                   OnClick="MesajlariYukleAsync" Style="font-family:'Manrope',sans-serif;" Size="Size.Small">
+            Yenile
+        </MudButton>
+    </MudStack>
+</MudStack>
+
+@* ¦¦¦ ARAMA ¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦ *@
+<MudTextField @bind-Value="_aramaMetni"
+              Placeholder="@dil.T("admin.iletisimMesajlari.aramaYeri","Ad, e-posta veya konu ile ara...")"
+              Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Outlined.Search"
+              Variant="Variant.Outlined" Margin="Margin.Dense" Class="mb-4 anim-scroll-yukari"
+              Style="max-width:400px; font-family:'Manrope',sans-serif;" />
+
+@* ¦¦¦ ÝÇERÝK ¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦ *@
+@if (_yukleniyor)
+{
+    <MudStack Spacing="2">
+        @for (int i = 0; i < 5; i++)
+        {
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="64px" />
+        }
+    </MudStack>
+}
+else if (!_filtrelenmis.Any())
+{
+    <MudPaper Elevation="0" Class="pa-12" Style="text-align:center; border:1px dashed #DDD;">
+        <MudIcon Icon="@Icons.Material.Outlined.MarkEmailRead" Size="Size.Large" class="gb-color-ccc" />
+        <MudText Typo="Typo.h6" Style="color:#999; font-family:'Manrope',sans-serif;" Class="mt-2">
+            @(_sadeceOkunmamis ? "Okunmamýþ mesaj yok." : "Henüz mesaj gelmedi.")
+        </MudText>
+    </MudPaper>
+}
+else
+{
+    <MudPaper Elevation="1" Square="true" Class="anim-scroll-yukari">
+        <MudTable Items="_filtrelenmis" Dense="true" Hover="true" Breakpoint="Breakpoint.Sm"
+                  RowClass="cursor-pointer" OnRowClick="@((TableRowClickEventArgs<IletisimMesajiDto> e) => { _ = MesajiAc(e.Item!); })">
+            <HeaderContent>
+                <MudTh Style="font-family:'Manrope',sans-serif; font-weight:700; font-size:11px; letter-spacing:0.08em; text-transform:uppercase;">DURUM</MudTh>
+                <MudTh Style="font-family:'Manrope',sans-serif; font-weight:700; font-size:11px; letter-spacing:0.08em; text-transform:uppercase;">GÖNDEREN</MudTh>
+                <MudTh Style="font-family:'Manrope',sans-serif; font-weight:700; font-size:11px; letter-spacing:0.08em; text-transform:uppercase;">KONU</MudTh>
+                <MudTh Style="font-family:'Manrope',sans-serif; font-weight:700; font-size:11px; letter-spacing:0.08em; text-transform:uppercase;">TARÝH</MudTh>
+                <MudTh></MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd>
+                    @if (!context.OkunduMu)
+                    {
+                        <MudChip T="string" Text="Yeni" Color="Color.Warning" Size="Size.Small" Variant="Variant.Filled"
+                                 Style="font-family:'Manrope',sans-serif; font-weight:700; font-size:10px; border-radius:0;" />
+                    }
+                    else
+                    {
+                        <MudIcon Icon="@Icons.Material.Outlined.DoneAll" Size="Size.Small" class="gb-color-ccc" />
+                    }
+                </MudTd>
+                <MudTd>
+                    <MudStack Spacing="0">
+                        <MudText Typo="Typo.body2"
+                                 Style="@($"font-family:'Manrope',sans-serif; font-weight:{(context.OkunduMu ? "400" : "700")}; color:#1A1C1C;")">
+                            @context.AdSoyad
+                        </MudText>
+                        <MudText Typo="Typo.caption" Style="color:#999; font-family:'Manrope',sans-serif;">
+                            @context.Eposta
+                        </MudText>
+                    </MudStack>
+                </MudTd>
+                <MudTd>
+                    <MudText Typo="Typo.body2" Style="font-family:'Manrope',sans-serif; color:#333;">
+                        @(string.IsNullOrEmpty(context.Konu) ? "—" : context.Konu)
+                    </MudText>
+                </MudTd>
+                <MudTd>
+                    <MudText Typo="Typo.caption" Style="font-family:'Manrope',sans-serif; color:#888; white-space:nowrap;">
+                        @context.Tarih.ToLocalTime().ToString("dd MMM yyyy HH:mm")
+                    </MudText>
+                </MudTd>
+                <MudTd>
+                    <MudIconButton Icon="@Icons.Material.Outlined.Archive"
+                                   Size="Size.Small"
+                                   OnClick="@(async () => await MesajiArsiyle(context))"
+                                   class="gb-color-ccc" />
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    </MudPaper>
+}
+
+@* ¦¦¦ MESAJ DETAY DRAWER ¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦ *@
+<MudDrawer Open="@(_acikMesaj != null)"
+           OpenChanged="@(v => { if (!v) _acikMesaj = null; })"
+           Anchor="Anchor.Right" ClipMode="DrawerClipMode.Always"
+           Variant="DrawerVariant.Temporary" Width="480px"
+           Style="font-family:'Manrope',sans-serif;">
+    @if (_acikMesaj != null)
+    {
+        <MudDrawerHeader>
+            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="w-100">
+                <MudText Typo="Typo.subtitle1" Style="font-family:'Noto Serif',serif; font-weight:700;">
+                    Mesaj Detayý
+                </MudText>
+                <MudIconButton Icon="@Icons.Material.Outlined.Close" OnClick="@(() => _acikMesaj = null)" />
+            </MudStack>
+        </MudDrawerHeader>
+        <MudStack Class="pa-4" Spacing="3">
+            <MudDivider />
+            <MudStack Spacing="1">
+                <MudText Typo="Typo.caption" class="vizit-vurgu-metin vizit-text-glow-gold">GÖNDEREN</MudText>
+                <MudText Typo="Typo.body1" Style="font-weight:600;">@_acikMesaj.AdSoyad</MudText>
+                <MudLink Href="@($"mailto:{_acikMesaj.Eposta}")" Typo="Typo.body2">@_acikMesaj.Eposta</MudLink>
+                @if (!string.IsNullOrEmpty(_acikMesaj.Telefon))
+                {
+                    <MudLink Href="@($"tel:{_acikMesaj.Telefon}")" Typo="Typo.body2">@_acikMesaj.Telefon</MudLink>
+                }
+            </MudStack>
+            <MudDivider />
+            @if (!string.IsNullOrEmpty(_acikMesaj.Konu))
+            {
+                <MudStack Spacing="1">
+                    <MudText Typo="Typo.caption" class="vizit-vurgu-metin vizit-text-glow-gold">KONU</MudText>
+                    <MudText Typo="Typo.body2" Style="color:#333;">@_acikMesaj.Konu</MudText>
+                </MudStack>
+                <MudDivider />
+            }
+            <MudStack Spacing="1">
+                <MudText Typo="Typo.caption" class="vizit-vurgu-metin vizit-text-glow-gold">MESAJ</MudText>
+                <MudText Typo="Typo.body2" Style="color:#333; line-height:1.7; white-space:pre-wrap;">
+                    @_acikMesaj.Mesaj
+                </MudText>
+            </MudStack>
+            <MudDivider />
+            <MudText Typo="Typo.caption" Style="color:#AAA;">
+                @_acikMesaj.Tarih.ToLocalTime().ToString("dd MMMM yyyy HH:mm")
+            </MudText>
+            <MudStack Row="true" Spacing="2" Class="mt-4">
+                <MudButton Href="@($"mailto:{_acikMesaj.Eposta}?subject=Re: {_acikMesaj.Konu}")"
+                           Variant="Variant.Filled" class="vizit-btn-birincil vizit-text-glow-gold vizit-border-glow" Size="Size.Small"
+                           StartIcon="@Icons.Material.Outlined.Reply">
+                    Cevapla
+                </MudButton>
+                <MudButton Variant="Variant.Outlined" Size="Size.Small" Color="Color.Error"
+                           StartIcon="@Icons.Material.Outlined.Archive"
+                           OnClick="@(async () => await MesajiArsiyle(_acikMesaj))">
+                    Arþivle
+                </MudButton>
+            </MudStack>
+        </MudStack>
+    }
+</MudDrawer>
+

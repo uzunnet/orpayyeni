@@ -1,0 +1,56 @@
+@inject IJSRuntime JS
+@inject ApiIstemcisi Api
+
+<div class="tema-secici" @onclick:stopPropagation>
+    <MudIconButton Icon="@Icons.Material.Filled.Palette"
+                   Color="Color.Primary"
+                   Size="Size.Small"
+                   Class="mr-2 tema-secici-btn"
+                   OnClick="Toggle" />
+
+    @if (_acik)
+    {
+        <div class="tema-secici-panel">
+            <div class="tema-secici-baslik">Tema Seç</div>
+
+            @* ─── MOD SEÇİMİ ──────────────────────────────── *@
+            <div class="tema-secici-mod-satir">
+                <span class="tema-secici-mod-etiket">Mod:</span>
+                <button type="button" class="@ModDugmeClass("acik")" @onclick="@(() => ModDegistir("acik"))">
+                    <MudIcon Icon="@Icons.Material.Filled.LightMode" Size="Size.Small" />
+                    Açık
+                </button>
+                <button type="button" class="@ModDugmeClass("koyu")" @onclick="@(() => ModDegistir("koyu"))">
+                    <MudIcon Icon="@Icons.Material.Filled.DarkMode" Size="Size.Small" />
+                    Koyu
+                </button>
+            </div>
+
+            @if (_temalar == null)
+            {
+                <MudSkeleton SkeletonType="SkeletonType.Text" Width="100%" Height="40px" />
+            }
+            else
+            {
+                @foreach (var tema in _temalar)
+                {
+                    <button type="button"
+                            class="@($"tema-secici-ogesi {(_seciliTema == tema.Slug ? "aktif" : "")}")"
+                            @onclick="@(() => TemaSec(tema))">
+                        <div class="tema-secici-renkler">
+                            <span class="tema-secici-renk" style="background:@(TemaRengiGetir(tema.Slug))">
+                            </span>
+                        </div>
+                        <div class="tema-secici-bilgi">
+                            <span class="tema-secici-ad">@tema.Ad</span>
+                            @if (tema.Premium)
+                            {
+                                <span class="tema-secici-premium">Premium</span>
+                            }
+                        </div>
+                    </button>
+                }
+            }
+        </div>
+    }
+</div>

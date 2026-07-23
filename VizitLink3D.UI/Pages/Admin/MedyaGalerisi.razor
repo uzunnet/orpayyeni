@@ -1,0 +1,169 @@
+@page "/admin/galeri"
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<PageTitle>@dil.T("admin.galeri.baslik", "Galeri Yönetimi") | VizitLink3D Admin</PageTitle>
+
+<AdminSayfaBasligi Baslik='@dil.T("admin.galeri.baslik", "Galeri Yönetimi")'
+                   Aciklama='@dil.T("admin.galeri.aciklama", "Vitrin görsellerini canlı, sıralı, düzenlenebilir ve yayın kontrollü yönetin.")'
+                   Ikon="@Icons.Material.Filled.Collections">
+    <MudButton Variant="Variant.Filled"
+               Color="Color.Primary"
+               StartIcon="@Icons.Material.Filled.CloudUpload"
+               OnClick="YeniYuklemeAc">
+        @dil.T("admin.galeri.gorselYukle", "Görsel Yükle")
+    </MudButton>
+</AdminSayfaBasligi>
+
+<AdminAracCubugu AramaGosterilsinMi="true"
+                 AramaMetni="@_aramaMetni"
+                 AramaMetniDegisti="AramaDegisti"
+                 AramaYerMetni='@dil.T("admin.galeri.ara", "Galeri görseli ara...")'>
+    <MudChip T="string" Color="Color.Primary" Variant="Variant.Outlined" Size="Size.Small">
+        @dil.T("ortak.toplam", "Toplam") @_filtreliGorseller.Count
+    </MudChip>
+    @if (_seciliGorseller.Count > 0)
+    {
+        <MudChip T="string" Color="Color.Warning" Variant="Variant.Outlined" Size="Size.Small">
+            @_seciliGorseller.Count @dil.T("admin.secili", "seçili")
+        </MudChip>
+        <MudButton Variant="Variant.Text"
+                   Color="Color.Error"
+                   StartIcon="@Icons.Material.Filled.Delete"
+                   Size="Size.Small"
+                   OnClick="SeciliSilOnay">
+            @dil.T("ortak.sil", "Sil")
+        </MudButton>
+    }
+</AdminAracCubugu>
+
+@if (_yukleniyor)
+{
+    <AdminYukleniyorIskeleti SatirSayisi="6" />
+}
+else if (_filtreliGorseller.Count == 0)
+{
+    <AdminBosDurum Icon="@Icons.Material.Filled.Collections"
+                   Baslik='@dil.T("admin.galeri.bosBaslik", "Galeri görseli bulunamadı")'
+                   Aciklama='@dil.T("admin.galeri.bosAciklama", "Ana sayfa ve ürün vitrinlerinde kullanmak için yüksek kaliteli görseller yükleyin.")'>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.CloudUpload"
+                   OnClick="YeniYuklemeAc">
+            @dil.T("admin.galeri.gorselYukle", "Görsel Yükle")
+        </MudButton>
+    </AdminBosDurum>
+}
+else
+{
+    <MudGrid Spacing="2">
+        @foreach (var gorsel in _filtreliGorseller)
+        {
+            <MudItem xs="12" sm="6" md="4" lg="3" xl="2">
+                <MudCard Elevation="0" Class="@GorselKartSinifi(gorsel)">
+                    <button type="button" class="galeri-admin-gorsel-btn" @onclick="() => SecimDegistir(gorsel)">
+                        <img src="@GorselYolu(gorsel)" alt="@GorselAltMetni(gorsel)" class="galeri-admin-gorsel" />
+                        <span class="galeri-admin-sira">@gorsel.Sira</span>
+                        @if (SeciliMi(gorsel))
+                        {
+                            <span class="galeri-admin-secim">
+                                <MudIcon Icon="@Icons.Material.Filled.Check" Size="Size.Small" />
+                            </span>
+                        }
+                    </button>
+                    <MudCardContent Class="pa-3">
+                        <MudText Typo="Typo.caption" Class="text-truncate font-weight-bold">@GorselBasligi(gorsel)</MudText>
+                        <MudText Typo="Typo.caption" Color="Color.Secondary" Class="text-truncate">@GorselAltMetni(gorsel)</MudText>
+                    </MudCardContent>
+                    <MudCardActions Class="pa-2">
+                        <MudTooltip Text='@dil.T("ortak.duzenle", "Düzenle")'>
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                           Size="Size.Small"
+                                           OnClick="() => DuzenleAc(gorsel)" />
+                        </MudTooltip>
+                        <MudSpacer />
+                        <MudTooltip Text='@dil.T("ortak.sil", "Sil")'>
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                           Size="Size.Small"
+                                           Color="Color.Error"
+                                           OnClick="() => SilOnay(gorsel)" />
+                        </MudTooltip>
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
+        }
+    </MudGrid>
+}
+
+<MudDialog @bind-Visible="_yuklemeDialogAcik" Class="admin-dialog">
+    <TitleContent>
+        <MudText Typo="Typo.h6">@dil.T("admin.galeri.gorselYukle", "Görsel Yükle")</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudFileUpload T="IReadOnlyList<IBrowserFile>"
+                       Accept=".jpg,.jpeg,.png,.webp"
+                       OnFilesChanged="DosyalarSecildi"
+                       MaximumFileCount="50">
+            <CustomContent Context="context">
+                <MudPaper Elevation="0" Class="galeri-admin-yukleme-alani pa-8 text-center" @onclick="context.OpenFilePickerAsync">
+                    <MudIcon Icon="@Icons.Material.Filled.CloudUpload" Size="Size.Large" Color="Color.Primary" />
+                    <MudText Typo="Typo.body1" Class="mt-2">@dil.T("medya.dosyaSec", "Dosya seç veya sürükle")</MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Secondary">@dil.T("admin.galeri.yuklemeYardim", "JPG, PNG veya WebP görselleri toplu yükleyebilirsiniz.")</MudText>
+                </MudPaper>
+            </CustomContent>
+        </MudFileUpload>
+        @if (_yuklenecekDosyalar.Count > 0)
+        {
+            <MudList T="string" Dense="true" Class="mt-3">
+                @foreach (var dosya in _yuklenecekDosyalar)
+                {
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.Image" Text="@dosya.Name" />
+                }
+            </MudList>
+        }
+        @if (_yuklemeYuzdesi > 0)
+        {
+            <MudProgressLinear Value="@_yuklemeYuzdesi" Color="Color.Primary" Class="mt-3" />
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="YuklemeIptal" Disabled="@_kaydediliyor">@dil.T("ortak.iptal", "İptal")</MudButton>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.CloudUpload"
+                   Disabled="@(_kaydediliyor || _yuklenecekDosyalar.Count == 0)"
+                   OnClick="YuklemeyiBaslat">
+            @(_kaydediliyor ? dil.T("ortak.yukleniyor", "Yükleniyor...") : dil.T("ortak.yukle", "Yükle"))
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+<MudDialog @bind-Visible="_duzenlemeDialogAcik" Class="admin-dialog">
+    <TitleContent>
+        <MudText Typo="Typo.h6">@dil.T("admin.galeri.duzenle", "Galeri Görseli Düzenle")</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudGrid>
+            <MudItem xs="12" md="5">
+                <img src="@GorselYolu(_duzenlenenGorsel)" alt="@GorselAltMetni(_duzenlenenGorsel)" class="galeri-admin-onizleme" />
+            </MudItem>
+            <MudItem xs="12" md="7">
+                <MudTextField @bind-Value="_duzenlenenGorsel.Baslik" Label='@dil.T("ortak.baslik", "Başlık")' Class="mb-3 admin-textfield" />
+                <MudTextField @bind-Value="_duzenlenenGorsel.AltMetin" Label='@dil.T("medya.altMetin", "Alt metin")' Class="mb-3 admin-textfield" />
+                <MudNumericField @bind-Value="_duzenlenenGorsel.Sira" Label='@dil.T("ortak.siraNo", "Sıra no")' Class="mb-3 admin-textfield" />
+                <MudSwitch @bind-Value="_duzenlenenGorsel.AktifMi" Label='@dil.T("ortak.aktif", "Aktif")' Class="admin-switch" />
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="DuzenlemeIptal" Disabled="@_kaydediliyor">@dil.T("ortak.iptal", "İptal")</MudButton>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Save"
+                   Disabled="@_kaydediliyor"
+                   OnClick="Kaydet">
+            @(_kaydediliyor ? dil.T("ortak.kaydediliyor", "Kaydediliyor...") : dil.T("ortak.kaydet", "Kaydet"))
+        </MudButton>
+    </DialogActions>
+</MudDialog>

@@ -1,0 +1,35 @@
+@* KatalogBanner — Aurelian Onyx fullwidth CTA + görsel *@
+
+<section class="katalog-bolum">
+    <div class="katalog-bolum__arka-glow"></div>
+    <div class="katalog-grid">
+        @* Sol — Metin + CTA *@
+        <div>
+            <span class="section-etiket anim-reveal-up">@dil.T("anasayfa.katalog.etiket", "2024 Kataloğu")</span>
+            <h2 class="section-baslik anim-reveal-up">@Baslik</h2>
+            <p class="section-aciklama anim-reveal-up stagger-1" style="text-align:left; margin-left:0;">
+                @Aciklama
+            </p>
+            <div class="katalog-grid__buton-grup anim-reveal-up stagger-2">
+                <a href="@ButonUrl" class="btn-birincil stitch-hero__cta">@ButonMetin</a>
+                @if (!string.IsNullOrEmpty(IndirmeUrl))
+                {
+                    <a href="@IndirmeUrl" target="_blank" class="btn-ghost katalog-buton-ikincil" download>
+                        <span class="material-symbols-outlined katalog-buton-ikincil__ikon">download</span>
+                        <span>@dil.T("anasayfa.katalog.indir", "PDF İndir")</span>
+                    </a>
+                }
+            </div>
+        </div>
+
+        @* Sağ — Görsel + Shimmer *@
+        <div class="anim-reveal-up stagger-2" style="display:flex; justify-content:center;">
+            <div class="katalog-grid__gorsel-kutu">
+                <img src="@GorselUrl" alt="@Baslik" class="katalog-grid__gorsel" loading="lazy" />
+                <div class="katalog-grid__shimmer-maske">
+                    <div class="katalog-grid__shimmer-cubuk anim-shimmer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

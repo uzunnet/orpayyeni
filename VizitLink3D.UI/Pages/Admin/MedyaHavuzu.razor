@@ -1,0 +1,360 @@
+@page "/admin/medya-havuzu"
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using VizitLink3D.Ortak.Modeller.Medya
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<PageTitle>@dil.T("admin.medya", "Medya Havuzu") | VizitLink3D Admin</PageTitle>
+
+<AdminSayfaBasligi Baslik='@dil.T("admin.medya", "Medya Havuzu")'
+                   Aciklama='@dil.T("admin.medya.aciklama", "Görsel, video, PDF ve 3D model dosyalarını yönetin.")'
+                   Ikon="@Icons.Material.Filled.PhotoLibrary">
+    <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.CreateNewFolder" OnClick="YeniKlasorAc">
+        @dil.T("medya.yeniKlasor", "Yeni Klasör")
+    </MudButton>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CloudUpload" OnClick="YeniYukleAc">
+        @dil.T("ortak.yukle", "Yükle")
+    </MudButton>
+</AdminSayfaBasligi>
+
+<MudTabs Elevation="0" Rounded="false" PanelClass="pt-4" @bind-ActivePanelIndex="_aktifSekme">
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         SEKME 1: TÜM DOSYALAR (fiziksel wwwroot tarama)
+    ══════════════════════════════════════════════════════════════════════ -->
+    <MudTabPanel Text="Tüm Dosyalar" Icon="@Icons.Material.Filled.FolderOpen">
+
+        <MudGrid Spacing="2">
+
+            <!-- SOL: Dizin Ağacı -->
+            <MudItem xs="12" md="2">
+                <MudPaper Elevation="1" Class="pa-2" Style="min-height:480px;">
+                    <MudText Typo="Typo.caption" Class="mud-text-secondary mb-1 d-block">Klasörler</MudText>
+                    <MudList T="string" Dense="true">
+                        <MudListItem T="string"
+                                     Text="(Kök)"
+                                     OnClick='@(() => DizinSec("."))'
+                                     Icon="@Icons.Material.Filled.FolderOpen"
+                                     Class="@(_secilenDizin == "." || _secilenDizin == "(Kök)" ? "medya-dizin-aktif" : "")" />
+                        @foreach (var d in _dizinler)
+                        {
+                            var dizin = d;
+                            var ad = dizin.Contains('/') ? dizin[(dizin.LastIndexOf('/') + 1)..] : dizin;
+                            var girinti = dizin.Count(c => c == '/') * 12;
+                            <MudListItem T="string"
+                                         OnClick="@(() => DizinSec(dizin))"
+                                         Icon="@Icons.Material.Filled.Folder"
+                                         Class="@(_secilenDizin == dizin ? "medya-dizin-aktif" : "")"
+                                         Style="@($"padding-left:{girinti + 8}px;")">
+                                @ad
+                            </MudListItem>
+                        }
+                    </MudList>
+                </MudPaper>
+            </MudItem>
+
+            <!-- SAĞ: Dosya Grid + Önizleme -->
+            <MudItem xs="12" md="10">
+
+                <!-- Araç Çubuğu -->
+                <div class="d-flex align-center gap-2 flex-wrap mb-3">
+                    <MudTextField Value="@_dosyaArama"
+                                  ValueChanged="@((string v) => DosyaAramaDegistir(v))"
+                                  Placeholder="Dosya ara..." Variant="Variant.Outlined" Margin="Margin.Dense"
+                                  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search"
+                                  Style="max-width:220px;" />
+
+                    @foreach (var tip in new[] { "Tumu", "Resim", "PDF", "3D", "Video", "Diger" })
+                    {
+                        var t = tip;
+                        <MudChip T="string"
+                                 Text="@(t == "Tumu" ? "Tümü" : t)"
+                                 Color="@(_tipFiltre == t ? Color.Primary : Color.Default)"
+                                 Variant="@(_tipFiltre == t ? Variant.Filled : Variant.Outlined)"
+                                 Size="Size.Small"
+                                 OnClick="@(() => TipFiltreDegistir(t))" />
+                    }
+
+                    <MudSpacer />
+
+                    @if (_seciliYollar.Count > 0)
+                    {
+                        <MudChip T="string" Color="Color.Primary" Variant="Variant.Outlined" Size="Size.Small">
+                            @_seciliYollar.Count seçili
+                        </MudChip>
+                        <MudButton Size="Size.Small" Color="Color.Error" StartIcon="@Icons.Material.Filled.DeleteSweep"
+                                   OnClick="SeciliDosyalariSil">Seçilileri Sil</MudButton>
+                    }
+                </div>
+
+                @if (_dosyaYukleniyor)
+                {
+                    <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mb-3" />
+                }
+
+                @if (!_dosyaYukleniyor && _tumDosyalar.Count == 0)
+                {
+                    <AdminBosDurum Icon="@Icons.Material.Filled.FolderOff"
+                                   Baslik="Dosya Bulunamadı"
+                                   Aciklama="Bu klasörde hiç dosya yok veya filtreyle eşleşmiyor." />
+                }
+                else
+                {
+                    <MudGrid Spacing="2">
+                        @foreach (var dosya in _tumDosyalar)
+                        {
+                            var d = dosya;
+                            <MudItem xs="6" sm="4" md="3" lg="2">
+                                <MudCard Elevation="1"
+                                         Class="@("medya-dosya-kart" + (DosyaSeciliMi(d) ? " medya-secili" : ""))"
+                                         Style="cursor:pointer; position:relative;"
+                                         @onclick="@(() => DosyaTikla(d))">
+
+                                    <!-- Önizleme / İkon -->
+                                    @if (d.Tip == "Resim")
+                                    {
+                                        <div class="medya-kart-gorsel" @onclick:stopPropagation="true"
+                                             @onclick="@(() => OnizlemeAc(d))">
+                                            <img src="@DosyaOnizlemeSrc(d)" alt="@d.Ad" class="medya-kart-img"
+                                                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+                                            <div class="medya-kart-ikon-fallback" style="display:none;">
+                                                <MudIcon Icon="@Icons.Material.Filled.BrokenImage" Style="font-size:2rem;color:#ccc" />
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="medya-kart-gorsel medya-kart-ikon-kutu">
+                                            <MudIcon Icon="@TipIkonu(d.Tip)" Style="@($"font-size:2.5rem;color:{TipRengi(d.Tip)}")" />
+                                        </div>
+                                    }
+
+                                    <!-- Seçim işareti -->
+                                    @if (DosyaSeciliMi(d))
+                                    {
+                                        <div class="medya-secim-isareti">
+                                            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Primary" Size="Size.Small" />
+                                        </div>
+                                    }
+
+                                    <MudCardContent Class="pa-1 pb-0">
+                                        <MudText Typo="Typo.caption" Class="text-truncate d-block" Title="@d.Ad">@d.Ad</MudText>
+                                        <div class="d-flex justify-space-between align-center">
+                                            <MudChip T="string" Size="Size.Small" Style="@($"color:{TipRengi(d.Tip)};font-size:10px;height:16px;padding:0 4px;")">
+                                                @d.Tip
+                                            </MudChip>
+                                            <MudText Typo="Typo.caption" Color="Color.Secondary">@BoyutFormati(d.BoyutByte)</MudText>
+                                        </div>
+                                    </MudCardContent>
+
+                                    <MudCardActions Class="pa-1 pt-0">
+                                        <MudIconButton Icon="@Icons.Material.Filled.ContentCopy" Size="Size.Small"
+                                                       Title="URL Kopyala"
+                                                       OnClick="@(() => UrlKopyala(d.Yol))" />
+                                        <MudSpacer />
+                                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small"
+                                                       Color="Color.Error" Title="Dosyayı Sil"
+                                                       OnClick="@(() => DosyaSil(d))" />
+                                    </MudCardActions>
+                                </MudCard>
+                            </MudItem>
+                        }
+                    </MudGrid>
+
+                    <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mt-2">
+                        @_tumDosyalar.Count dosya
+                    </MudText>
+                }
+            </MudItem>
+        </MudGrid>
+
+        <!-- Önizleme Overlay (Resimler için) -->
+        @if (_onizlemeDosya != null)
+        {
+            <div class="medya-onizleme-overlay" @onclick="OnizlemeKapat">
+                <div class="medya-onizleme-icerik" @onclick:stopPropagation="true">
+                    <div class="d-flex justify-space-between align-center mb-2">
+                        <MudText Typo="Typo.subtitle1">@_onizlemeDosya.Ad</MudText>
+                        <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="OnizlemeKapat" />
+                    </div>
+                    <img src="@DosyaOnizlemeSrc(_onizlemeDosya)" alt="@_onizlemeDosya.Ad"
+                         style="max-width:100%;max-height:60vh;object-fit:contain;display:block;margin:0 auto;" />
+                    <div class="d-flex gap-2 mt-3 justify-center flex-wrap">
+                        <MudText Typo="Typo.caption" Color="Color.Secondary">@_onizlemeDosya.Yol</MudText>
+                        <MudText Typo="Typo.caption" Color="Color.Secondary">•</MudText>
+                        <MudText Typo="Typo.caption" Color="Color.Secondary">@BoyutFormati(_onizlemeDosya.BoyutByte)</MudText>
+                    </div>
+                    <div class="d-flex gap-2 mt-2 justify-center">
+                        <MudButton StartIcon="@Icons.Material.Filled.ContentCopy" Size="Size.Small"
+                                   OnClick="@(() => UrlKopyala(_onizlemeDosya.Yol))">URL Kopyala</MudButton>
+                        <MudButton StartIcon="@Icons.Material.Filled.Delete" Size="Size.Small"
+                                   Color="Color.Error"
+                                   OnClick="@(() => DosyaSil(_onizlemeDosya))">Sil</MudButton>
+                    </div>
+                </div>
+            </div>
+        }
+
+    </MudTabPanel>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         SEKME 2: DB MEDYA (yüklenen kayıtlar)
+    ══════════════════════════════════════════════════════════════════════ -->
+    <MudTabPanel Text="Yüklenen Medya" Icon="@Icons.Material.Filled.CloudDone">
+
+        <AdminAracCubugu AramaGosterilsinMi="true"
+                         AramaMetni="@_arama"
+                         AramaMetniDegisti="AramaDegisti"
+                         AramaYerMetni='@dil.T("ortak.ara", "Ara...")'>
+            @if (_seciliMedyalar.Count > 0)
+            {
+                <MudChip T="string" Color="Color.Primary" Variant="Variant.Outlined" Size="Size.Small">
+                    @_seciliMedyalar.Count @dil.T("admin.secili", "seçili")
+                </MudChip>
+                <MudButton Variant="Variant.Text" Color="Color.Error" StartIcon="@Icons.Material.Filled.Delete"
+                           OnClick="SeciliSil" Size="Size.Small">
+                    @dil.T("ortak.sil", "Sil")
+                </MudButton>
+            }
+        </AdminAracCubugu>
+
+        @if (_yukleniyor)
+        {
+            <AdminYukleniyorIskeleti />
+        }
+
+        <MudGrid Spacing="3">
+            <MudItem xs="12" md="3">
+                <MudPaper Elevation="0" Class="medya-klasor-panel pa-3">
+                    <MudText Typo="Typo.subtitle2" Class="mb-2">@dil.T("admin.kategoriler", "Klasörler")</MudText>
+                    <MudList T="string">
+                        <MudListItem T="string" Text="@dil.T("medya.tumu", "Tümü")" OnClick="TumunuSecAsync"
+                                     Icon="@Icons.Material.Filled.FolderOpen" />
+                        @foreach (var klasor in _klasorler)
+                        {
+                            var k = klasor;
+                            <MudListItem T="string" Text="@k.Ad" OnClick="@(() => KlasorSecAsync(k))"
+                                         Icon="@Icons.Material.Filled.Folder" />
+                        }
+                    </MudList>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" md="9">
+                @if (!_yukleniyor && _medyaListesi.Count == 0)
+                {
+                    <AdminBosDurum Icon="@Icons.Material.Filled.PhotoLibrary"
+                                   Baslik='@dil.T("medya.bosHavuz", "Henüz medya yüklenmemiş")'
+                                   Aciklama='@dil.T("medya.bosHavuzAciklama", "Ürün, galeri ve 3D sahnelerde kullanmak için dosya yükleyin.")'>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                                   StartIcon="@Icons.Material.Filled.CloudUpload" OnClick="YeniYukleAc">
+                            @dil.T("ortak.yukle", "Yükle")
+                        </MudButton>
+                    </AdminBosDurum>
+                }
+                else
+                {
+                    <MudGrid Spacing="2">
+                        @foreach (var medya in _medyaListesi)
+                        {
+                            var m = medya;
+                            <MudItem xs="6" sm="4" md="3" lg="2">
+                                <MudCard Elevation="0" Class="@MedyaKartSinifi(m)">
+                                    <button type="button" class="medya-admin-gorsel-btn" @onclick="@(() => MedyaTikla(m))">
+                                        <img src="@MedyaGorselYolu(m)" alt="@m.Ad" class="medya-admin-gorsel" />
+                                        <span class="medya-admin-tip">@m.Tip</span>
+                                    </button>
+                                    <MudCardContent Class="pa-2">
+                                        <MudText Typo="Typo.caption" Class="text-truncate font-weight-bold">@m.Ad</MudText>
+                                        <div class="d-flex justify-space-between align-center">
+                                            <MudText Typo="Typo.caption" Color="Color.Secondary">@((m.BoyutByte / 1024).ToString("N0")) KB</MudText>
+                                            <MudText Typo="Typo.caption" Color="Color.Secondary">@(m.OlusturulmaTarihi.ToString("dd.MM.yy"))</MudText>
+                                        </div>
+                                    </MudCardContent>
+                                    <MudCardActions Class="pa-1">
+                                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small"
+                                                       OnClick="@(() => DuzenleAc(m))" />
+                                        <MudSpacer />
+                                        <MudCheckBox T="bool" Value="@SeciliMi(m)"
+                                                     ValueChanged="@(_ => MedyaTikla(m))" Dense="true" />
+                                    </MudCardActions>
+                                </MudCard>
+                            </MudItem>
+                        }
+                    </MudGrid>
+                }
+            </MudItem>
+        </MudGrid>
+
+    </MudTabPanel>
+</MudTabs>
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     DİYALOGLAR
+════════════════════════════════════════════════════════════════════════ -->
+
+<MudDialog @bind-Visible="_yuklemeDialog" Class="admin-dialog">
+    <TitleContent><MudText Typo="Typo.h6">@dil.T("ortak.yukle", "Medya Yükle")</MudText></TitleContent>
+    <DialogContent>
+        <MudFileUpload T="IReadOnlyList<IBrowserFile>" FilesChanged="DosyalariYukle"
+                       Accept="image/*,.glb,.gltf,.pdf,.mp4,.webm" Class="mb-3">
+            <CustomContent Context="context">
+                <MudPaper Elevation="0" Class="medya-yukleme-alani pa-8 text-center" @onclick="context.OpenFilePickerAsync">
+                    <MudIcon Icon="@Icons.Material.Filled.CloudUpload" Size="Size.Large" />
+                    <MudText Typo="Typo.body1" Class="mt-2">@dil.T("medya.dosyaSec", "Dosya seç veya sürükle")</MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Secondary">Resim, PDF, 3D (GLB), Video</MudText>
+                </MudPaper>
+            </CustomContent>
+        </MudFileUpload>
+        @if (_yuklemeYuzdesi > 0)
+        {
+            <MudProgressLinear Value="@_yuklemeYuzdesi" Color="Color.Primary" Class="mb-2" />
+            <MudText Typo="Typo.caption" Align="Align.Center">%@_yuklemeYuzdesi</MudText>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@(() => _yuklemeDialog = false)">@dil.T("ortak.kapat", "Kapat")</MudButton>
+    </DialogActions>
+</MudDialog>
+
+<MudDialog @bind-Visible="_klasorDialog" Class="admin-dialog">
+    <TitleContent><MudText Typo="Typo.h6">@dil.T("medya.yeniKlasor", "Yeni Klasör")</MudText></TitleContent>
+    <DialogContent>
+        <MudTextField @bind-Value="_yeniKlasorAdi" Label='@dil.T("medya.klasorAdi", "Klasör adı")' Class="admin-textfield" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@(() => _klasorDialog = false)">@dil.T("ortak.iptal", "İptal")</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="KlasorKaydetAsync" Disabled="@_kaydediliyor">
+            @dil.T("ortak.kaydet", "Kaydet")
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+<MudDialog @bind-Visible="_duzenlemeDialog" Class="admin-dialog">
+    <TitleContent><MudText Typo="Typo.h6">@dil.T("medya.duzenle", "Medya Düzenle")</MudText></TitleContent>
+    <DialogContent>
+        <MudGrid>
+            <MudItem xs="12" md="5">
+                <img src="@MedyaGorselYolu(_duzenlenenMedya)" alt="@_duzenlenenMedya.Ad" class="medya-admin-onizleme" />
+            </MudItem>
+            <MudItem xs="12" md="7">
+                <MudTextField @bind-Value="_duzenlenenMedya.Ad" Label='@dil.T("medya.ad", "Ad")' Class="mb-3 admin-textfield" />
+                <MudTextField @bind-Value="_duzenlenenMedya.AltMetin" Label='@dil.T("medya.altMetin", "Alt metin")' Class="mb-3 admin-textfield" />
+                <MudTextField @bind-Value="_duzenlenenMedya.Aciklama" Label='@dil.T("medya.aciklama", "Açıklama")' Lines="3" Class="mb-3 admin-textfield" />
+                <MudTextField @bind-Value="_duzenlenenMedya.EtiketlerJson" Label='@dil.T("medya.etiketler", "Etiketler JSON")' Class="mb-3 admin-textfield admin-mono-field" />
+                <MudSelect T="int?" @bind-Value="_duzenlenenMedya.KlasorId" Label='@dil.T("medya.klasor", "Klasör")' Clearable="true" Class="admin-select">
+                    @foreach (var klasor in _klasorler)
+                    {
+                        <MudSelectItem Value="@((int?)klasor.Id)">@klasor.Ad</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@(() => _duzenlemeDialog = false)">@dil.T("ortak.iptal", "İptal")</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="MedyaKaydetAsync" Disabled="@_kaydediliyor">
+            @dil.T("ortak.kaydet", "Kaydet")
+        </MudButton>
+    </DialogActions>
+</MudDialog>

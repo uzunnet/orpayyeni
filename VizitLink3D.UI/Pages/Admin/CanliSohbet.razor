@@ -1,0 +1,89 @@
+@page "/admin/canli-sohbet"
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+@layout AdminDuzen
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<PageTitle>@dil.T("admin.canliSohbet.sayfaBasligi", "Canlı Sohbet") | VizitLink3D Admin</PageTitle>
+
+<MudText Typo="Typo.h4" Class="mb-4">@dil.T("canli_sohbet", "Canlı Sohbet")</MudText>
+
+<MudPaper Elevation="2" Class="d-flex overflow-hidden admin-sohbet-kapsayici">
+    <MudGrid Spacing="0" Class="h-100">
+        @* Sol Taraf: Sohbet Listesi *@
+        <MudItem xs="12" md="4" Class="h-100 overflow-y-auto admin-sohbet-liste">
+            <MudList T="string">
+                <MudListSubheader>@dil.T("aktif_sohbetler", "Aktif Sohbetler")</MudListSubheader>
+                @foreach (var kullanici in _kullanicilar)
+                {
+                    <MudListItem OnClick="@(() => SohbetSec(kullanici))" Class="@(_seciliKullanici == kullanici ? "mud-theme-primary" : "")">
+                        <MudStack Row="true" AlignItems="AlignItems.Center">
+                            <MudBadge Color="Color.Success" Overlap="true" Dot="true" Visible="@kullanici.CevrimiciMi">
+                                <MudAvatar Color="Color.Primary" Size="Size.Medium">@kullanici.Ad[0]</MudAvatar>
+                            </MudBadge>
+                            <div class="ml-2 flex-grow-1 overflow-hidden">
+                                <MudText Typo="Typo.body2"><b>@kullanici.Ad</b></MudText>
+                                <MudText Typo="Typo.caption" Class="text-truncate d-block admin-sohbet-son-mesaj">
+                                    @kullanici.SonMesaj
+                                </MudText>
+                            </div>
+                            @if (kullanici.OkunmayanSayisi > 0)
+                            {
+                                <MudChip T="string" Color="Color.Error" Size="Size.Small">@kullanici.OkunmayanSayisi</MudChip>
+                            }
+                        </MudStack>
+                    </MudListItem>
+                    <MudDivider />
+                }
+            </MudList>
+        </MudItem>
+
+        @* Sağ Taraf: Sohbet Alanı *@
+        <MudItem xs="12" md="8" Class="h-100 d-flex flex-column">
+            @if (_seciliKullanici != null)
+            {
+                <div class="pa-4 admin-sohbet-baslik">
+                    <MudStack Row="true" AlignItems="AlignItems.Center">
+                        <MudAvatar Color="Color.Primary">@_seciliKullanici.Ad[0]</MudAvatar>
+                        <div>
+                            <MudText Typo="Typo.h6">@_seciliKullanici.Ad</MudText>
+                            <MudText Typo="Typo.caption" Color="@(_seciliKullanici.CevrimiciMi ? Color.Success : Color.Default)">
+                                @(_seciliKullanici.CevrimiciMi ? dil.T("cevrimici", "Çevrimiçi") : dil.T("cevrimdisi", "Çevrimdışı"))
+                            </MudText>
+                        </div>
+                        <MudSpacer />
+                        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" />
+                    </MudStack>
+                </div>
+
+                <div class="pa-4 flex-grow-1 overflow-y-auto admin-sohbet-mesajlar" id="sohbet-alani">
+                    @foreach (var mesaj in _mesajlar)
+                    {
+                        <div class="d-flex flex-column mb-4 @(mesaj.BenimMi ? "align-end" : "align-start")">
+                            <div class="pa-3 rounded-xl elevation-1 admin-sohbet-balonu @(mesaj.BenimMi ? "admin-sohbet-balonu-benim" : "admin-sohbet-balonu-musteri")">
+                                <MudText Typo="Typo.body1">@mesaj.Metin</MudText>
+                            </div>
+                            <MudText Typo="Typo.caption" Class="mt-1 mud-text-secondary">@mesaj.Tarih.ToString("HH:mm")</MudText>
+                        </div>
+                    }
+                </div>
+
+                <div class="pa-4 mud-background-surface admin-sohbet-yazma">
+                    <MudStack Row="true" AlignItems="AlignItems.Center">
+                        <MudIconButton Icon="@Icons.Material.Filled.AttachFile" />
+                        <MudTextField @bind-Value="_yeniMesaj" Placeholder="@dil.T("mesaj_yazin", "Mesaj yazın...")" Variant="Variant.Outlined" Margin="Margin.Dense" Class="flex-grow-1 mx-2" OnKeyDown="KlavyeDinle" Immediate="true" />
+                        <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Send" Size="Size.Small" OnClick="MesajGonder" DropShadow="false" />
+                    </MudStack>
+                </div>
+            }
+            else
+            {
+                <div class="d-flex flex-column align-center justify-center flex-grow-1 mud-text-disabled">
+                    <MudIcon Icon="@Icons.Material.Filled.Chat" Class="mb-4 admin-sohbet-bos-ikon" />
+                    <MudText Typo="Typo.h5">@dil.T("sohbet_secin", "Sohbet seçin")</MudText>
+                    <MudText Typo="Typo.body1">@dil.T("mesajlasmaya_basla", "Mesajlaşmaya başlamak için sol taraftan bir müşteri seçin.")</MudText>
+                </div>
+            }
+        </MudItem>
+    </MudGrid>
+</MudPaper>

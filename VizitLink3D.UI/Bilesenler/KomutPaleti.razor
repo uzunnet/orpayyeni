@@ -1,0 +1,45 @@
+@using Microsoft.AspNetCore.Components.Web
+
+@if (_gorunur)
+{
+    <div class="komut-paleti-overlay" @onclick="Kapat" @onkeydown="KlavyeYakala" @onkeydown:preventDefault>
+        <div class="komut-paleti-panel" @onclick:stopPropagation="true">
+            <MudTextField @bind-Value="_aramaMetni" T="string"
+                          Placeholder="@dil.T("ortak.ara", "Arama Yap...")"
+                          Immediate="true"
+                          AutoFocus="true"
+                          Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Search"
+                          Variant="Variant.Outlined"
+                          Class="komut-paleti-input"
+                          OnKeyUp="AramaYap" />
+
+            @if (_sonuclar.Any())
+            {
+                <MudList T="KomutSonucu" Class="komut-paleti-sonuclar">
+                    @foreach (var sonuc in _sonuclar)
+                    {
+                        <MudListItem T="KomutSonucu"
+                                     Text="@sonuc.Baslik"
+                                     SecondaryText="@sonuc.Aciklama"
+                                     Icon="@sonuc.Ikon"
+                                     IconColor="@sonuc.IkonRengi"
+                                     OnClick="() => Sec(sonuc)"
+                                     Class="@(sonuc == _seciliSonuc ? "mud-selected-item" : "")" />
+                    }
+                </MudList>
+            }
+            else if (!string.IsNullOrWhiteSpace(_aramaMetni))
+            {
+                <MudText Typo="Typo.body2" Class="pa-4 komut-paleti-bos">
+                    @dil.T("ortak.sonucBulunamadi", "Sonuç bulunamadı")
+                </MudText>
+            }
+
+            <MudDivider />
+            <MudText Typo="Typo.caption" Class="pa-3 komut-paleti-yardim">
+                ↑↓ @dil.T("ortak.gezin", "gezin") · Enter @dil.T("ortak.sec", "seç") · Esc @dil.T("ortak.kapat", "kapat")
+            </MudText>
+        </div>
+    </div>
+}

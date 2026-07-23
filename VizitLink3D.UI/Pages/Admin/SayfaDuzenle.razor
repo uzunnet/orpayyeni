@@ -1,0 +1,107 @@
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+@page "/admin/sayfa-duzenle/{Slug?}"
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using MudBlazor
+@using VizitLink3D.UI.Models
+@using VizitLink3D.UI.Servisler
+@using MudExRichTextEditor
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<PageTitle>@(_yeniKayit ? dil.T("admin.sayfaDuzenle.yeniSayfaBasligi", "Yeni Sayfa Ekle") : dil.T("admin.sayfaDuzenle.sayfaBasligi", "Sayfa Duzenle")) | VizitLink3D Admin</PageTitle>
+
+<MudText Typo="Typo.h4" Class="mb-6 font-weight-bold">@(_yeniKayit ? dil.T("admin.sayfaDuzenle.yeniSayfaBasligi", "Yeni Sayfa Ekle") : dil.T("admin.sayfaDuzenle.sayfaBasligi", "Sayfa Duzenle"))</MudText>
+
+<MudCard Class="glass-card">
+    <MudCardContent>
+        <MudForm @ref="_form">
+            <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true">
+                <MudTabPanel Text="@dil.T("admin.sayfaDuzenle.temelIcerik","Temel İçerik")" Icon="@Icons.Material.Filled.Article" Class="pa-4">
+                    <MudTextField @bind-Value="_sayfa.Bolum" Label="@dil.T("admin.sayfaDuzenle.slug","Sayfa Slug (URL)")" Required="true" RequiredError="Slug alanı zorunludur" HelperText="Örnek: vizyon-misyon" Disabled="!_yeniKayit" />
+                    <MudTextField @bind-Value="_sayfaBasligi" Label="@dil.T("admin.sayfaDuzenle.baslik","Sayfa Başlığı")" Required="true" Class="mt-4" />
+                    
+                    <MudText Typo="Typo.subtitle2" Class="mt-4 mb-2">Sayfa İçeriği (HTML Destekli Editör Alanı)</MudText>
+                    <MudExRichTextEdit @bind-Value="_sayfaIcerigi" Placeholder="Sayfanın içeriğini buraya yazın..." />
+                </MudTabPanel>
+
+                <MudTabPanel Text="@dil.T("admin.sayfaDuzenle.videoMedya","Video & Medya")" Icon="@Icons.Material.Filled.VideoLibrary" Class="pa-4">
+                    <MudGrid>
+                        <MudItem xs="12" sm="6">
+                            <MudTextField @bind-Value="_videoUrl" Label="Arka Plan / Tanıtım Video URL (.mp4)" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Link" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudTextField @bind-Value="_youtubeUrl" Label="YouTube Embed Linki" Adornment="Adornment.Start" AdornmentIcon="@Icons.Custom.Brands.YouTube" />
+                        </MudItem>
+                        <MudItem xs="12" sm="4">
+                            <MudTextField @bind-Value="_videoSure" Label="Video Süresi (Sn/Dk)" />
+                        </MudItem>
+                        <MudItem xs="12" sm="4">
+                            <MudSelect @bind-Value="_videoHiz" Label="Oynatma Hızı" AnchorOrigin="Origin.BottomCenter">
+                                <MudSelectItem Value="@("0.5")">0.5x Yavaş</MudSelectItem>
+                                <MudSelectItem Value="@("1.0")">1.0x Normal</MudSelectItem>
+                                <MudSelectItem Value="@("1.5")">1.5x Hızlı</MudSelectItem>
+                                <MudSelectItem Value="@("2.0")">2.0x Çok Hızlı</MudSelectItem>
+                            </MudSelect>
+                        </MudItem>
+                        <MudItem xs="12" sm="4" Class="d-flex align-center">
+                            <MudSwitch @bind-Value="_videoMute" Label="Sesi Kapat (Mute)" Color="Color.Primary" />
+                        </MudItem>
+                    </MudGrid>
+                </MudTabPanel>
+
+                <MudTabPanel Text="@dil.T("admin.sayfaDuzenle.dokuman","Döküman & Katalog")" Icon="@Icons.Material.Filled.PictureAsPdf" Class="pa-4">
+                    <MudGrid>
+                        <MudItem xs="12">
+                            <MudTextField @bind-Value="_pdfKatalogUrl" Label="Kurumsal Katalog (PDF) URL" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.PictureAsPdf" HelperText="Eğer bu sayfada indirilebilir bir kurumsal katalog olacaksa PDF linkini buraya ekleyin." />
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudFileUpload T="IBrowserFile" Accept=".pdf" MaximumFileCount="1" FilesChanged="DosyaYukleAsync">
+                                <CustomContent Context="context">
+                                    <MudButton Variant="Variant.Filled"
+                                               Color="Color.Secondary"
+                                               StartIcon="@Icons.Material.Filled.CloudUpload"
+                                               OnClick="context.OpenFilePickerAsync">
+                                        PDF Katalog Yükle
+                                    </MudButton>
+                                </CustomContent>
+                            </MudFileUpload>
+                        </MudItem>
+                    </MudGrid>
+                </MudTabPanel>
+
+                <MudTabPanel Text="@dil.T("admin.sayfaDuzenle.goruntuleme","Görüntüleme Ayarları")" Icon="@Icons.Material.Filled.Tune" Class="pa-4">
+                    <MudGrid>
+                        <MudItem xs="12" sm="6">
+                            <MudTextField @bind-Value="_urunAdet"
+                                          Label="@dil.T("admin.sayfaDuzenle.urunAdet", "Sayfada Gösterilecek Ürün Sayısı")"
+                                          Adornment="Adornment.Start"
+                                          AdornmentIcon="@Icons.Material.Filled.Numbers"
+                                          HelperText="Örnek: 4, 5, 6, 8, 12, 16, 24"
+                                          Required="true" />
+                        </MudItem>
+                    </MudGrid>
+                </MudTabPanel>
+            </MudTabs>
+        </MudForm>
+    </MudCardContent>
+    <MudCardActions Class="pa-4 d-flex justify-end">
+        @if (!_yeniKayit)
+        {
+            <MudButton Color="Color.Info" Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Translate" OnClick="AICeviriDialogAc" Class="mr-auto">
+                @dil.T("admin.urunSihirbazi.aiCevir", "AI ile Çevir")
+            </MudButton>
+        }
+        <MudButton OnClick="IptalEt" Class="mr-2">@dil.T("ortak.geriDon","Geri Dön")</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="KaydetAsync" Disabled="_kaydediliyor">
+            @if (_kaydediliyor)
+            {
+                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                <MudText Class="ms-2">@dil.T("ortak.kaydediliyor","Kaydediliyor")</MudText>
+            }
+            else
+            {
+                <MudText>@dil.T("ortak.kaydet","Kaydet")</MudText>
+            }
+        </MudButton>
+    </MudCardActions>
+</MudCard>

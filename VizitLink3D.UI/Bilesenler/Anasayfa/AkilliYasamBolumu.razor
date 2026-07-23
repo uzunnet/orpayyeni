@@ -1,0 +1,44 @@
+@* AkilliYasamBolumu — Aurelian Onyx ikili bölüm + SMART-X1 showcase *@
+
+<section class="akilli-bolum">
+    <div class="section-container">
+        <div class="akilli-grid">
+            @* Sol — Metin + Özellikler *@
+            <div>
+                <span class="section-etiket anim-reveal-up">@dil.T("anasayfa.akilli.etiket", "Dinamik & Akıllı Yaşam")</span>
+                <h2 class="section-baslik anim-reveal-up">@Baslik</h2>
+                <p class="section-aciklama anim-reveal-up stagger-1" style="text-align:left; margin-left:0;">
+                    @Aciklama
+                </p>
+
+                @if (Ozellikler.Any())
+                {
+                    <div class="akilli-grid__ozellik-liste anim-reveal-up stagger-2">
+                        @foreach (var oz in Ozellikler)
+                        {
+                            <div class="akilli-ozellik">
+                                <span class="material-symbols-outlined akilli-ozellik__ikon">@oz.Ikon</span>
+                                <div>
+                                    <h4 class="akilli-ozellik__baslik">@oz.Baslik</h4>
+                                    <p class="akilli-ozellik__aciklama">@oz.Aciklama</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+
+            @* Sağ — SMART-X1 Showcase *@
+            <div class="akilli-showcase anim-reveal-up anim-float stagger-2">
+                <div class="akilli-showcase__glow"></div>
+                <img src="@GorselUrl" alt="@UrunKodu" class="akilli-showcase__img" loading="lazy" />
+                @if (!string.IsNullOrEmpty(UrunKodu))
+                {
+                    <div class="akilli-showcase__kod-etiket">
+                        @UrunKodu
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>

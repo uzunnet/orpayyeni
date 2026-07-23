@@ -1,0 +1,11 @@
+@* StitchIletisimKutu — Aurelian Onyx cam yüzey iletişim kutusu *@
+
+<div class="stitch-iletisim-kutu anim-reveal-up @(Gecikmeli ? "" : "")" style="@(Gecikme > 0 ? $"animation-delay:{Gecikme}s" : "")">
+    <h3 class="stitch-iletisim-kutu__baslik">
+        <span class="material-symbols-outlined stitch-iletisim-kutu__ikon">@IkonAdi</span>
+        @Baslik
+    </h3>
+    <div class="stitch-iletisim-kutu__icerik">
+        @ChildContent
+    </div>
+</div>

@@ -1,0 +1,234 @@
+@page "/admin/ai-ayarlari"
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using VizitLink3D.Ortak.Modeller.AI
+@using Microsoft.AspNetCore.Authorization
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+@attribute [Authorize]
+
+<PageTitle>@dil.T("ai.baslik", "AI Ayarları") | VizitLink3D Admin</PageTitle>
+
+<MudText Typo="Typo.h4" Class="mb-4 font-weight-bold">@dil.T("ai.baslik", "AI Asistan Ayarları")</MudText>
+
+@if (_yukleniyor)
+{
+    <MudProgressLinear Indeterminate="true" Class="mb-4" />
+}
+
+@* ═══════════════════════════════════════════ SECTION 1: Sağlayıcılar ═══ *@
+<MudText Typo="Typo.h5" Class="mb-3">@dil.T("ai.saglayicilar", "AI Sağlayıcıları")</MudText>
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add"
+           OnClick="YeniSaglayiciEkle" Class="mb-4">
+    @dil.T("ai.yeniSaglayici", "Yeni Sağlayıcı Ekle")
+</MudButton>
+
+@if (_yeniFormAcik)
+{
+    <MudCard Elevation="3" Class="mb-4">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h6">@dil.T("ai.yeniSaglayici", "Yeni Sağlayıcı Ekle")</MudText>
+            </CardHeaderContent>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_yeniSaglayici.Ad" Label="@dil.T("ai.ad", "Ad")"
+                                  Variant="Variant.Outlined" Required="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudSelect @bind-Value="_yeniSaglayici.Tip" Label="@dil.T("ai.tip", "Tip")"
+                               Variant="Variant.Outlined" Required="true">
+                        <MudSelectItem Value="@AISaglayiciTipi.OpenAI">OpenAI</MudSelectItem>
+                        <MudSelectItem Value="@AISaglayiciTipi.Anthropic">Anthropic</MudSelectItem>
+                        <MudSelectItem Value="@AISaglayiciTipi.Gemini">Gemini</MudSelectItem>
+                        <MudSelectItem Value="@AISaglayiciTipi.LlamaLocal">OpenAI Uyumlu / Yerel</MudSelectItem>
+                        <MudSelectItem Value="@AISaglayiciTipi.DeepSeek">DeepSeek</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_yeniSaglayici.Model" Label="@dil.T("ai.model", "Model")"
+                                  Variant="Variant.Outlined" Required="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_yeniApiKey" Label="@SaglayiciGirisEtiketi(_yeniSaglayici.Tip, false)"
+                                  Variant="Variant.Outlined" InputType="InputType.Password" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudAlert Severity="Severity.Info" Dense="true" Variant="Variant.Outlined">
+                        @SaglayiciYardimMetni(_yeniSaglayici.Tip, false)
+                    </MudAlert>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudNumericField @bind-Value="_yeniSaglayici.AylikLimitUsd" Label="@dil.T("ai.aylikLimit", "Aylık Limit (USD)")"
+                                     Variant="Variant.Outlined" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudSwitch @bind-Value="_yeniSaglayici.AktifMi" Label="@dil.T("ai.aktifMi", "Aktif")"
+                               Color="Color.Primary" />
+                </MudItem>
+            </MudGrid>
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="YeniKaydet">
+                @dil.T("ortak.kaydet", "Kaydet")
+            </MudButton>
+            <MudButton Variant="Variant.Outlined" OnClick="YeniFormIptal">
+                @dil.T("ortak.iptal", "İptal")
+            </MudButton>
+        </MudCardActions>
+    </MudCard>
+}
+
+<MudGrid>
+    @foreach (var s in _saglayicilar)
+    {
+        <MudItem xs="12" md="6" lg="4">
+            <MudCard Elevation="2" Class="mb-4">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6">@s.Ad</MudText>
+                        <MudChip T="string" Text="@s.Tip.ToString()" Size="Size.Small"
+                                 Color="@(s.AktifMi ? Color.Success : Color.Error)" Class="mt-1" />
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                        <MudSwitch @bind-Value="s.AktifMi" Color="Color.Success"
+                                   Label="@dil.T("ai.aktifMi", "Aktif")" />
+                    </CardHeaderActions>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudText Typo="Typo.body2" Class="mb-2">
+                        <strong>Model:</strong> @s.Model
+                    </MudText>
+                    <MudText Typo="Typo.body2" Class="mb-2">
+                        <strong>API Key:</strong> @ApiKeyMasked(s)
+                    </MudText>
+                    <MudText Typo="Typo.body2" Class="mb-2">
+                        <strong>@dil.T("ai.aylikLimit", "Aylık Limit"):</strong> $@s.AylikLimitUsd.ToString("F2")
+                    </MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Info">
+                        @dil.T("ai.kullanilan", "Kullanılan"): $@s.KullanilanUsd.ToString("F2") / $@s.AylikLimitUsd.ToString("F2")
+                    </MudText>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                               OnClick="() => DuzenleAc(s)">
+                        @dil.T("ortak.duzenle", "Düzenle")
+                    </MudButton>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Info"
+                               OnClick="() => TestEt(s.Id)">
+                        @dil.T("ai.testEt", "Test Et")
+                    </MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    }
+</MudGrid>
+
+@if (_duzenlenen != null)
+{
+    <MudDialog @bind-Visible="_duzenleDialogAcik">
+        <TitleContent>
+            <MudText Typo="Typo.h6">@dil.T("ai.saglayiciDuzenle", "Sağlayıcı Düzenle")</MudText>
+        </TitleContent>
+        <DialogContent>
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_duzenlenen.Ad" Label="@dil.T("ai.ad", "Ad")"
+                                  Variant="Variant.Outlined" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudSelect @bind-Value="_duzenlenen.Tip" Label="@dil.T("ai.tip", "Tip")"
+                               Variant="Variant.Outlined">
+                        <MudSelectItem Value="@AISaglayiciTipi.OpenAI">OpenAI</MudSelectItem>
+                        <MudSelectItem Value="@AISaglayiciTipi.Anthropic">Anthropic</MudSelectItem>
+                        <MudSelectItem Value="@AISaglayiciTipi.Gemini">Gemini</MudSelectItem>
+                        <MudSelectItem Value="@AISaglayiciTipi.LlamaLocal">OpenAI Uyumlu / Yerel</MudSelectItem>
+                        <MudSelectItem Value="@AISaglayiciTipi.DeepSeek">DeepSeek</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_duzenlenen.Model" Label="@dil.T("ai.model", "Model")"
+                                  Variant="Variant.Outlined" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_duzenleApiKey" Label="@SaglayiciGirisEtiketi(_duzenlenen.Tip, true)"
+                                  Variant="Variant.Outlined" InputType="InputType.Password" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudAlert Severity="Severity.Info" Dense="true" Variant="Variant.Outlined">
+                        @SaglayiciYardimMetni(_duzenlenen.Tip, true)
+                    </MudAlert>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudNumericField @bind-Value="_duzenlenen.AylikLimitUsd" Label="@dil.T("ai.aylikLimit", "Aylık Limit (USD)")"
+                                     Variant="Variant.Outlined" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudSwitch @bind-Value="_duzenlenen.AktifMi" Label="@dil.T("ai.aktifMi", "Aktif")"
+                               Color="Color.Primary" />
+                </MudItem>
+            </MudGrid>
+        </DialogContent>
+        <DialogActions>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="DuzenleKaydet">
+                @dil.T("ortak.kaydet", "Kaydet")
+            </MudButton>
+            <MudButton OnClick="DuzenleIptal">
+                @dil.T("ortak.iptal", "İptal")
+            </MudButton>
+        </DialogActions>
+    </MudDialog>
+}
+
+@* ═══════════════════════════════════════════ SECTION 2: Bu Ay Kullanım ═══ *@
+<MudText Typo="Typo.h5" Class="mb-3 mt-6">@dil.T("ai.buAyKullanim", "Bu Ay Kullanım")</MudText>
+
+@if (_maliyet != null)
+{
+    <MudPaper Elevation="1" Class="pa-4">
+        @if (_toplamLimit > 0)
+        {
+            var yuzde = Math.Round((_maliyet.ToplamMaliyet / _toplamLimit) * 100, 1);
+            <MudText Typo="Typo.body1" Class="mb-2">
+                $@_maliyet.ToplamMaliyet.ToString("F2") / $@_toplamLimit.ToString("F2") @dil.T("ai.buAy", "bu ay")
+            </MudText>
+            <MudProgressLinear Value="@((double)yuzde)" Color="@(yuzde > 80 ? Color.Error : yuzde > 50 ? Color.Warning : Color.Success)"
+                               Size="Size.Large" Class="mb-2" />
+            <MudText Typo="Typo.caption">%@(yuzde) @dil.T("ai.kullanildi", "kullanıldı")</MudText>
+        }
+        else
+        {
+            <MudText Typo="Typo.body1">@dil.T("ai.toplamCagri", "Toplam Çağrı"): @_maliyet.ToplamCagri</MudText>
+            <MudText Typo="Typo.body1">@dil.T("ai.toplamMaliyet", "Toplam Maliyet"): $@_maliyet.ToplamMaliyet.ToString("F2")</MudText>
+        }
+    </MudPaper>
+}
+
+@* ═══════════════════════════════════════════ SECTION 3: Son Çağrılar ═══ *@
+<MudText Typo="Typo.h5" Class="mb-3 mt-6">@dil.T("ai.sonCagrilar", "Son Çağrılar")</MudText>
+
+<MudTable Items="@_cagrilar" Hover="true" Dense="true" Striped="true" Breakpoint="Breakpoint.Sm">
+    <HeaderContent>
+        <MudTh>@dil.T("ai.tarih", "Tarih")</MudTh>
+        <MudTh>@dil.T("ai.amac", "Amaç")</MudTh>
+        <MudTh>@dil.T("ai.istekToken", "İstek Token")</MudTh>
+        <MudTh>@dil.T("ai.cevapToken", "Cevap Token")</MudTh>
+        <MudTh>@dil.T("ai.maliyet", "Maliyet (USD)")</MudTh>
+        <MudTh>@dil.T("ai.durum", "Durum")</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="@dil.T("ai.tarih", "Tarih")">@context.OlusturulmaTarihi.ToString("dd.MM.yyyy HH:mm")</MudTd>
+        <MudTd DataLabel="@dil.T("ai.amac", "Amaç")">@context.KullanimAmaci</MudTd>
+        <MudTd DataLabel="@dil.T("ai.istekToken", "İstek Token")">@context.IstekTokenSayisi</MudTd>
+        <MudTd DataLabel="@dil.T("ai.cevapToken", "Cevap Token")">@context.CevapTokenSayisi</MudTd>
+        <MudTd DataLabel="@dil.T("ai.maliyet", "Maliyet")">$@context.ToplamMaliyetUsd.ToString("F6")</MudTd>
+        <MudTd DataLabel="@dil.T("ai.durum", "Durum")">
+            <MudChip T="string" Text="@DurumMetni(context.Durum)" Size="Size.Small"
+                     Color="@DurumRengi(context.Durum)" />
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>

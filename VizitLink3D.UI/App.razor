@@ -1,0 +1,12 @@
+<Router AppAssembly="@typeof(App).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(Layout.VizitLink3DDuzen)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+    <NotFound>
+        <PageTitle>Bulunamadı</PageTitle>
+        <LayoutView Layout="@typeof(Layout.VizitLink3DDuzen)">
+            <p role="alert">Üzgünüz, bu adreste bir şey bulunamadı.</p>
+        </LayoutView>
+    </NotFound>
+</Router>

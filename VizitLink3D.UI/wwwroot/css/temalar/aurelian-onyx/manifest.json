@@ -1,0 +1,122 @@
+{
+  "id": "aurelian-onyx",
+  "kod": "AURELIAN_ONYX",
+  "ad": "Aurelian Onyx",
+  "slug": "aurelian-onyx",
+  "adAnahtar": "tema.aurelian-onyx.ad",
+  "adVarsayilanTr": "Aurelian Onyx",
+  "adVarsayilanEn": "Aurelian Onyx",
+  "aciklamaAnahtar": "tema.aurelian-onyx.aciklama",
+  "aciklamaVarsayilanTr": "Playfair Display + Space Grotesk, glassmorphism, glowing gold — Stitch AI lüks",
+  "aciklamaVarsayilanEn": "Playfair Display + Space Grotesk, glassmorphism, glowing gold — Stitch AI luxury",
+  "kaynak": "stitch",
+  "stitchProjeId": "13800263520330366969",
+  "modlar": ["koyu"],
+  "varsayilanMod": "koyu",
+  "adminTemaDegil": true,
+  "aktif": true,
+  "varsayilanMi": false,
+  "premium": true,
+  "fiyat": 0,
+  "paraBirimi": "TRY",
+  "thumbnailUrl": "/css/temalar/aurelian-onyx/ekran-goruntusu.jpg",
+  "olusturulmaTarihi": "2026-06-30T00:00:00Z",
+  "guncellenmeTarihi": null,
+  "versiyon": 1,
+
+  "renkler": {
+    "birincil": "#050505",
+    "ikincil": "#1e2020",
+    "vurgu": "#d4af37",
+    "vurguAcik": "#e9c349",
+    "vurguKoyu": "#a07020",
+    "arkaPlan": "#121414",
+    "arkaPlan2": "#1a1a1a",
+    "yuzey": "#1e2020",
+    "yuzeyHover": "#282a2b",
+    "cizgi": "rgba(255, 255, 255, 0.10)",
+    "metin": "#e2e2e2",
+    "metinIkincil": "#c4c7c7",
+    "metinSoluk": "#8e9192",
+    "metinTers": "#121414",
+    "basari": "#4a7c59",
+    "uyari": "#c9a449",
+    "hata": "#ffb4ab",
+    "bilgi": "#4a6c8c"
+  },
+
+  "tipografi": {
+    "baslikAilesi": "Playfair Display",
+    "baslikFallback": "'Noto Serif', serif",
+    "baslikAgirlik": 700,
+    "baslikHarfAraligi": "-0.02em",
+    "govdeAilesi": "Space Grotesk",
+    "govdeFallback": "'Manrope', system-ui, sans-serif",
+    "govdeAgirlik": 400,
+    "vurguAilesi": "Cormorant Garamond",
+    "monoAilesi": "JetBrains Mono",
+    "boyutSkalaRatio": 1.333,
+    "baslikBuyuklukClamp": "clamp(2.5rem, 6vw, 5rem)"
+  },
+
+  "geometri": {
+    "koseSm": 2,
+    "koseMd": 4,
+    "koseLg": 8,
+    "koseXl": 16,
+    "koseTam": 9999,
+    "borderKalinlik": 1,
+    "borderStil": "solid"
+  },
+
+  "golgeler": {
+    "sm": "0 2px 8px rgba(0, 0, 0, 0.4)",
+    "md": "0 4px 20px rgba(0, 0, 0, 0.5)",
+    "lg": "0 10px 40px rgba(0, 0, 0, 0.6)",
+    "xl": "0 20px 60px rgba(0, 0, 0, 0.7)",
+    "vurgu": "0 0 15px rgba(212, 175, 55, 0.30)",
+    "glowStil": "altin"
+  },
+
+  "glassmorphism": {
+    "aktif": true,
+    "blur": "20px",
+    "blurSaturate": 1.8,
+    "bgOpacity": 0.06,
+    "borderOpacity": 0.10,
+    "yariSaydam": true
+  },
+
+  "animasyon": {
+    "hizi": "yavas",
+    "gecisHizli": "0.15s ease",
+    "gecisNormal": "0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    "gecisYavas": "0.6s cubic-bezier(0.22, 1, 0.36, 1)",
+    "cubicBezier": "cubic-bezier(0.22, 1, 0.36, 1)",
+    "hoverYukseklik": 6,
+    "hoverOlcek": 1.05,
+    "scrollReveal": true,
+    "magneticCursor": true,
+    "pariltiEfekti": true,
+    "shimmerEfekti": true,
+    "tip": "dramatik-yumusak"
+  },
+
+  "layout": {
+    "header": "glassmorphism",
+    "footer": "minimal",
+    "heroTipi": "fullscreen-slider-overlay",
+    "kartStili": "glass",
+    "icerikGenislik": 1440,
+    "kenarBosluk": 80,
+    "sutunSayisi": 4,
+    "bolumAyirici": "cizgi"
+  },
+
+  "ikonSeti": "Material Icons Outlined",
+
+  "glassmorphismAktif": true,
+  "premium": true,
+
+  "etiketler": ["premium", "glassmorphism", "karanlik", "altin", "lux", "editorial"]
+}

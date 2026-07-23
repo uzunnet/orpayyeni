@@ -1,0 +1,8 @@
+<MudAlert Severity="Severity.Error" Class="my-4">
+    <MudText Typo="Typo.subtitle1" Class="mb-1">@Baslik</MudText>
+    <MudText Typo="Typo.body2">@Mesaj</MudText>
+    @if (!string.IsNullOrEmpty(TekrarDeneMetni))
+    {
+        <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="TekrarDene" Class="mt-2">@TekrarDeneMetni</MudButton>
+    }
+</MudAlert>

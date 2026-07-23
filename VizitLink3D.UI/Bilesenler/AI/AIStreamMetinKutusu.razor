@@ -1,0 +1,31 @@
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+@if (!string.IsNullOrEmpty(_goruntulenMetin) || YaziyorMu)
+{
+    <MudPaper Elevation="1" Class="ai-stream-kutu pa-3">
+        <MudText Typo="Typo.body2" Class="ai-yaz-metin">
+            @_goruntulenMetin
+            @if (YaziyorMu)
+            {
+                <span class="ai-imlec">|</span>
+            }
+        </MudText>
+    </MudPaper>
+
+    @if (YaziyorMu)
+    {
+        <div class="d-flex gap-2 mt-1">
+            <MudButton Variant="Variant.Text" Size="Size.Small" Color="Color.Error"
+                       OnClick="Durdur">
+                @Icons.Material.Filled.Stop @dil.T("ai.durdur", "Durdur")
+            </MudButton>
+            <MudButton Variant="Variant.Text" Size="Size.Small" Color="Color.Primary"
+                       OnClick="() => TekrarUret.InvokeAsync()">
+                @Icons.Material.Filled.Refresh @dil.T("ai.tekrarUret", "Tekrar Üret")
+            </MudButton>
+        </div>
+    }
+}
+else if (_yaziyaBasladi)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" Size="Size.Small" />
+}

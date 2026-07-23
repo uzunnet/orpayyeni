@@ -1,0 +1,355 @@
+@page "/admin/konfigurator-studio/{ModelId:int?}"
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+@using VizitLink3D.Ortak.Modeller.Urunler
+
+<PageTitle>@dil.T("admin.ks.sayfaBaslik", "Konfigurator Studio") | VizitLink3D Admin</PageTitle>
+
+<AdminSayfaBasligi Baslik="@dil.T("admin.ks.baslik", "3D Konfigurator Studio")"
+                   Aciklama="@dil.T("admin.ks.aciklama", "Model parcalarini goruntuleyin, duzenleyin ve sahne presetlerini yonetin.")"
+                   Ikon="@Icons.Material.Filled.ViewInAr" />
+
+@if (_yukleniyor)
+{
+    <AdminYukleniyorIskeleti SatirSayisi="8" />
+}
+else
+{
+    <MudGrid Class="gb-konfigurator-studio">
+        @* ===== SOL PANEL — Model Secimi ve Parca Listesi ===== *@
+        <MudItem xs="12" lg="3" Class="gb-ks-sol-panel">
+            <MudSelect T="int?"
+                       Label="@dil.T("admin.ks.modelSecimi", "Model Secimi")"
+                       AnchorOrigin="Origin.BottomCenter"
+                       Value="_seciliModelId"
+                       ValueChanged="ModelSecAsync"
+                       Class="gb-ks-model-secimi"
+                       Variant="Variant.Outlined">
+                @foreach (var model in _modeller)
+                {
+                    <MudSelectItem Value="@(model.Id)">@model.ModelAdi</MudSelectItem>
+                }
+            </MudSelect>
+
+            @if (!_seciliModelId.HasValue)
+            {
+                <MudAlert Severity="Severity.Info" Class="mt-3">
+                    @dil.T("admin.ks.modelSecUyari", "Baslamak icin bir 3D model seciniz.")
+                </MudAlert>
+            }
+            else
+            {
+                <MudTextField @bind-Value="_arama"
+                              Label="@dil.T("admin.ks.parcaAra", "Parca Ara...")"
+                              Immediate="true"
+                              DebounceInterval="300"
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.Search"
+                              Class="gb-ks-arama mt-3" />
+
+                <MudText Typo="Typo.caption" Class="gb-ks-meta-etiket mt-2">
+                    @_filtreliParcalar.Count @dil.T("admin.ks.parca", "parca")
+                </MudText>
+
+                <MudList T="UrunUcBoyutParcasi" Class="gb-ks-parca-listesi" Clickable="true">
+                    @if (!_filtreliParcalar.Any())
+                    {
+                        <MudAlert Severity="Severity.Info" Class="ma-2">
+                            @dil.T("admin.ks.parcaYok", "Goruntulenecek parca bulunamadi.")
+                        </MudAlert>
+                    }
+                    else
+                    {
+                        @foreach (var parca in _filtreliParcalar)
+                        {
+                            <MudListItem T="UrunUcBoyutParcasi"
+                                         Text="@parca.GorunenAd"
+                                         SecondaryText="@parca.MeshAdi"
+                                         OnClick="@(() => ParcaSec(parca))"
+                                         Class="@GetParcaItemClass(parca)" />
+                        }
+                    }
+                </MudList>
+            }
+        </MudItem>
+
+        @* ===== ORTA PANEL — 3D Viewer ===== *@
+        <MudItem xs="12" lg="6" Class="gb-ks-orta-panel">
+            <div class="gb-ks-viewer-sarici">
+                @if (_seciliModelId.HasValue && !string.IsNullOrWhiteSpace(_modelYolu))
+                {
+                    <UcBoyutGoruntuleyici @key="_seciliModelId"
+                                          ModelId="_seciliModelId.Value"
+                                          ModelYolu="_modelYolu"
+                                          BaslangicRenk="#E8E4DF"
+                                          OnMeshSecildi="@MeshSecildi" />
+                }
+                else if (!_seciliModelId.HasValue)
+                {
+                    <div class="gb-ks-bos-durum">
+                                <MudIcon Icon="@Icons.Material.Filled.ViewInAr" Size="Size.Large" Color="Color.Default" />
+                        <MudText Typo="Typo.subtitle1">
+                            @dil.T("admin.ks.modelSecilmedi", "Lutfen sol panelden bir model secin.")
+                        </MudText>
+                    </div>
+                }
+                else
+                {
+                    <div class="gb-ks-bos-durum">
+                                <MudIcon Icon="@Icons.Material.Filled.Warning" Size="Size.Large" Color="Color.Default" />
+                        <MudText Typo="Typo.subtitle1">
+                            @dil.T("admin.ks.modelYoluYok", "Secili model icin 3D dosya bulunamadi.")
+                        </MudText>
+                    </div>
+                }
+            </div>
+        </MudItem>
+
+        @* ===== SAG PANEL — Parca Editoru + Sahne Presetleri ===== *@
+        <MudItem xs="12" lg="3" Class="gb-ks-sag-panel">
+            <MudTabs ActivePanelIndex="_aktifSekme" ActivePanelIndexChanged="@(idx => _aktifSekme = idx)">
+                @* === Sekme 1: Parca Editoru === *@
+                <MudTabPanel Text="@dil.T("admin.ks.parcaEditoru", "Parca Editoru")">
+                    @if (_parcaFormMeshAdi == null && _seciliParca == null)
+                    {
+                        <MudAlert Severity="Severity.Info" Class="mt-2">
+                            @dil.T("admin.ks.parcaSecin", "Duzenlemek icin sol listeden bir parca secin.")
+                        </MudAlert>
+                    }
+                    else
+                    {
+                        <div class="pa-2">
+                            <p class="gb-ks-meta-etiket">@dil.T("admin.ks.meshAdi", "MESH ADI")</p>
+                            <MudTextField Value="@(_parcaFormMeshAdi ?? "")"
+                                          ReadOnly="true"
+                                          Variant="Variant.Outlined"
+                                          Margin="Margin.Dense"
+                                          Class="admin-mono-field" />
+
+                            <MudTextField Label="@dil.T("admin.ks.gorunenAd", "Gorunen Ad")"
+                                          @bind-Value="_parcaFormGorunenAd"
+                                          Variant="Variant.Outlined"
+                                          Margin="Margin.Dense" />
+
+                            <MudTextField Label="@dil.T("admin.ks.mantiksalKod", "Mantiksal Kod")"
+                                          @bind-Value="_parcaFormMantiksalKod"
+                                          Variant="Variant.Outlined"
+                                          Margin="Margin.Dense"
+                                          Class="admin-mono-field" />
+
+                            <MudSelect T="int?"
+                                       Label="@dil.T("admin.ks.parcaGrubu", "Parca Grubu")"
+                                       @bind-Value="_parcaFormParcaGrubuId"
+                                       Variant="Variant.Outlined"
+                                       Margin="Margin.Dense">
+                                <MudSelectItem Value="@((int?)null)">@dil.T("admin.ks.seciniz", "Seciniz")</MudSelectItem>
+                                @foreach (var g in _gruplar)
+                                {
+                                    <MudSelectItem Value="@(g.Id)">@g.Ad</MudSelectItem>
+                                }
+                            </MudSelect>
+
+                            <MudSelect T="string?"
+                                       Label="@dil.T("admin.ks.parcaTipi", "Parca Tipi")"
+                                       @bind-Value="_parcaFormParcaTipi"
+                                       Variant="Variant.Outlined"
+                                       Margin="Margin.Dense">
+                                <MudSelectItem Value="@((string?)null)">@dil.T("admin.ks.seciniz", "Seciniz")</MudSelectItem>
+                                <MudSelectItem Value="@("Govde")">@dil.T("parcaTipi.govde", "Govde")</MudSelectItem>
+                                <MudSelectItem Value="@("Cam")">@dil.T("parcaTipi.cam", "Cam")</MudSelectItem>
+                                <MudSelectItem Value="@("Metal")">@dil.T("parcaTipi.metal", "Metal")</MudSelectItem>
+                                <MudSelectItem Value="@("Ahsap")">@dil.T("parcaTipi.ahsap", "Ahsap")</MudSelectItem>
+                                <MudSelectItem Value="@("Porselen")">@dil.T("parcaTipi.porselen", "Porselen")</MudSelectItem>
+                                <MudSelectItem Value="@("Ayna")">@dil.T("parcaTipi.ayna", "Ayna")</MudSelectItem>
+                                <MudSelectItem Value="@("Musluk")">@dil.T("parcaTipi.musluk", "Musluk")</MudSelectItem>
+                                <MudSelectItem Value="@("Kulp")">@dil.T("parcaTipi.kulp", "Kulp")</MudSelectItem>
+                                <MudSelectItem Value="@("Zemin")">@dil.T("parcaTipi.zemin", "Zemin")</MudSelectItem>
+                                <MudSelectItem Value="@("Diger")">@dil.T("parcaTipi.diger", "Diger")</MudSelectItem>
+                            </MudSelect>
+
+                            <MudSelect T="string?"
+                                       Label="@dil.T("admin.ks.hareketTipi", "Hareket Tipi")"
+                                       @bind-Value="_parcaFormHareketTipi"
+                                       Variant="Variant.Outlined"
+                                       Margin="Margin.Dense">
+                                <MudSelectItem Value="@((string?)null)">@dil.T("admin.ks.seciniz", "Seciniz")</MudSelectItem>
+                                <MudSelectItem Value="@("Sabit")">@dil.T("hareket.sabit", "Sabit")</MudSelectItem>
+                                <MudSelectItem Value="@("Menteseli")">@dil.T("hareket.menteseli", "Menteseli")</MudSelectItem>
+                                <MudSelectItem Value="@("Surgulu")">@dil.T("hareket.surgulu", "Sürgülü")</MudSelectItem>
+                                <MudSelectItem Value="@("Cekmece")">@dil.T("hareket.cekmece", "Çekmece")</MudSelectItem>
+                                <MudSelectItem Value="@("YukariAcilir")">@dil.T("hareket.yukariAcilir", "Yukarı Açılır")</MudSelectItem>
+                                <MudSelectItem Value="@("Pivot")">@dil.T("hareket.pivot", "Pivot")</MudSelectItem>
+                                <MudSelectItem Value="@("Recliner")">@dil.T("hareket.recliner", "Recliner")</MudSelectItem>
+                            </MudSelect>
+
+                            <MudTextField Label="@dil.T("admin.ks.hareketAyarlariJson", "Hareket Ayarlari (JSON)")"
+                                          @bind-Value="_parcaFormHareketAyarlariJson"
+                                          Lines="3"
+                                          Variant="Variant.Outlined"
+                                          Margin="Margin.Dense"
+                                          Class="admin-mono-field" />
+
+                            <MudText Typo="Typo.caption" Class="gb-ks-meta-etiket mt-2">@dil.T("admin.ks.ozellikler", "OZELLIKLER")</MudText>
+                            <div class="gb-ks-switch-grubu">
+                                <MudSwitch @bind-Value="_parcaFormRenklenebilirMi"
+                                           Label="@dil.T("admin.ks.renklenebilir", "Renklenebilir")" Color="Color.Primary" />
+                                <MudSwitch @bind-Value="_parcaFormMalzemeDegisebilirMi"
+                                           Label="@dil.T("admin.ks.malzemeDegisebilir", "Malzeme")" Color="Color.Primary" />
+                                <MudSwitch @bind-Value="_parcaFormDokuUygulanabilirMi"
+                                           Label="@dil.T("admin.ks.dokuUygulanabilir", "Doku")" Color="Color.Primary" />
+                                <MudSwitch @bind-Value="_parcaFormGizlenebilirMi"
+                                           Label="@dil.T("admin.ks.gizlenebilir", "Gizlenebilir")" Color="Color.Primary" />
+                                <MudSwitch @bind-Value="_parcaFormSecilebilirMi"
+                                           Label="@dil.T("admin.ks.secilebilir", "Secilebilir")" Color="Color.Primary" />
+                                <MudSwitch @bind-Value="_parcaFormHareketliMi"
+                                           Label="@dil.T("admin.ks.hareketli", "Hareketli")" Color="Color.Primary" />
+                                <MudSwitch @bind-Value="_parcaFormAdminOnayliMi"
+                                           Label="@dil.T("admin.ks.adminOnayli", "Onayli")" Color="Color.Secondary" />
+                                <MudSwitch @bind-Value="_parcaFormAktifMi"
+                                           Label="@dil.T("admin.ks.aktif", "Aktif")" Color="Color.Success" />
+                            </div>
+
+                            <MudNumericField Label="@dil.T("admin.ks.siraNo", "Sira No")"
+                                             @bind-Value="_parcaFormSiraNo"
+                                             Variant="Variant.Outlined"
+                                             Margin="Margin.Dense" />
+
+                            <MudTextField Label="@dil.T("admin.ks.malzemeKisiti", "Malzeme Tipi Kisiti")"
+                                          @bind-Value="_parcaFormMalzemeTipiKisiti"
+                                          Variant="Variant.Outlined"
+                                          Margin="Margin.Dense"
+                                          Class="admin-mono-field" />
+
+                            <div class="gb-ks-kaydet-alani d-flex gap-2 justify-end">
+                                <MudButton Variant="Variant.Outlined"
+                                           OnClick="@(() => { ParcaFormTemizle(); StateHasChanged(); })"
+                                           Color="Color.Error" Size="Size.Small">
+                                    @dil.T("ortak.iptal", "Iptal")
+                                </MudButton>
+                                <MudButton Variant="Variant.Filled"
+                                           Color="Color.Success"
+                                           OnClick="ParcaKaydetAsync"
+                                           Disabled="_kaydediliyor" Size="Size.Small">
+                                    @if (_kaydediliyor)
+                                    {
+                                        <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-1" />
+                                    }
+                                    @dil.T("ortak.kaydet", "Kaydet")
+                                </MudButton>
+                            </div>
+                        </div>
+                    }
+                </MudTabPanel>
+
+                @* === Sekme 2: Sahne Presetleri === *@
+                <MudTabPanel Text="@dil.T("admin.ks.sahnePresetleri", "Sahne Presetleri")">
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               StartIcon="@Icons.Material.Filled.Add"
+                               OnClick="YeniPresetAc"
+                               FullWidth="true"
+                               Class="mb-3" Size="Size.Small">
+                        @dil.T("admin.ks.yeniPreset", "Yeni Preset")
+                    </MudButton>
+
+                    <MudTable Items="@_sahneOnayarlari" Hover="true" Dense="true" Elevation="0"
+                              Class="gb-ks-preset-tablo">
+                        <HeaderContent>
+                            <MudTh>@dil.T("admin.ks.ad", "Ad")</MudTh>
+                            <MudTh>@dil.T("admin.ks.kod", "Kod")</MudTh>
+                            <MudTh>@dil.T("admin.ks.durum", "Durum")</MudTh>
+                            <MudTh>@dil.T("admin.ks.islemler", "Islemler")</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="@dil.T("admin.ks.ad", "Ad")">@context.Ad</MudTd>
+                            <MudTd DataLabel="@dil.T("admin.ks.kod", "Kod")" Class="admin-mono-field">@context.Kod</MudTd>
+                            <MudTd DataLabel="@dil.T("admin.ks.durum", "Durum")">
+                                @if (context.VarsayilanMi)
+                                {
+                                    <MudChip T="string" Size="Size.Small" Color="Color.Success" Variant="Variant.Outlined">
+                                        @dil.T("admin.ks.varsayilan", "Varsayilan")
+                                    </MudChip>
+                                }
+                                @if (context.AktifMi)
+                                {
+                                    <MudChip T="string" Size="Size.Small" Color="Color.Info" Variant="Variant.Outlined" Class="ml-1">
+                                        @dil.T("admin.ks.aktif", "Aktif")
+                                    </MudChip>
+                                }
+                                else
+                                {
+                                    <MudChip T="string" Size="Size.Small" Color="Color.Default" Variant="Variant.Outlined" Class="ml-1">
+                                        @dil.T("admin.ks.pasif", "Pasif")
+                                    </MudChip>
+                                }
+                            </MudTd>
+                            <MudTd DataLabel="@dil.T("admin.ks.islemler", "Islemler")">
+                                <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small"
+                                               OnClick="@(() => PresetDuzenleAc(context))"
+                                               Title="@dil.T("ortak.duzenle", "Duzenle")" />
+                                <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error"
+                                               OnClick="@(() => PresetSilAsync(context))"
+                                               Title="@dil.T("ortak.sil", "Sil")" />
+                            </MudTd>
+                        </RowTemplate>
+                        <NoRecordsContent>
+                            <div class="gb-ks-preset-bos">
+                                @dil.T("admin.ks.presetYok", "Henuz bir preset tanimlanmamis.")
+                            </div>
+                        </NoRecordsContent>
+                    </MudTable>
+
+                    @if (_presetFormAcik)
+                    {
+                        <MudPaper Elevation="1" Class="pa-3 mt-3">
+                            <MudText Typo="Typo.subtitle1" Class="mb-3">
+                                @(_duzenlenenPresetId.HasValue
+                                    ? dil.T("admin.ks.presetDuzenle", "Preset Duzenle")
+                                    : dil.T("admin.ks.presetYeni", "Yeni Preset"))
+                            </MudText>
+                            <MudTextField Label="@dil.T("admin.ks.ad", "Ad")"
+                                          @bind-Value="_presetFormAd"
+                                          Variant="Variant.Outlined" Margin="Margin.Dense" />
+                            <MudTextField Label="@dil.T("admin.ks.kod", "Kod (ASCII)")"
+                                          @bind-Value="_presetFormKod"
+                                          Variant="Variant.Outlined" Margin="Margin.Dense"
+                                          Class="admin-mono-field" />
+                            <MudTextField Label="@dil.T("admin.ks.ayarlarJson", "Ayarlar (JSON)")"
+                                          @bind-Value="_presetFormAyarlarJson"
+                                          Lines="4"
+                                          Variant="Variant.Outlined" Margin="Margin.Dense"
+                                          Class="admin-mono-field" />
+                            <MudNumericField Label="@dil.T("admin.ks.siraNo", "Sira No")"
+                                             @bind-Value="_presetFormSiraNo"
+                                             Variant="Variant.Outlined" Margin="Margin.Dense" />
+                            <div class="d-flex gap-3 my-3">
+                                <MudSwitch @bind-Value="_presetFormVarsayilanMi"
+                                           Label="@dil.T("admin.ks.varsayilan", "Varsayilan")" Color="Color.Primary" />
+                                <MudSwitch @bind-Value="_presetFormAktifMi"
+                                           Label="@dil.T("admin.ks.aktif", "Aktif")" Color="Color.Primary" />
+                            </div>
+                            <div class="d-flex gap-2 justify-end">
+                                <MudButton Variant="Variant.Outlined" OnClick="PresetFormKapat" Size="Size.Small">
+                                    @dil.T("ortak.iptal", "Iptal")
+                                </MudButton>
+                                <MudButton Variant="Variant.Filled" Color="Color.Success"
+                                           OnClick="@(_duzenlenenPresetId.HasValue ? PresetGuncelleAsync : PresetEkleAsync)"
+                                           Disabled="_presetKaydediliyor" Size="Size.Small">
+                                    @if (_presetKaydediliyor)
+                                    {
+                                        <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-1" />
+                                    }
+                                    @(_duzenlenenPresetId.HasValue
+                                        ? dil.T("ortak.guncelle", "Guncelle")
+                                        : dil.T("ortak.kaydet", "Kaydet"))
+                                </MudButton>
+                            </div>
+                        </MudPaper>
+                    }
+                </MudTabPanel>
+            </MudTabs>
+        </MudItem>
+    </MudGrid>
+}

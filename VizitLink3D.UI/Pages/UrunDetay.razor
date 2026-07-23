@@ -1,0 +1,252 @@
+@page "/urun/{Slug}"
+@page "/banyo-dolabi/{Slug}"
+@layout VizitLink3DDuzen
+
+<PageTitle>@(_urun?.SeoBaslik ?? _urun?.Ad ?? dil.T("urun.detay", "Ürün detayı"))</PageTitle>
+
+<section class="gb-page gb-detail-page">
+    @if (_yukleniyor)
+    {
+        <div class="gb-panel">
+            <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
+            <MudText Typo="Typo.h6" Class="mt-4">@dil.T("ortak.yukleniyor", "Yükleniyor...")</MudText>
+        </div>
+    }
+    else if (_urun is null)
+    {
+        <div class="gb-panel">
+            <MudText Typo="Typo.h4">@dil.T("urun.bulunamadi", "Model bulunamadı")</MudText>
+            <a class="gb-chip gb-chip--active" href="/banyo-dolaplari">@dil.T("urun.listeyeDon", "Listeye dön")</a>
+        </div>
+    }
+    else
+    {
+        @if (!string.IsNullOrWhiteSpace(HataMesaji))
+        {
+            <div class="gb-panel mb-4">
+                <MudText Typo="Typo.h6">@dil.T("ortak.hata", "Bir hata oluştu.")</MudText>
+                <MudText Typo="Typo.body2">@HataMesaji</MudText>
+            </div>
+        }
+
+        <div class="gb-breadcrumb gb-breadcrumb--detay">
+            <a href="/">@dil.T("menu.anasayfa", "Ana Sayfa")</a>
+            <span>/</span>
+            <a href="/banyo-dolaplari">@dil.T("menu.urunler", "Banyo Dolapları")</a>
+            <span>/</span>
+            <strong>@_urun.Ad</strong>
+        </div>
+
+        <div class="gb-detail-grid-v2">
+            <div class="gb-detail-spec-kolon">
+                <div class="gb-detail-baslik-blok gb-reveal">
+                    <span class="gb-kicker">@KategoriAdi</span>
+                    <h1 class="gb-detail-baslik-v2">@_urun.Ad</h1>
+                    <p class="gb-detail-aciklama">@AnaOzeti</p>
+                </div>
+
+                <div class="gb-detail-ozellik-renk-satir gb-reveal gb-reveal--gecikme-1">
+                    @if (KatalogOzellikleri.Count > 0)
+                    {
+                        <div class="gb-detail-ozellik-liste">
+                            <h3 class="gb-detail-alt-baslik">@dil.T("urun.ozellikler", "Özellikler")</h3>
+                            @foreach (var ozellik in KatalogOzellikleri)
+                            {
+                                <div class="gb-detail-ozellik-liste__oge gb-reveal">
+                                    <span class="gb-detail-ozellik-liste__ikon">
+                                        @if (OzellikIkonuBul(ozellik) is { } ikonYolu)
+                                        {
+                                            <span class="gb-detail-ozellik-liste__ikon-gorsel" style="mask-image:url('@ikonYolu');-webkit-mask-image:url('@ikonYolu')"></span>
+                                        }
+                                        else
+                                        {
+                                            <MudIcon Icon="@Icons.Material.Outlined.CheckCircleOutline" Size="Size.Small" />
+                                        }
+                                    </span>
+                                    <span>@ozellik</span>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    <div class="gb-detail-renk-blok">
+                        <h3 class="gb-detail-alt-baslik">@dil.T("urun.renkler", "Renkler")</h3>
+                        @if (RenkSwatchListesi.Count == 0)
+                        {
+                            <p class="gb-blok-aciklama">@dil.T("urun.renkBilgisiYok", "Bu ürün için renk bilgisi tanımlı değil.")</p>
+                        }
+                        else
+                        {
+                            <div class="gb-detail-renk-swatch-satir">
+                                @foreach (var renk in RenkSwatchListesi)
+                                {
+                                    <div class="gb-detail-renk-oge">
+                                        <span class="gb-detail-renk-swatch" style="--swatch-renk:@renk.Hex"></span>
+                                        <span class="gb-detail-renk-ad">@renk.Ad</span>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                @if (KatalogOlculer.Count > 0)
+                {
+                    <div class="gb-detail-olcu-tablosu gb-reveal gb-reveal--gecikme-5">
+                        <h3 class="gb-detail-alt-baslik">
+                            @dil.T("urun.teknikOlculer", "Teknik Ölçüler")
+                            @if (!string.IsNullOrWhiteSpace(TeknikCizimUrl))
+                            {
+                                var teknikCizimUrl = TeknikCizimUrl;
+                                <span class="gb-detail-teknik-onizleme">
+                                    <MudIcon Icon="@Icons.Material.Outlined.ZoomIn" Size="Size.Small" />
+                                    <img src="@teknikCizimUrl" alt="@dil.T("urun.teknikOlculer", "Teknik Ölçüler")" class="gb-detail-teknik-onizleme__gorsel" />
+                                </span>
+                            }
+                        </h3>
+                        <table class="gb-detail-olcu-tablosu__grid">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>H</th>
+                                    <th>W</th>
+                                    <th>D</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var olcu in KatalogOlculer)
+                                {
+                                    <tr>
+                                        <td>@olcu.Baslik</td>
+                                        <td>@olcu.Yukseklik</td>
+                                        <td>@olcu.Genislik</td>
+                                        <td>@olcu.Derinlik</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+
+                <div class="gb-detail-eylemler gb-reveal gb-reveal--gecikme-6">
+                    <a class="gb-btn gb-btn--birincil" href="/iletisim">@dil.T("teklif.al", "Teklif Al")</a>
+                    <a class="gb-btn gb-btn--cami" href="/katalog">@dil.T("menu.katalog", "Katalog")</a>
+                    <a class="gb-btn gb-btn--cami" href="/banyo-dolaplari">@dil.T("urun.listeyeDon", "Koleksiyona Dön")</a>
+                </div>
+            </div>
+
+            <div class="gb-detail-foto-kolaj">
+                <div class="gb-detail-foto-kolaj__ana gb-glint-hover gb-reveal gb-reveal--gecikme-2" @onclick="() => LightboxAc(0)">
+                    <img src="@HeroGorselUrl" alt="@_urun.Ad" />
+                </div>
+                @if (GaleriGorselleri.Count > 1)
+                {
+                    <div class="gb-detail-foto-kolaj__yan">
+                        @foreach (var gorsel in GaleriGorselleri.Skip(1).Select((g, i) => (Gorsel: g, Index: i + 1)))
+                        {
+                            <div class="gb-detail-foto-kolaj__yan-kart gb-glint-hover gb-reveal" @onclick="() => LightboxAc(gorsel.Index)">
+                                <img src="@gorsel.Gorsel" alt="@_urun.Ad" />
+                            </div>
+                        }
+                    </div>
+                }
+                <div class="gb-detail-foto-kolaj__rozetler">
+                    <span class="gb-chip gb-chip--aktif">@KoleksiyonAdi</span>
+                    @if (_urun.YeniMi)
+                    {
+                        <span class="gb-chip">@dil.T("urun.yeni", "Yeni")</span>
+                    }
+                </div>
+            </div>
+        </div>
+
+        @if (BenzerUrunler.Count != 0)
+        {
+            <section class="gb-detail-blok">
+                <div class="gb-detail-blok__ust">
+                    <div>
+                        <span class="gb-kicker">@dil.T("urun.benzer", "Aynı Koleksiyondan")</span>
+                        <h2 class="gb-blok-baslik">@dil.T("urun.benzerUrunler", "Benzer modeller")</h2>
+                    </div>
+                    <p class="gb-blok-aciklama">
+                        @dil.T("urun.benzerAciklama", "Aynı aile veya kategori içindeki diğer ürünlere hızlıca geçebilirsin.")
+                    </p>
+                </div>
+
+                <div class="gb-product-grid">
+                    @foreach (var benzer in BenzerUrunler)
+                    {
+                        <a class="gb-product-card gb-glint-hover" href="/banyo-dolabi/@benzer.Slug">
+                            <div class="gb-product-card__gorsel">
+                                <img src="@UrunGorunumYardimcisi.AnaGorselUrl(benzer, api.ApiBaseUrl)" alt="@benzer.Ad" />
+                                <div class="gb-product-card__overlay"></div>
+                            </div>
+                            <div class="gb-product-card__icerik">
+                                <div class="gb-product-card__ust">
+                                    <span class="gb-product-card__koleksiyon">@benzer.Kod</span>
+                                    <span class="gb-product-card__kod">@benzer.Slug</span>
+                                </div>
+                                <h4 class="gb-product-card__baslik">@benzer.Ad</h4>
+                                <p class="gb-product-card__metin">@UrunGorunumYardimcisi.OzetMetniBul(benzer)</p>
+                                <span class="gb-product-card__link">@dil.T("urun.detayAc", "Modeli aç")</span>
+                            </div>
+                        </a>
+                    }
+                </div>
+            </section>
+        }
+
+        @if (EnCokGezilenler.Count != 0)
+        {
+            <section class="gb-detail-blok">
+                <div class="gb-detail-blok__ust">
+                    <div>
+                        <span class="gb-kicker">@dil.T("urun.populer", "Ziyaretçilerin İlgisi")</span>
+                        <h2 class="gb-blok-baslik">@dil.T("urun.enCokGezilen", "En çok görüntülenenler")</h2>
+                    </div>
+                    <p class="gb-blok-aciklama">
+                        @dil.T("urun.enCokGezilenAciklama", "Sitede en çok ziyaret edilen modeller.")
+                    </p>
+                </div>
+
+                <div class="gb-product-grid">
+                    @foreach (var populer in EnCokGezilenler)
+                    {
+                        <a class="gb-product-card gb-glint-hover" href="/banyo-dolabi/@populer.Slug">
+                            <div class="gb-product-card__gorsel">
+                                <img src="@UrunGorunumYardimcisi.AnaGorselUrl(populer, api.ApiBaseUrl)" alt="@populer.Ad" />
+                                <div class="gb-product-card__overlay"></div>
+                            </div>
+                            <div class="gb-product-card__icerik">
+                                <div class="gb-product-card__ust">
+                                    <span class="gb-product-card__koleksiyon">@populer.Kod</span>
+                                    <span class="gb-product-card__kod">@populer.Slug</span>
+                                </div>
+                                <h4 class="gb-product-card__baslik">@populer.Ad</h4>
+                                <p class="gb-product-card__metin">@UrunGorunumYardimcisi.OzetMetniBul(populer)</p>
+                                <span class="gb-product-card__link">@dil.T("urun.detayAc", "Modeli aç")</span>
+                            </div>
+                        </a>
+                    }
+                </div>
+            </section>
+        }
+
+        @if (_lightboxAcik)
+        {
+            <div class="gb-lightbox" @onclick="LightboxKapat">
+                <button class="gb-lightbox__kapat" @onclick="LightboxKapat" @onclick:stopPropagation="true">✕</button>
+                @if (GaleriGorselleri.Count > 1)
+                {
+                    <button class="gb-lightbox__nav gb-lightbox__nav--onceki" @onclick="LightboxOnceki" @onclick:stopPropagation="true">‹</button>
+                }
+                <img class="gb-lightbox__gorsel" src="@GaleriGorselleri[_lightboxIndex]" alt="@_urun.Ad" @onclick:stopPropagation="true" />
+                @if (GaleriGorselleri.Count > 1)
+                {
+                    <button class="gb-lightbox__nav gb-lightbox__nav--sonraki" @onclick="LightboxSonraki" @onclick:stopPropagation="true">›</button>
+                    <div class="gb-lightbox__sayac">@(_lightboxIndex + 1) / @GaleriGorselleri.Count</div>
+                }
+            </div>
+        }
+    }
+</section>

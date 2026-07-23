@@ -1,0 +1,28 @@
+@* MusteriYorumlariCarousel — Aurelian Onyx 4 yorum kartı *@
+
+<section class="yorumlar-bolum">
+    <div class="section-container">
+        <div class="section-baslik-kutu anim-reveal-up">
+            <span class="section-etiket">@dil.T("anasayfa.yorumlar.etiket", "Müşteri Deneyimi")</span>
+            <h2 class="section-baslik">@dil.T("anasayfa.yorumlar.baslik", "Seçkin Yorumlar")</h2>
+            <p class="section-aciklama">@dil.T("anasayfa.yorumlar.aciklama", "Dünya çapındaki müşterilerimizin deneyimleri.")</p>
+        </div>
+
+        <div class="yorumlar-grid">
+            @foreach (var yorum in _yorumlar)
+            {
+                <div class="yorum-kart anim-reveal-up">
+                    <div class="yorum-kart__puan">
+                        @for (int i = 0; i < yorum.Puan; i++)
+                        {
+                            <span class="material-symbols-outlined" style="font-size:18px;">star</span>
+                        }
+                    </div>
+                    <p class="yorum-kart__metin">"@yorum.Yorum"</p>
+                    <div class="yorum-kart__musteri-ad">@yorum.MusteriAdi</div>
+                    <div class="yorum-kart__musteri-sehir">@yorum.MusteriSehir</div>
+                </div>
+            }
+        </div>
+    </div>
+</section>

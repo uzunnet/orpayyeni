@@ -1,0 +1,224 @@
+@page "/admin/dashboard"
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@implements IAsyncDisposable
+
+<PageTitle>@($"{dil.T("admin.dashboard", "Gösterge Paneli")} | VizitLink3D Admin")</PageTitle>
+
+@if (_yukleniyor)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mb-3 dboard-loading" />
+}
+
+@{
+    var maxSayfa = Maksimum(_komuta?.EnCokGezilenSayfalar.Select(s => s.Ziyaret) ?? []);
+    var maxUrun = Maksimum(_komuta?.EnCokIlgiGorenUrunler.Select(u => u.IlgiPuani) ?? []);
+    var maxTrend = Maksimum(_komuta?.GunlukTrend.Select(t => t.Ziyaret + t.Teklif + t.Mesaj) ?? []);
+    var hedefTamamlama = IsTamamlamaOrani();
+}
+
+<div class="dboard dboard-noc">
+    <section class="dboard-noc-toolbar">
+        <div class="dboard-noc-title">
+            <MudIcon Icon="@Icons.Material.Filled.MenuOpen" />
+            <div>
+                <h1>@dil.T("admin.komutaMerkezi", "Komuta Merkezi")</h1>
+                <span>@dil.T("admin.canliOperasyonPaneli", "Canlı Operasyon Paneli")</span>
+            </div>
+        </div>
+        <div class="dboard-noc-actions">
+            <span class="dboard-status-pill"><i></i>@dil.T("admin.sistemNormal", "Sistem Normal")</span>
+            <span>@DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss")</span>
+            <MudIcon Icon="@Icons.Material.Filled.Notifications" />
+            <MudIcon Icon="@Icons.Material.Filled.DarkMode" />
+            <strong>@_rol</strong>
+        </div>
+    </section>
+
+    <section class="dboard-noc-kpis">
+        <div class="noc-kpi">
+            <span>@dil.T("admin.canliZiyaretciler", "Canlı ziyaretçiler")</span>
+            <strong>@((_komuta?.AktifZiyaretci ?? 0).ToString("N0"))</strong>
+            <small>@dil.T("admin.suanAktif", "Şu anda sitede aktif") <b>+18%</b></small>
+        </div>
+        <div class="noc-kpi">
+            <span>@dil.T("admin.bugunZiyaret", "Bugün ziyaret")</span>
+            <strong>@((_komuta?.BugunZiyaret ?? 0).ToString("N0"))</strong>
+            <small>@dil.T("admin.aylikZiyaret", "Aylık"): @((_komuta?.AylikZiyaret ?? 0).ToString("N0")) <b>+13.5%</b></small>
+        </div>
+        <div class="noc-kpi">
+            <span>@dil.T("admin.toplamZiyaret", "Toplam ziyaret")</span>
+            <strong>@((_ozet?.ToplamZiyaret ?? 0).ToString("N0"))</strong>
+            <small>@dil.T("admin.buAy", "Bu ay") <b>+12.2%</b></small>
+        </div>
+        <div class="noc-kpi">
+            <span>@dil.T("admin.siparisAy", "Sipariş (ay)")</span>
+            <strong>@((_ozet?.ToplamTeklif ?? 0).ToString("N0"))</strong>
+            <small>@dil.T("admin.mesaj", "Mesaj"): @((_ozet?.ToplamMesaj ?? 0).ToString("N0")) <b>+8.9%</b></small>
+        </div>
+        <div class="noc-kpi">
+            <span>@dil.T("admin.donusumOrani", "Dönüşüm oranı")</span>
+            <strong>@YuzdeMetni(_komuta?.DonusumOrani ?? 0)</strong>
+            <small>@dil.T("admin.bugun", "Bugün") <b>+0.38%</b></small>
+        </div>
+        <div class="noc-kpi">
+            <span>@dil.T("admin.hedefTamamlama", "Hedef tamamlama")</span>
+            <strong>@hedefTamamlama%</strong>
+            <small>@dil.T("admin.aylikHedef", "Aylık hedef"): 85%</small>
+            <div class="noc-target"><i style="width:@($"{hedefTamamlama}%")"></i></div>
+        </div>
+    </section>
+
+    <section class="dboard-noc-grid top">
+        <MudPaper Elevation="0" Class="noc-panel noc-map-panel">
+            <div class="noc-panel-head">
+                <h2>@dil.T("admin.canliZiyaretciHaritasi", "Canlı ziyaretçi haritası")</h2>
+            </div>
+            <div class="noc-world">
+                @foreach (var nokta in HaritaNoktalari())
+                {
+                    <span class="map-pulse" style="left:@nokta.Sol;top:@nokta.Ust"></span>
+                }
+            </div>
+            <div class="noc-map-table">
+                <div><b>@dil.T("admin.ulke", "Ülke")</b><b>@dil.T("admin.ziyaretci", "Ziyaretçi")</b><b>@dil.T("admin.sayfa", "Sayfa")</b><b>@dil.T("admin.sure", "Süre")</b></div>
+                @foreach (var ziyaretci in (_komuta?.AktifZiyaretciler.Take(5) ?? []))
+                {
+                    <div>
+                        <span>@ziyaretci.Konum</span>
+                        <strong>@ziyaretci.ZiyaretSayisi</strong>
+                        <span>@ziyaretci.HamSayfa</span>
+                        <span>@ZamanMetni(ziyaretci.SonGorulme)</span>
+                    </div>
+                }
+            </div>
+        </MudPaper>
+
+        <MudPaper Elevation="0" Class="noc-panel noc-sessions">
+            <div class="noc-panel-head split">
+                <h2>@dil.T("admin.aktifOturumlar", "Aktif oturumlar")</h2>
+                <span>@((_komuta?.AktifZiyaretci ?? 0).ToString("N0")) @dil.T("admin.aktifOturum", "aktif oturum")</span>
+            </div>
+            <div class="noc-timeline">
+                @foreach (var ziyaretci in (_komuta?.AktifZiyaretciler.Take(6) ?? []))
+                {
+                    <div class="noc-session-row">
+                        <time>@ziyaretci.SonGorulme.ToLocalTime().ToString("HH:mm")</time>
+                        <i></i>
+                        <span>@ziyaretci.Konum</span>
+                        <strong>@ziyaretci.HamSayfa</strong>
+                        <em>@ziyaretci.Tarayici / @ziyaretci.Cihaz</em>
+                    </div>
+                }
+            </div>
+        </MudPaper>
+
+        <MudPaper Elevation="0" Class="noc-panel noc-pages">
+            <div class="noc-panel-head">
+                <h2>@dil.T("admin.enCokZiyaretEdilenSayfalar", "En çok ziyaret edilen sayfalar")</h2>
+            </div>
+            <div class="noc-data-table">
+                <div class="head"><span>#</span><span>@dil.T("admin.sayfa", "Sayfa")</span><span>@dil.T("admin.ziyaret", "Ziyaret")</span><span>@dil.T("admin.oran", "Oran")</span></div>
+                @foreach (var sayfa in (_komuta?.EnCokGezilenSayfalar.Take(8) ?? []).Select((s, i) => new { s, i }))
+                {
+                    var oran = maxSayfa == 0 ? 0 : Math.Clamp(sayfa.s.Ziyaret * 100 / maxSayfa, 4, 100);
+                    <div>
+                        <span>@(sayfa.i + 1)</span>
+                        <strong>@sayfa.s.Url</strong>
+                        <span>@sayfa.s.Ziyaret.ToString("N0")</span>
+                        <span class="noc-mini-bar"><i style="width:@($"{oran}%")"></i></span>
+                    </div>
+                }
+            </div>
+        </MudPaper>
+    </section>
+
+    <section class="dboard-noc-grid middle">
+        <MudPaper Elevation="0" Class="noc-panel">
+            <div class="noc-panel-head"><h2>@dil.T("admin.enCokIlgilenilenUrunler", "En çok ilgilenilen ürünler")</h2></div>
+            <div class="noc-product-table">
+                <div class="head"><span>@dil.T("admin.urun", "Ürün")</span><span>@dil.T("admin.goruntuleme", "Görüntüleme")</span><span>@dil.T("admin.ilgiOrani", "İlgi oranı")</span></div>
+                @foreach (var urun in _komuta?.EnCokIlgiGorenUrunler.Take(6) ?? [])
+                {
+                    var oran = maxUrun == 0 ? 0 : Math.Clamp(urun.IlgiPuani * 100 / maxUrun, 4, 100);
+                    <div>
+                        <span class="noc-product"><i></i>@urun.Ad</span>
+                        <span>@urun.Ziyaret.ToString("N0")</span>
+                        <span>%@oran</span>
+                    </div>
+                }
+            </div>
+        </MudPaper>
+
+        <MudPaper Elevation="0" Class="noc-panel noc-donut-panel">
+            <div class="noc-panel-head"><h2>@dil.T("admin.trafikKaynaklari", "Trafik kaynakları")</h2></div>
+            <div class="noc-donut-wrap">
+                <div class="noc-donut" style="@DonutStili()"><strong>@((_komuta?.BugunZiyaret ?? 0).ToString("N0"))</strong><span>@dil.T("admin.ziyaret", "Ziyaret")</span></div>
+                <div class="noc-donut-list">
+                    @foreach (var kaynak in _komuta?.TrafikKaynaklari.Take(5) ?? [])
+                    {
+                        <div><i></i><span>@kaynak.Ad</span><strong>@kaynak.Adet (@YuzdeMetni(kaynak.Oran))</strong></div>
+                    }
+                </div>
+            </div>
+        </MudPaper>
+
+        <MudPaper Elevation="0" Class="noc-panel noc-line-panel">
+            <div class="noc-panel-head split">
+                <h2>@dil.T("admin.ziyaretTrendi", "Ziyaret trendi")</h2>
+                <span>@dil.T("admin.sonYediGun", "Son 7 gün")</span>
+            </div>
+            <div class="noc-line-chart">
+                @foreach (var gun in (_komuta?.GunlukTrend ?? []).Select((g, i) => new { g, i }))
+                {
+                    var toplam = gun.g.Ziyaret + gun.g.Teklif + gun.g.Mesaj;
+                    <span class="noc-line-point" style="@TrendNoktaStili(gun.i, toplam, maxTrend)"></span>
+                }
+                @foreach (var gun in (_komuta?.GunlukTrend ?? []).Select((g, i) => new { g, i }))
+                {
+                    <em style="left:@($"{gun.i * 16}%")">@gun.g.Etiket</em>
+                }
+            </div>
+        </MudPaper>
+    </section>
+
+    <section class="dboard-noc-grid bottom">
+        <MudPaper Elevation="0" Class="noc-panel">
+            <div class="noc-panel-head"><h2>@dil.T("admin.sonYoneticiAktiviteleri", "Son yönetici aktiviteleri")</h2></div>
+            @foreach (var log in _komuta?.DenetimAkisi.Take(5) ?? [])
+            {
+                <div class="noc-activity"><time>@log.Zaman.ToLocalTime().ToString("HH:mm")</time><i></i><strong>@log.Eylem</strong><span>@log.Kullanici</span></div>
+            }
+        </MudPaper>
+
+        <MudPaper Elevation="0" Class="noc-panel">
+            <div class="noc-panel-head"><h2>@dil.T("admin.sistemDurumu", "Sistem durumu")</h2></div>
+            <div class="noc-status-list">
+                <div><span>@dil.T("admin.sunucuDurumu", "Sunucu Durumu")</span><strong>@(_komuta?.Sistem.Api ?? "-")</strong></div>
+                <div><span>@dil.T("admin.veritabani", "Veritabanı")</span><strong>@(_komuta?.Sistem.Veritabani ?? "-")</strong></div>
+                <div><span>@dil.T("admin.canliBaglanti", "Canlı Bağlantı")</span><strong>@(_canliBagli ? dil.T("admin.bagli", "Bağlı") : dil.T("admin.bekliyor", "Bekliyor"))</strong></div>
+                <div><span>@dil.T("admin.ai", "AI")</span><strong>@((_ozet?.ToplamAI ?? 0) > 0 ? dil.T("admin.aktif", "Aktif") : dil.T("admin.pasif", "Pasif"))</strong></div>
+            </div>
+        </MudPaper>
+
+        <MudPaper Elevation="0" Class="noc-panel">
+            <div class="noc-panel-head"><h2>@dil.T("admin.lisansBilgileri", "Lisans bilgileri")</h2></div>
+            <div class="noc-status-list">
+                <div><span>@dil.T("admin.plan", "Plan")</span><strong>@dil.T("admin.suresizLisans", "Süresiz Lisans")</strong></div>
+                <div><span>@dil.T("admin.domain", "Domain")</span><strong>3dvizitlink.com.tr</strong></div>
+                <div><span>@dil.T("admin.durum", "Durum")</span><strong>@dil.T("admin.aktif", "Aktif")</strong></div>
+                <div><span>@dil.T("admin.kalanSure", "Kalan Süre")</span><strong>@dil.T("admin.suresiz", "Süresiz")</strong></div>
+            </div>
+        </MudPaper>
+
+        <MudPaper Elevation="0" Class="noc-panel">
+            <div class="noc-panel-head"><h2>@dil.T("admin.cihazTarayiciDagilimi", "Cihaz & tarayıcı dağılımı")</h2></div>
+            @foreach (var item in (_komuta?.CihazDagilimi.Take(3) ?? []).Concat(_komuta?.TarayiciDagilimi.Take(3) ?? []))
+            {
+                <div class="noc-device-row"><span>@item.Ad</span><b>@YuzdeMetni(item.Oran)</b><i style="width:@YuzdeMetni(item.Oran)"></i></div>
+            }
+        </MudPaper>
+    </section>
+</div>

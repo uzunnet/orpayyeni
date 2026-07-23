@@ -1,0 +1,82 @@
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+@inject ISnackbar snackbar
+
+<div class="ai-yaz-butonu-kapsayici">
+    <MudButton Variant="Variant.Outlined" Size="Size.Small"
+               StartIcon="@Icons.Material.Filled.AutoAwesome"
+               Color="Color.Primary" Class="ai-yaz-butonu"
+               OnClick="PanelAcKapat">
+        @ButonMetni
+    </MudButton>
+
+    @if (_panelAcik)
+    {
+        <MudPaper Elevation="8" Class="ai-yaz-paneli pa-4">
+            <div class="d-flex align-center justify-space-between mb-3">
+                <MudText Typo="Typo.subtitle1" Class="font-weight-bold">
+                    @dil.T("ai.aiIleYaz", "AI ile Yaz")
+                </MudText>
+                <MudIconButton Icon="@Icons.Material.Filled.Close" Size="Size.Small" OnClick="PanelAcKapat" />
+            </div>
+
+            <div class="d-flex flex-wrap gap-2 mb-3">
+                <MudButton Variant="@(_seciliIslem == "MetinYaz" ? Variant.Filled : Variant.Outlined)"
+                           Size="Size.Small" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Edit"
+                           OnClick='() => IslemSec("MetinYaz")'>@dil.T("ai.yaz", "Yaz")</MudButton>
+                <MudButton Variant="@(_seciliIslem == "Duzelt" ? Variant.Filled : Variant.Outlined)"
+                           Size="Size.Small" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Spellcheck"
+                           OnClick='() => IslemSec("Duzelt")'>@dil.T("ai.duzelt", "Düzelt")</MudButton>
+                <MudButton Variant="@(_seciliIslem == "Kisalt" ? Variant.Filled : Variant.Outlined)"
+                           Size="Size.Small" Color="Color.Primary" StartIcon="@Icons.Material.Filled.ShortText"
+                           OnClick='() => IslemSec("Kisalt")'>@dil.T("ai.kisalt", "Kısalt")</MudButton>
+                <MudButton Variant="@(_seciliIslem == "Uzat" ? Variant.Filled : Variant.Outlined)"
+                           Size="Size.Small" Color="Color.Primary" StartIcon="@Icons.Material.Filled.FormatSize"
+                           OnClick='() => IslemSec("Uzat")'>@dil.T("ai.uzat", "Uzat")</MudButton>
+                <MudButton Variant="@(_seciliIslem == "Cevir" ? Variant.Filled : Variant.Outlined)"
+                           Size="Size.Small" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Translate"
+                           OnClick='() => IslemSec("Cevir")'>@dil.T("ai.cevir", "Çevir")</MudButton>
+            </div>
+
+            <MudTextField @bind-Value="_ozelPrompt" Label="@dil.T("ai.prompt", "Özel Talimat (isteğe bağlı)")"
+                          Variant="Variant.Outlined" Lines="3" Class="mb-3"
+                          Placeholder="@dil.T("ai.promptYer", "Ne yazılmasını istersiniz?")" />
+
+            <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                       OnClick="Uret" Disabled="_yukleniyor" Class="mb-3">
+                @dil.T("ai.uret", "Üret")
+            </MudButton>
+
+            @if (_yukleniyor)
+            {
+                <MudProgressLinear Indeterminate="true" Color="Color.Primary" Size="Size.Small" Class="mb-3" />
+            }
+
+            @if (!string.IsNullOrEmpty(_goruntulenMetin) || _yaziyor)
+            {
+                <MudPaper Elevation="1" Class="pa-3 ai-yaz-sonuc">
+                    <MudText Typo="Typo.body2" Class="ai-yaz-metin">
+                        @_goruntulenMetin
+                        @if (_yaziyor)
+                        {
+                            <span class="ai-imlec">|</span>
+                        }
+                    </MudText>
+                </MudPaper>
+
+                @if (_yaziyor)
+                {
+                    <MudButton Variant="Variant.Text" Size="Size.Small" Color="Color.Error"
+                               OnClick="Durdur" Class="mt-1">
+                        @dil.T("ai.durdur", "Durdur")
+                    </MudButton>
+                }
+                else if (!string.IsNullOrEmpty(_tamMetin))
+                {
+                    <MudButton Variant="Variant.Text" Size="Size.Small" Color="Color.Primary"
+                               StartIcon="@Icons.Material.Filled.Check"
+                               OnClick="Onayla" Class="mt-1">@dil.T("ai.onayla", "Onayla ve Kullan")</MudButton>
+                }
+            }
+        </MudPaper>
+    }
+</div>

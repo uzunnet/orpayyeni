@@ -1,0 +1,76 @@
+@using VizitLink3D.UI.Models
+@using VizitLink3D.Ortak.Modeller.Ceviriler
+@inject VizitLink3D.UI.Servisler.DilServisi dil
+
+<MudDialog>
+    <DialogContent>
+        @if (_dillerYukleniyor)
+        {
+            <div class="d-flex align-center gap-2 mb-4">
+                <MudProgressCircular Color="Color.Primary" Size="Size.Small" Indeterminate="true" />
+                <MudText>@dil.T("admin.ai.dillerYukleniyor", "Diller yükleniyor...")</MudText>
+            </div>
+        }
+        else if (_hedefDiller.Count == 0)
+        {
+            <MudAlert Severity="Severity.Warning" Class="mb-4">
+                @dil.T("admin.ai.dilBulunamadi", "Çeviri için aktif hedef dil bulunamadı.")
+            </MudAlert>
+        }
+        else
+        {
+            <MudSelect T="string"
+                       Label="@dil.T("admin.urunSihirbazi.hedefDil", "Hedef Dil")"
+                       Value="@_seciliHedefDil"
+                       ValueChanged="HedefDilDegisti"
+                       Disabled="@_cevriliyor"
+                       Class="mb-4">
+                @foreach (var dilBilgi in _hedefDiller)
+                {
+                    <MudSelectItem @key="dilBilgi.Kod" Value="@dilBilgi.Kod">
+                        <span class="@dilBilgi.Bayrak" style="margin-right: 8px;"></span> @dilBilgi.Ad
+                    </MudSelectItem>
+                }
+            </MudSelect>
+        }
+
+        @if (_cevriliyor)
+        {
+            <div class="d-flex align-center gap-2 mb-4">
+                <MudProgressCircular Color="Color.Primary" Size="Size.Small" Indeterminate="true" />
+                <MudText>@dil.T("admin.urunSihirbazi.cevriliyor", "Yapay zeka çeviri yapıyor, lütfen bekleyin...")</MudText>
+            </div>
+        }
+        else if (!string.IsNullOrEmpty(_basariMesaji))
+        {
+            <MudAlert Severity="Severity.Success" Class="mb-4">@_basariMesaji</MudAlert>
+        }
+        else if (!string.IsNullOrEmpty(_hataMesaji))
+        {
+            <MudAlert Severity="Severity.Error" Class="mb-4">@_hataMesaji</MudAlert>
+        }
+
+        <MudList T="string" Dense="true" Class="mb-4">
+            <MudListSubheader>@dil.T("ortak.cevrilecekAlanlar", "Çevrilecek Alanlar")</MudListSubheader>
+            @foreach (var alan in CevrilecekAlanlar)
+            {
+                <MudListItem>
+                    <MudText Typo="Typo.body2">
+                        <strong>@alan.Key:</strong> 
+                        <span class="mud-text-secondary">@(alan.Value.Length > 50 ? alan.Value.Substring(0, 50) + "..." : alan.Value)</span>
+                    </MudText>
+                </MudListItem>
+            }
+        </MudList>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Iptal" Disabled="@_cevriliyor">@dil.T("ortak.iptal", "İptal")</MudButton>
+        <MudButton Color="Color.Primary" 
+                   Variant="Variant.Filled" 
+                   StartIcon="@Icons.Material.Filled.Translate" 
+                   OnClick="CevirVeKaydet"
+                   Disabled="@(_dillerYukleniyor || string.IsNullOrEmpty(_seciliHedefDil) || _cevriliyor)">
+            @dil.T("admin.urunSihirbazi.aiCevir", "Yapay Zeka ile Çevir ve Kaydet")
+        </MudButton>
+    </DialogActions>
+</MudDialog>

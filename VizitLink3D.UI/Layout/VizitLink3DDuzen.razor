@@ -1,0 +1,143 @@
+@inherits LayoutComponentBase
+
+<HeadContent>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+</HeadContent>
+
+<MudThemeProvider Theme="@_tema" IsDarkMode="@KoyuTemaMi" />
+<MudSnackbarProvider />
+<MudDialogProvider />
+<MudPopoverProvider />
+
+<div class="gb-shell" data-tema-id="@_aktifTema">
+    <header class="gb-header">
+        <a href="/" class="gb-brand">
+            @if (!string.IsNullOrWhiteSpace(_logoUrl))
+            {
+                <img src="@_logoUrl" alt="@_firmaAdi" style="max-height:72px;width:auto;" />
+            }
+            else
+            {
+                <span class="gb-brand__mark">@_firmaAdi[..1]</span>
+                <span class="gb-brand__text">@_firmaAdi</span>
+            }
+        </a>
+
+        <button type="button"
+                class="@MobilMenuDugmeClass"
+                aria-label="@DilServisi.T("menu.mobilAcKapat", "Menüyü aç veya kapat")"
+                aria-expanded="@_mobilMenuAcik"
+                aria-controls="gb-mobil-menu"
+                @onclick="MobilMenuDegistir">
+            <span class="gb-mobil-menu-dugme__ikon" aria-hidden="true">
+                <span></span><span></span><span></span>
+            </span>
+            <span class="gb-mobil-menu-dugme__metin">@DilServisi.T("menu.mobilKisa", "Menü")</span>
+        </button>
+
+        <nav class="gb-nav">
+            @foreach (var oge in _menu)
+            {
+                if (oge.AltMenuler.Count == 0)
+                {
+                    <a href="@oge.Url" class="gb-nav__link">@MenuBasligi(oge)</a>
+                }
+                else
+                {
+                    <div class="gb-nav__group">
+                        <a href="@oge.Url" class="gb-nav__link">@MenuBasligi(oge)</a>
+                        <div class="gb-nav__dropdown">
+                            @foreach (var alt in oge.AltMenuler)
+                            {
+                                <a href="@alt.Url" class="gb-nav__dropdown-link">@MenuBasligi(alt)</a>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+        </nav>
+
+        <nav id="gb-mobil-menu"
+             class="@MobilMenuClass"
+             aria-label="@DilServisi.T("menu.mobil", "Mobil menü")">
+            <div class="gb-mobil-menu__araclar">
+                <label class="gb-dil-secici gb-dil-secici--mobil">
+                    <span>@DilServisi.T("ortak.dil", "Dil")</span>
+                    <select value="@_aktifDil" @onchange="DilSecildi">
+                        @foreach (var dilBilgisi in _diller)
+                        {
+                            <option value="@dilBilgisi.Kod">@dilBilgisi.Kod.ToUpper()</option>
+                        }
+                    </select>
+                </label>
+
+                <div class="gb-mod-secici gb-mod-secici--mobil">
+                    <button type="button" class="@TemaModuClass("acik")" @onclick='() => TemaModuDegistir("acik")'>
+                        @DilServisi.T("ortak.acik", "Açık")
+                    </button>
+                    <button type="button" class="@TemaModuClass("koyu")" @onclick='() => TemaModuDegistir("koyu")'>
+                        @DilServisi.T("ortak.koyu", "Koyu")
+                    </button>
+                </div>
+            </div>
+            @foreach (var oge in _menu)
+            {
+                <a href="@oge.Url" class="gb-mobil-menu__link" @onclick="MobilMenuKapat">@MenuBasligi(oge)</a>
+                @if (oge.AltMenuler.Count > 0)
+                {
+                    <div class="gb-mobil-menu__alt">
+                        @foreach (var alt in oge.AltMenuler)
+                        {
+                            <a href="@alt.Url" class="gb-mobil-menu__alt-link" @onclick="MobilMenuKapat">@MenuBasligi(alt)</a>
+                        }
+                    </div>
+                }
+            }
+        </nav>
+
+        <div class="gb-header__actions">
+            <label class="gb-dil-secici">
+                <span>@DilServisi.T("ortak.dil", "Dil")</span>
+                <select value="@_aktifDil" @onchange="DilSecildi">
+                    @foreach (var dilBilgisi in _diller)
+                    {
+                        <option value="@dilBilgisi.Kod">@dilBilgisi.Kod.ToUpper()</option>
+                    }
+                </select>
+            </label>
+
+            <div class="gb-mod-secici">
+                <button type="button" class="@TemaModuClass("acik")" @onclick='() => TemaModuDegistir("acik")'>
+                    @DilServisi.T("ortak.acik", "Açık")
+                </button>
+                <button type="button" class="@TemaModuClass("koyu")" @onclick='() => TemaModuDegistir("koyu")'>
+                    @DilServisi.T("ortak.koyu", "Koyu")
+                </button>
+            </div>
+
+            <a class="gb-cta" href="/iletisim">@DilServisi.T("site.teklifAl", "Teklif Al")</a>
+        </div>
+    </header>
+
+    <main class="gb-main">
+        @Body
+    </main>
+
+    <footer class="gb-footer">
+        <div class="gb-footer__ust">
+            <span class="gb-footer__marka">@_firmaAdi</span>
+        </div>
+        <div class="gb-footer__links">
+            <a href="/banyo-dolaplari">@DilServisi.T("site.koleksiyonlar", "Koleksiyonlar")</a>
+            <a href="/katalog">@DilServisi.T("site.katalog", "Katalog")</a>
+            <a href="/hakkimizda">@DilServisi.T("site.kurumsal", "Kurumsal")</a>
+            <a href="/fabrikamiz">@DilServisi.T("site.fabrikamiz", "Fabrikamız")</a>
+            <a href="/iletisim">@DilServisi.T("site.iletisim", "İletişim")</a>
+        </div>
+        <div class="gb-footer__alt">
+            &copy; 2026 @_firmaAdi. @DilServisi.T("site.tumHaklariSaklidir", "Tüm hakları saklıdır.")
+        </div>
+    </footer>
+</div>

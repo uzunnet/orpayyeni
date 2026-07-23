@@ -1,0 +1,118 @@
+@page "/admin/sertifika-yonetimi"
+@layout VizitLink3D.UI.Layout.AdminDuzen
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<PageTitle>@($"{dil.T("admin.sertifika.sayfaBasligi", "Sertifika Yonetimi")} | VizitLink3D Admin")</PageTitle>
+
+<AdminSayfaBasligi Baslik="@dil.T("admin.sertifika.baslik", "Sertifika Yonetimi")"
+                   Aciklama="@dil.T("admin.sertifika.aciklama", "Sertifikalar sayfasinda yayinlanan JPG, PNG ve PDF belgelerini yonetin.")"
+                   Ikon="@Icons.Material.Filled.Verified" />
+
+<AdminAracCubugu AramaMetni="@_arama"
+                 AramaMetniDegisti="AramaMetniDegisti"
+                 AramaYerMetni="@dil.T("ortak.ara", "Ara...")">
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="YeniAc">
+        @dil.T("admin.sertifika.yeni", "Yeni Sertifika")
+    </MudButton>
+</AdminAracCubugu>
+
+@if (_yukleniyor)
+{
+    <AdminYukleniyorIskeleti SatirSayisi="5" />
+}
+
+@if (_formAcik)
+{
+    <MudPaper Elevation="0" Class="admin-form-panel pa-4 mb-4">
+        <MudText Typo="Typo.h6" Class="mb-4">@(_duzenlemeModu ? dil.T("admin.sertifika.duzenle", "Sertifika Duzenle") : dil.T("admin.sertifika.yeni", "Yeni Sertifika"))</MudText>
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudTextField @bind-Value="_form.Ad" Label="@dil.T("ortak.ad", "Ad")" Required="true" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudTextField @bind-Value="_form.VerenKurum" Label="@dil.T("admin.sertifika.verenKurum", "Veren Kurum")" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField @bind-Value="_form.Aciklama" Label="@dil.T("ortak.aciklama", "Açıklama")" Lines="3" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudTextField @bind-Value="_form.Resim" Label="@dil.T("admin.sertifika.gorselYolu", "Görsel Yolu")" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudTextField @bind-Value="_form.PdfDosya" Label="@dil.T("admin.sertifika.pdfYolu", "PDF Dosya Yolu")" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudFileUpload T="IBrowserFile" FilesChanged="DosyaYukle" Accept=".jpg,.jpeg,.png,.pdf" MaximumFileCount="1" Disabled="@_dosyaYukleniyor">
+                    <CustomContent Context="context">
+                        <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Filled.UploadFile" Disabled="@_dosyaYukleniyor" OnClick="context.OpenFilePickerAsync">
+                            @(_dosyaYukleniyor ? dil.T("admin.sertifika.yukleniyor", "Yukleniyor...") : dil.T("admin.sertifika.dosyaYukle", "JPG, PNG veya PDF Yukle"))
+                        </MudButton>
+                    </CustomContent>
+                </MudFileUpload>
+            </MudItem>
+            <MudItem xs="12" md="3">
+                <MudDatePicker @bind-Date="_form.VerilmeTarihi" Label="@dil.T("admin.sertifika.verilmeTarihi", "Verilme Tarihi")" />
+            </MudItem>
+            <MudItem xs="12" md="3">
+                <MudDatePicker @bind-Date="_form.GecerlilikTarihi" Label="@dil.T("admin.sertifika.gecerlilikTarihi", "Gecerlilik Tarihi")" />
+            </MudItem>
+            <MudItem xs="12" md="3">
+                <MudNumericField @bind-Value="_form.SiraNo" Label="@dil.T("ortak.siraNo", "Sıra No")" />
+            </MudItem>
+            <MudItem xs="12" md="3">
+                <MudSwitch @bind-Value="_form.AktifMi" Label="@dil.T("ortak.aktif", "Aktif")" />
+            </MudItem>
+        </MudGrid>
+        <div class="admin-form-actions">
+            <MudButton OnClick="FormIptal" Color="Color.Secondary" Disabled="@_kaydediliyor">@dil.T("ortak.iptal", "İptal")</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save" OnClick="Kaydet" Disabled="@_kaydediliyor">@dil.T("ortak.kaydet", "Kaydet")</MudButton>
+        </div>
+    </MudPaper>
+}
+
+@if (!_yukleniyor && _filtreliListe.Count == 0)
+{
+    <AdminBosDurum Icon="@Icons.Material.Filled.Verified"
+                   Baslik="@dil.T("admin.sertifika.bosBaslik", "Sertifika bulunamadi")"
+                   Aciklama="@dil.T("admin.sertifika.bosAciklama", "Yeni sertifika ekleyerek frontend sertifikalar sayfasini guncel tutun.")">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="YeniAc">
+            @dil.T("admin.sertifika.yeni", "Yeni Sertifika")
+        </MudButton>
+    </AdminBosDurum>
+}
+else if (!_yukleniyor)
+{
+    <MudDataGrid Items="@_filtreliListe" Filterable="true" SortMode="SortMode.Multiple" Dense="true" Striped="true" Hover="true">
+        <Columns>
+            <PropertyColumn Property="x => x.SiraNo" Title="@dil.T("ortak.sira", "Sıra")" Sortable="true" />
+            <PropertyColumn Property="x => x.Ad" Title="@dil.T("ortak.ad", "Ad")" Sortable="true" />
+            <PropertyColumn Property="x => x.VerenKurum" Title="@dil.T("admin.sertifika.verenKurum", "Veren Kurum")" Sortable="true" />
+            <TemplateColumn Title="@dil.T("admin.sertifika.dosyaTipi", "Dosya Tipi")">
+                <CellTemplate>
+                    <MudChip Size="Size.Small" Color="Color.Info" Variant="Variant.Outlined">@DosyaTipi(context.Item)</MudChip>
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title="@dil.T("ortak.aktif", "Aktif")">
+                <CellTemplate>
+                    <MudChip Size="Size.Small" Color="@(context.Item.AktifMi ? Color.Success : Color.Error)" Variant="Variant.Outlined">
+                        @(context.Item.AktifMi ? dil.T("ortak.aktif", "Aktif") : dil.T("ortak.pasif", "Pasif"))
+                    </MudChip>
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title="@dil.T("ortak.islemler", "Islemler")">
+                <CellTemplate>
+                    @if (!string.IsNullOrWhiteSpace(BelgeYolu(context.Item)))
+                    {
+                        <MudIconButton Icon="@Icons.Material.Filled.OpenInNew" Size="Size.Small" Href="@PdfGostericiUrl(context.Item)" />
+                    }
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="() => Duzenle(context.Item)" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error" OnClick="() => SilOnay(context.Item)" />
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager />
+        </PagerContent>
+    </MudDataGrid>
+}

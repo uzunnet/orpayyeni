@@ -1,0 +1,76 @@
+@namespace VizitLink3D.UI.Bilesenler.Admin
+@using VizitLink3D.Ortak.Modeller.Medya
+
+<div class="medya-alani-kap">
+    @if (!string.IsNullOrWhiteSpace(Etiket))
+    {
+        <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mb-1 d-block">@Etiket</MudText>
+    }
+
+    <!-- Önizleme -->
+    <div class="medya-alani-onizleme">
+        @if (!string.IsNullOrWhiteSpace(Deger))
+        {
+            @if (Is3D())
+            {
+                <div class="medya-alani-ikon-kutu">
+                    <MudIcon Icon="@Icons.Material.Filled.ViewInAr" Size="Size.Large" Color="Color.Primary" />
+                    <MudText Typo="Typo.caption" Class="mt-1 text-truncate" Style="max-width:140px;">@DosyaAdi()</MudText>
+                </div>
+            }
+            else if (IsPdf())
+            {
+                <div class="medya-alani-ikon-kutu">
+                    <MudIcon Icon="@Icons.Material.Filled.PictureAsPdf" Size="Size.Large" Color="Color.Error" />
+                    <MudText Typo="Typo.caption" Class="mt-1 text-truncate" Style="max-width:140px;">@DosyaAdi()</MudText>
+                </div>
+            }
+            else
+            {
+                <img src="@OnizlemeSrc()"
+                     alt="@Etiket"
+                     class="medya-alani-img"
+                     onerror="this.src='/medya/vizitlink3d_default.png'" />
+            }
+        }
+        else
+        {
+            <div class="medya-alani-ikon-kutu medya-alani-bos">
+                <MudIcon Icon="@Icons.Material.Filled.AddPhotoAlternate" Size="Size.Large" Color="Color.Tertiary" />
+                <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mt-1">Dosya seçilmedi</MudText>
+            </div>
+        }
+    </div>
+
+    <!-- Eylemler -->
+    <div class="medya-alani-eylemler">
+        <MudButton Variant="Variant.Outlined"
+                   StartIcon="@Icons.Material.Filled.PhotoLibrary"
+                   Size="Size.Small"
+                   OnClick="DialogAc">
+            @(string.IsNullOrWhiteSpace(Deger) ? "Seç / Yükle" : "Değiştir")
+        </MudButton>
+
+        @if (!string.IsNullOrWhiteSpace(Deger))
+        {
+            <MudTooltip Text="Temizle">
+            <MudIconButton Icon="@Icons.Material.Filled.Close"
+                           Size="Size.Small"
+                           Color="Color.Default"
+                           OnClick="Temizle" />
+        </MudTooltip>
+        }
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Deger))
+    {
+        <MudTooltip Text="@Deger">
+        <MudText Typo="Typo.caption"
+                 Color="Color.Secondary"
+                 Class="mt-1 d-block text-truncate"
+                 Style="max-width:100%;">
+            @Deger
+        </MudText>
+    </MudTooltip>
+    }
+</div>

@@ -1,0 +1,168 @@
+@page "/admin/kapak-modeli-yonetimi"
+@layout AdminDuzen
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Admin,SuperAdmin")]
+@using VizitLink3D.UI.Models
+
+<PageTitle>@DilServisi.T("admin.kapakModeli.baslik", "Kapı/Kapak Model Yönetimi")</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.False" Class="pa-6">
+    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mb-5" Wrap="Wrap.Wrap">
+        <div>
+            <MudText Typo="Typo.h4">@DilServisi.T("admin.kapakModeli.baslik", "Kapı/Kapak Model Yönetimi")</MudText>
+            <MudText Typo="Typo.body2" Color="Color.Secondary">@DilServisi.T("admin.kapakModeli.aciklama", "Admin kaydı frontend liste, detay, benzer ve çok izlenen alanlarına dinamik yansır.")</MudText>
+        </div>
+        <MudStack Row="true" Spacing="2">
+            <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Refresh" OnClick="@(() => Yukle())">
+                @DilServisi.T("ortak.yenile", "Yenile")
+            </MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@(() => YeniAc())">
+                @DilServisi.T("admin.kapakModeli.yeni", "Yeni Model")
+            </MudButton>
+        </MudStack>
+    </MudStack>
+
+    <MudGrid Spacing="4">
+        <MudItem xs="12" lg="@( _formAcik ? 7 : 12 )">
+            <MudPaper Class="pa-4" Elevation="1">
+                <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Center" Class="mb-4" Wrap="Wrap.Wrap">
+                    <MudTextField T="string"
+                                  Value="_arama"
+                                  ValueChanged="@((string deger) => AramaMetniDegisti(deger))"
+                                  Placeholder="@DilServisi.T("admin.kapakModeli.ara", "Model, kod veya kategori ara")"
+                                  Adornment="Adornment.Start"
+                                  AdornmentIcon="@Icons.Material.Filled.Search"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense" />
+                    <MudSelect T="string" Value="_modelTuruFiltre" ValueChanged="@((string deger) => ModelTuruFiltresiDegisti(deger))" Variant="Variant.Outlined" Margin="Margin.Dense">
+                        <MudSelectItem Value="@("Tümü")">@DilServisi.T("ortak.tumu", "Tümü")</MudSelectItem>
+                        <MudSelectItem Value="@("Kapi")">@DilServisi.T("kapi.modelleri", "Kapı Modelleri")</MudSelectItem>
+                        <MudSelectItem Value="@("Kapak")">@DilServisi.T("kapak.modelleri", "Kapak Modelleri")</MudSelectItem>
+                    </MudSelect>
+                </MudStack>
+
+                @if (_yukleniyor)
+                {
+                    <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+                }
+                else
+                {
+                    <MudDataGrid Items="_filtreliListe" Dense="true" Hover="true" Striped="true" SortMode="SortMode.Multiple">
+                        <Columns>
+                            <TemplateColumn Title="@DilServisi.T("ortak.gorsel", "Görsel")">
+                                <CellTemplate>
+                                    <MudTooltip Placement="Placement.Right">
+                                        <ChildContent>
+                                            <img src="@GorselYolu(context.Item)" width="44" height="44"
+                                                 style="object-fit:cover;border-radius:4px;cursor:zoom-in;"
+                                                 onerror="this.onerror=null;this.src='/medya/vizitlink3d_default.png';" />
+                                        </ChildContent>
+                                        <TooltipContent>
+                                            <img src="@GorselYolu(context.Item)" width="280"
+                                                 style="object-fit:contain;border-radius:6px;"
+                                                 onerror="this.onerror=null;this.src='/medya/vizitlink3d_default.png';" />
+                                        </TooltipContent>
+                                    </MudTooltip>
+                                </CellTemplate>
+                            </TemplateColumn>
+                            <PropertyColumn Property="x => x.ModelAdi" Title="@DilServisi.T("admin.kapakModeli.modelAdi", "Model Adı")" />
+                            <PropertyColumn Property="x => x.ModelKodu" Title="@DilServisi.T("admin.kapakModeli.modelKodu", "Kod")" />
+                            <PropertyColumn Property="x => x.ModelTuru" Title="@DilServisi.T("admin.kapakModeli.modelTuru", "Tür")" />
+                            <PropertyColumn Property="x => x.Kategori" Title="@DilServisi.T("admin.kapakModeli.kategori", "Kategori")" />
+                            <TemplateColumn Title="@DilServisi.T("ortak.durum", "Durum")">
+                                <CellTemplate>
+                                    <MudStack Row="true" Spacing="1">
+                                        @if (context.Item.YeniMi)
+                                        {
+                                            <MudChip T="string" Size="Size.Small" Color="Color.Info">@DilServisi.T("kapi.yeni", "Yeni")</MudChip>
+                                        }
+                                        @if (context.Item.OneCikanMi)
+                                        {
+                                            <MudChip T="string" Size="Size.Small" Color="Color.Warning">@DilServisi.T("kapi.oneCikan", "Öne Çıkan")</MudChip>
+                                        }
+                                    </MudStack>
+                                </CellTemplate>
+                            </TemplateColumn>
+                            <TemplateColumn Title="@DilServisi.T("ortak.islemler", "İşlemler")">
+                                <CellTemplate>
+                                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" OnClick="@(() => Duzenle(context.Item))" />
+                                    <MudIconButton Icon="@Icons.Material.Filled.OpenInNew" Href="@DetayUrl(context.Item)" Target="_blank" />
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(() => SilOnay(context.Item))" />
+                                </CellTemplate>
+                            </TemplateColumn>
+                        </Columns>
+                        <PagerContent>
+                            <MudDataGridPager T="KapakModeliDto" />
+                        </PagerContent>
+                    </MudDataGrid>
+                }
+            </MudPaper>
+        </MudItem>
+
+        @if (_formAcik)
+        {
+            <MudItem xs="12" lg="5">
+                <MudPaper Class="pa-4" Elevation="1">
+                    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mb-4">
+                        <MudText Typo="Typo.h6">@(_duzenlemeModu ? DilServisi.T("ortak.duzenle", "Düzenle") : DilServisi.T("ortak.yeniKayit", "Yeni Kayıt"))</MudText>
+                        <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="FormIptal" />
+                    </MudStack>
+
+                    <MudGrid Spacing="3">
+                        <MudItem xs="12" sm="6">
+                            <MudTextField @bind-Value="_form.ModelAdi" Label="@DilServisi.T("admin.kapakModeli.modelAdi", "Model Adı")" Required="true" Variant="Variant.Outlined" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudTextField @bind-Value="_form.ModelKodu" Label="@DilServisi.T("admin.kapakModeli.modelKodu", "Model Kodu")" Required="true" Variant="Variant.Outlined" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudSelect @bind-Value="_form.ModelTuru" Label="@DilServisi.T("admin.kapakModeli.modelTuru", "Model Türü")" Variant="Variant.Outlined">
+                                <MudSelectItem Value="@("Kapi")">@DilServisi.T("kapi.model", "Kapı")</MudSelectItem>
+                                <MudSelectItem Value="@("Kapak")">@DilServisi.T("kapak.model", "Kapak")</MudSelectItem>
+                            </MudSelect>
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudTextField @bind-Value="_form.Kategori" Label="@DilServisi.T("admin.kapakModeli.kategori", "Kategori")" Variant="Variant.Outlined" />
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudTextField @bind-Value="_form.Slug" Label="@DilServisi.T("admin.kapakModeli.slug", "Slug")" Variant="Variant.Outlined" />
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudTextField @bind-Value="_form.OnYazi" Label="@DilServisi.T("admin.kapakModeli.onYazi", "Ön Yazı")" Variant="Variant.Outlined" Lines="2" />
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudTextField @bind-Value="_form.Aciklama" Label="@DilServisi.T("admin.kapakModeli.aciklamaAlan", "Açıklama")" Variant="Variant.Outlined" Lines="4" />
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MedyaAlani Deger="@_form.AnaGorselUrl"
+                                        DegerDegisti="@(v => _form.AnaGorselUrl = v)"
+                                        Etiket='@DilServisi.T("admin.kapakModeli.gorselUrl", "Ana Görsel")'
+                                        IzinliTip="@(VizitLink3D.Ortak.Modeller.Medya.MedyaTipi.Resim)" />
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MedyaAlani Deger="@_form.ModelDosyaYolu"
+                                        DegerDegisti="@(v => _form.ModelDosyaYolu = v)"
+                                        Etiket='@DilServisi.T("admin.kapakModeli.modelDosyaYolu", "3D Model (GLB)")'
+                                        IzinliTip="@(VizitLink3D.Ortak.Modeller.Medya.MedyaTipi.Glb)" />
+                        </MudItem>
+                        <MudItem xs="12" sm="4">
+                            <MudNumericField @bind-Value="_form.SiraNo" Label="@DilServisi.T("ortak.sira", "Sıra")" Variant="Variant.Outlined" />
+                        </MudItem>
+                        <MudItem xs="12" sm="4">
+                            <MudCheckBox @bind-Value="_form.YeniMi" Label="@DilServisi.T("kapi.yeni", "Yeni")" />
+                        </MudItem>
+                        <MudItem xs="12" sm="4">
+                            <MudCheckBox @bind-Value="_form.OneCikanMi" Label="@DilServisi.T("kapi.oneCikan", "Öne Çıkan")" />
+                        </MudItem>
+                    </MudGrid>
+
+                    <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2" Class="mt-5">
+                        <MudButton Variant="Variant.Outlined" OnClick="FormIptal">@DilServisi.T("ortak.iptal", "İptal")</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="_kaydediliyor" OnClick="Kaydet">
+                            @DilServisi.T("ortak.kaydet", "Kaydet")
+                        </MudButton>
+                    </MudStack>
+                </MudPaper>
+            </MudItem>
+        }
+    </MudGrid>
+</MudContainer>
