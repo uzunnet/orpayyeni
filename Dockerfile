@@ -1,6 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /app
 COPY . .
+RUN dotnet workload install wasm-tools
 RUN dotnet restore VizitLink3D.Api/VizitLink3D.Api.csproj && dotnet restore VizitLink3D.UI/VizitLink3D.UI.csproj && dotnet restore VizitLink3D.Ortak/VizitLink3D.Ortak.csproj
 RUN dotnet publish VizitLink3D.UI/VizitLink3D.UI.csproj -c Release -o /app/ui-out
 RUN dotnet publish VizitLink3D.Api/VizitLink3D.Api.csproj -c Release -o /app/api-out
