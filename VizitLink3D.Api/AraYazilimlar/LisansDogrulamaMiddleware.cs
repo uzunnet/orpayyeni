@@ -8,7 +8,7 @@ public class LisansDogrulamaMiddleware(RequestDelegate sonraki, ILogger<LisansDo
     // localhost ve Coolify'in otomatik test domaini (*.sslip.io) lisanstan muaf —
     // gercek production domaini (3dvizitlink.com.tr) seed'de lisansli. sslip.io gecici
     // test/staging erisimi oldugundan lisanssiz tam calismali.
-    private static readonly string[] YerelDomainler = { "localhost", "127.0.0.1", "::1", "sslip.io", "192.168.", "10.", "172." };
+    private static readonly string[] YerelDomainler = { "localhost", "127.0.0.1", "::1", "sslip.io", "loca.lt", "192.168.", "10.", "172." };
     private static readonly string[] PublicGetYollari =
     {
         "/api/kapak-modelleri", "/api/menu", "/api/vizitlink3d",
