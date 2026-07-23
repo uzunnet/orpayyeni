@@ -1,0 +1,172 @@
+html, body {
+    font-family: var(--vizit-font-sans);
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+    background: var(--vizit-bg-base);
+    color: var(--vizit-text);
+    transition: background var(--vizit-transition), color var(--vizit-transition);
+}
+
+:root[data-site-tema="aurelian-onyx"] html,
+:root[data-site-tema="aurelian-onyx"] body {
+    background: var(--vizit-bg-base);
+    color: var(--vizit-text);
+}
+
+h1:focus { outline: none; }
+
+#app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.mud-main-content {
+    padding-top: 0 !important;
+}
+
+h1:focus { outline: none; }
+
+#app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.mud-main-content {
+    padding-top: 0 !important;
+}
+
+/* Animasyon elementleri baslangicta gizli — GSAP acar */
+.anim-scroll-yukari, .anim-scroll-sol, .anim-scroll-sag, .anim-scroll-resim {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* ================================================================
+ * VIZITLINK3D ANIMASYON SISTEMI - GARANTILI CALISMA
+ * ================================================================ */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeLeft {
+    from { opacity: 0; transform: translateX(-40px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+@keyframes pulseAnim {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.06); }
+}
+@keyframes cardLift {
+    from { transform: translateY(0); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    to { transform: translateY(-5px); box-shadow: 0 12px 35px rgba(0,0,0,0.12); }
+}
+
+/* Tum MudBlazor kartlari ve Paper'lar hover'da kalksin */
+.mud-card, .mud-paper, .stat-card {
+    transition: transform 0.35s ease, box-shadow 0.35s ease !important;
+}
+.mud-card:hover, .mud-paper:hover, .stat-card:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.12) !important;
+}
+
+/* Animasyon siniflari - DIREKT CSS */
+.gsap-fade-up, .fade-in-up {
+    animation: fadeUp 0.8s ease-out both !important;
+}
+.gsap-fade-left {
+    animation: fadeLeft 0.8s ease-out both !important;
+}
+.pulse-anim {
+    animation: pulseAnim 1.8s ease-in-out infinite !important;
+}
+.hover-lift {
+    transition: transform 0.35s ease, box-shadow 0.35s ease !important;
+}
+.hover-lift:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.12) !important;
+}
+.hover-zoom {
+    transition: transform 0.4s ease !important;
+    overflow: hidden !important;
+}
+.hover-zoom:hover {
+    transform: scale(1.04) !important;
+}
+
+.loading-progress {
+    position: absolute;
+    display: block;
+    width: 8rem;
+    height: 8rem;
+    inset: 20vh 0 auto 0;
+    margin: 0 auto;
+}
+
+.loading-progress circle {
+    fill: none;
+    stroke: #e0e0e0;
+    stroke-width: 0.6rem;
+    transform-origin: 50% 50%;
+    transform: rotate(-90deg);
+}
+
+.loading-progress circle:last-child {
+    stroke: #C5A059;
+    stroke-dasharray: calc(3.141 * var(--blazor-load-percentage, 0%) * 0.8), 500%;
+    transition: stroke-dasharray 0.05s ease-in-out;
+}
+
+.loading-progress-text {
+    position: absolute;
+    text-align: center;
+    font-weight: bold;
+    font-family: var(--vizit-font-sans), sans-serif;
+    color: #1A1C1C;
+    inset: calc(20vh + 3.25rem) 0 auto 0.2rem;
+}
+
+.loading-progress-text:after {
+    content: var(--blazor-load-percentage-text, "Yukleniyor...");
+}
+
+#blazor-error-ui {
+    background: #1A1C1C;
+    color: var(--vizit-text-inverse);
+    padding: 1rem 1.5rem;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10000;
+    display: none !important;
+}
+
+#blazor-error-ui .dismiss { cursor: pointer; position: absolute; right: 1rem; top: 0.5rem; }
+
+/* === YENI STITCH YERLESIM SINIFLARI (NAVBAR & FOOTER) === */
+.vizit-navbar { position: fixed; top: 0; left: 0; width: 100%; z-index: 50; background-color: var(--tema-arkaplan, rgba(255, 255, 255, 0.8)); backdrop-filter: blur(12px); border-bottom: 1px solid var(--tema-cizgi); }
+.vizit-navbar-icerik { display: flex; justify-content: space-between; align-items: center; padding: 0 var(--tema-bosluk-2xl, 2rem); max-width: 1440px; margin: 0 auto; height: 5rem; }
+.vizit-navbar-masaustu { display: none; }
+@media (min-width: 768px) { .vizit-navbar-masaustu { display: flex; align-items: center; gap: 2rem; } }
+.vizit-nav-link { font-family: var(--tema-font-govde, sans-serif); color: var(--tema-metin); text-decoration: none; padding-bottom: 4px; border-bottom: 2px solid transparent; transition: all var(--tema-gecis-normal, 0.3s ease); font-weight: 500; }
+.vizit-nav-link:hover, .vizit-nav-link.aktif { color: var(--tema-vurgu, #C5A059); border-bottom-color: var(--tema-vurgu, #C5A059); }
+.vizit-navbar-eylemler { display: flex; align-items: center; gap: 1rem; color: var(--tema-vurgu, #C5A059); }
+.vizit-navbar-btn { background: none; border: none; cursor: pointer; color: inherit; transition: opacity var(--tema-gecis-hizli, 0.15s ease); }
+.vizit-navbar-btn:hover { opacity: 0.8; }
+.vizit-navbar-mobil-btn { display: block; background: none; border: none; cursor: pointer; color: var(--tema-vurgu, #C5A059); }
+@media (min-width: 768px) { .vizit-navbar-mobil-btn { display: none; } }
+.vizit-logo-metin { font-family: var(--tema-font-baslik, serif); font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; color: var(--tema-vurgu, #C5A059); }
+
+.vizit-footer { background-color: var(--tema-arkaplan-zemin, #101112); width: 100%; padding: var(--tema-bosluk-3xl, 4rem) 0; border-top: 1px solid var(--tema-cizgi, #222); margin-top: auto; }
+.vizit-footer-icerik { max-width: 1440px; margin: 0 auto; padding: 0 var(--tema-bosluk-2xl, 2rem); display: grid; grid-template-columns: 1fr; gap: 2rem; }
+@media (min-width: 768px) { .vizit-footer-icerik { grid-template-columns: repeat(3, 1fr); } }
+.vizit-footer-marka { display: flex; flex-direction: column; gap: 1rem; }
+.vizit-footer-aciklama { color: var(--tema-metin-ikincil, #888); font-size: 0.875rem; }
+.vizit-footer-baslik { font-family: var(--tema-font-govde, sans-serif); font-weight: 600; margin-bottom: 1rem; color: var(--tema-vurgu, #C5A059); }
+.vizit-footer-link { color: var(--tema-metin-ikincil, #888); text-decoration: none; margin-bottom: 0.5rem; display: block; transition: color var(--tema-gecis-hizli, 0.15s ease); }
+.vizit-footer-link:hover { color: var(--tema-vurgu, #C5A059); }

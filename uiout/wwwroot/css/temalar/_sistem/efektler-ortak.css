@@ -1,0 +1,34 @@
+/*
+ * Ortak Efektler — Tüm temalar için temel görsel efektler
+ * Glassmorphism, glow, cam yüzey efektleri için temel tanımlar.
+ */
+
+/* Glassmorphism temel (tema-specific opacity/blur override edilebilir) */
+.cam-yuzey {
+    background: var(--tema-cam-bg, rgba(255, 255, 255, 0.06));
+    backdrop-filter: var(--tema-cam-blur, blur(12px));
+    -webkit-backdrop-filter: var(--tema-cam-blur, blur(12px));
+    border: 1px solid var(--tema-cam-cizgi, rgba(255, 255, 255, 0.10));
+}
+
+/* Glow efekti */
+.glow {
+    box-shadow: var(--tema-golge-vurgu, 0 0 15px rgba(197, 160, 89, 0.30));
+}
+
+/* Gradient border */
+.sinir-gradient {
+    border: 1px solid transparent;
+    background-clip: padding-box;
+    position: relative;
+}
+
+.sinir-gradient::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background: linear-gradient(135deg, var(--tema-vurgu, #C5A059), transparent 60%);
+    z-index: -1;
+    opacity: 0.3;
+}

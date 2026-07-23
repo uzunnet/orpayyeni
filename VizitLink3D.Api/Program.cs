@@ -311,19 +311,9 @@ uygulama.MapHub<AIHub>("/hubs/ai");
 uygulama.MapHub<SahneAyarHub>("/hubs/sahne-ayar");
 uygulama.MapHub<TemaHub>("/hubs/tema");
 
-// 12. Root endpoint - API durumu
-uygulama.MapGet("/", () => Results.Json(new {
-    basariliMi = true,
-    mesaj = "VizitLink3D API calisiyor",
-    apiVersiyon = "1.0",
-    endpointler = new[] {
-        "/api/sayfa-duzen-ayarlari",
-        "/api/db-yukle",
-        "/api/kapak-modelleri",
-        "/api/menu",
-        "/api/urunler",
-        "/swagger"
-    }
-}));
+// 12. UI varsa SPA fallback
+if (System.IO.File.Exists(Path.Combine(uygulama.Environment.WebRootPath, "index.html"))) {
+    uygulama.MapFallbackToFile("index.html");
+}
 
 uygulama.Run();

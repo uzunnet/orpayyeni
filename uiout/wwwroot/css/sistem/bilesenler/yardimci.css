@@ -1,0 +1,16 @@
+/* Yardimci CSS — VizitLink3D */
+.vizit-maxw-300{max-width:300px}
+.vizit-maxw-400{max-width:400px}
+.vizit-maxw-500{max-width:500px}
+.vizit-maxw-600{max-width:600px}
+.vizit-color-muted{color:var(--vizit-text-muted,#6c6c6c)}
+.vizit-color-soft{color:#999}
+.vizit-color-ccc{color:#CCC}
+.vizit-bg-base{padding:96px 0}
+.vizit-pre-wrap{white-space:pre-wrap}
+.vizit-font-mono{font-family:'JetBrains Mono',monospace}
+.vizit-font-manrope{font-family:'Manrope',sans-serif}
+.vizit-font-700{font-weight:700}
+.vizit-font-11{font-size:11px}
+.vizit-font-10{font-size:10px}
+.vizit-border-default{border:1px solid var(--mud-palette-lines-default,#ddd)}

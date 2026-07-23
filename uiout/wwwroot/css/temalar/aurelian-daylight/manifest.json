@@ -1,0 +1,122 @@
+{
+  "id": "aurelian-daylight",
+  "kod": "AURELIAN_DAYLIGHT",
+  "ad": "Aurelian Daylight",
+  "slug": "aurelian-daylight",
+  "adAnahtar": "tema.aurelian-daylight.ad",
+  "adVarsayilanTr": "Aurelian Daylight",
+  "adVarsayilanEn": "Aurelian Daylight",
+  "aciklamaAnahtar": "tema.aurelian-daylight.aciklama",
+  "aciklamaVarsayilanTr": "Aynı Aurelian ailesinin gündüz varyantı — krem, altın, zarif gölge",
+  "aciklamaVarsayilanEn": "Daylight variant of the Aurelian family — cream, gold, elegant shadow",
+  "kaynak": "stitch",
+  "stitchProjeId": "13800263520330366969",
+  "modlar": ["acik"],
+  "varsayilanMod": "acik",
+  "adminTemaDegil": true,
+  "aktif": true,
+  "varsayilanMi": false,
+  "premium": true,
+  "fiyat": 0,
+  "paraBirimi": "TRY",
+  "thumbnailUrl": "/css/temalar/aurelian-daylight/ekran-goruntusu.jpg",
+  "olusturulmaTarihi": "2026-07-02T00:00:00Z",
+  "guncellenmeTarihi": null,
+  "versiyon": 1,
+
+  "renkler": {
+    "birincil": "#1F1A14",
+    "ikincil": "#E8DFC9",
+    "vurgu": "#C8952A",
+    "vurguAcik": "#E0B455",
+    "vurguKoyu": "#8B6914",
+    "arkaPlan": "#F5EFE0",
+    "arkaPlan2": "#FBF7EE",
+    "yuzey": "#FFFFFF",
+    "yuzeyHover": "#FAF6EC",
+    "cizgi": "rgba(31, 26, 20, 0.12)",
+    "metin": "#1F1A14",
+    "metinIkincil": "#5B5240",
+    "metinSoluk": "#8B826E",
+    "metinTers": "#FFFFFF",
+    "basari": "#4a7c59",
+    "uyari": "#c9a449",
+    "hata": "#9b3d3d",
+    "bilgi": "#4a6c8c"
+  },
+
+  "tipografi": {
+    "baslikAilesi": "Playfair Display",
+    "baslikFallback": "'Noto Serif', serif",
+    "baslikAgirlik": 700,
+    "baslikHarfAraligi": "-0.02em",
+    "govdeAilesi": "Space Grotesk",
+    "govdeFallback": "'Manrope', system-ui, sans-serif",
+    "govdeAgirlik": 400,
+    "vurguAilesi": "Cormorant Garamond",
+    "monoAilesi": "JetBrains Mono",
+    "boyutSkalaRatio": 1.333,
+    "baslikBuyuklukClamp": "clamp(2.5rem, 6vw, 5rem)"
+  },
+
+  "geometri": {
+    "koseSm": 2,
+    "koseMd": 4,
+    "koseLg": 8,
+    "koseXl": 16,
+    "koseTam": 9999,
+    "borderKalinlik": 1,
+    "borderStil": "solid"
+  },
+
+  "golgeler": {
+    "sm": "0 2px 8px rgba(31, 26, 20, 0.08)",
+    "md": "0 4px 20px rgba(31, 26, 20, 0.12)",
+    "lg": "0 10px 40px rgba(31, 26, 20, 0.15)",
+    "xl": "0 20px 60px rgba(31, 26, 20, 0.18)",
+    "vurgu": "0 0 12px rgba(200, 149, 42, 0.20)",
+    "glowStil": "altin-hafif"
+  },
+
+  "glassmorphism": {
+    "aktif": false,
+    "blur": "12px",
+    "blurSaturate": 1.2,
+    "bgOpacity": 0.7,
+    "borderOpacity": 0.3,
+    "yariSaydam": false
+  },
+
+  "animasyon": {
+    "hizi": "yumusak",
+    "gecisHizli": "0.2s ease",
+    "gecisNormal": "0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+    "gecisYavas": "0.7s cubic-bezier(0.22, 1, 0.36, 1)",
+    "cubicBezier": "cubic-bezier(0.22, 1, 0.36, 1)",
+    "hoverYukseklik": 4,
+    "hoverOlcek": 1.02,
+    "scrollReveal": true,
+    "magneticCursor": false,
+    "pariltiEfekti": false,
+    "shimmerEfekti": false,
+    "tip": "yumusak-zarif"
+  },
+
+  "layout": {
+    "header": "solid",
+    "footer": "solid",
+    "heroTipi": "fullscreen-slider-overlay",
+    "kartStili": "solid-elevation",
+    "icerikGenislik": 1440,
+    "kenarBosluk": 80,
+    "sutunSayisi": 4,
+    "bolumAyirici": "cizgi"
+  },
+
+  "ikonSeti": "Material Icons Outlined",
+
+  "glassmorphismAktif": false,
+  "premium": true,
+
+  "etiketler": ["premium", "aydinlik", "krem", "altin", "lux", "editorial"]
+}

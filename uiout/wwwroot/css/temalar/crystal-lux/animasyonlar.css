@@ -1,0 +1,19 @@
+﻿/*
+ * Crystal Lux — animasyonlar.css
+ * Tema-özgü motion presetleri CokluTemaServisi tarafından üretilir.
+ */
+
+@keyframes tema-marka-akis-crystal-lux {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+:root[data-tema-id="crystal-lux"] .marka-parilti {
+    background: linear-gradient(135deg, var(--tema-vurgu), var(--tema-vurgu-acik), var(--tema-vurgu));
+    background-size: 200% 200%;
+    animation: tema-marka-akis-crystal-lux 3s ease infinite;
+}
+
+:root[data-tema-id="crystal-lux"] .gecis-tum {
+    transition: all var(--tema-gecis-normal);
+}
