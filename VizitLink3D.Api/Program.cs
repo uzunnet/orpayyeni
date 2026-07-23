@@ -311,8 +311,9 @@ uygulama.MapHub<AIHub>("/hubs/ai");
 uygulama.MapHub<SahneAyarHub>("/hubs/sahne-ayar");
 uygulama.MapHub<TemaHub>("/hubs/tema");
 
-// 12. UI varsa SPA fallback
+// 12. UI varsa default dosya + SPA fallback
 if (System.IO.File.Exists(Path.Combine(uygulama.Environment.WebRootPath, "index.html"))) {
+    uygulama.UseDefaultFiles();
     uygulama.MapFallbackToFile("index.html");
 }
 
