@@ -13,12 +13,12 @@ public class AnaSayfaSlaytYoluTestleri
         Assert.Equal(beklenen, AnaSayfaSlaytYolu.Guncelle(eskiYol));
     }
 
-    [Fact]
-    public void Guncelle_BuyukKucukHarfFarkindaDaDonusturur()
+    [Theory]
+    [InlineData("/MEDYA/ANASAYFA-SLAYT-1.PNG", "/medya/anasayfa-slayt-1.webp")]
+    [InlineData("/Medya/Anasayfa-Slayt-2.png", "/medya/anasayfa-slayt-2.webp")]
+    public void Guncelle_BuyukKucukHarfFarkindaDaDonusturur(string giris, string beklenen)
     {
-        var sonuc = AnaSayfaSlaytYolu.Guncelle("/MEDYA/GOLD-KATALOG/ANASAYFA-SLAYT-1.PNG");
-
-        Assert.Equal("/medya/anasayfa-slayt-1.webp", sonuc);
+        Assert.Equal(beklenen, AnaSayfaSlaytYolu.Guncelle(giris));
     }
 
     [Fact]

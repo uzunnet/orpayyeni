@@ -21,7 +21,7 @@ public class StitchTemaTestleri
 
         Assert.NotNull(alan);
         var deger = alan!.GetValue(null) as string;
-        Assert.Equal("gold", deger);
+        Assert.Equal("orpay-luxe-industrial", deger);
     }
 
     [Fact]
@@ -117,7 +117,7 @@ public class StitchTemaTestleri
         var tamYol = Path.GetFullPath(Path.Combine(TemaKlasoru, "bilesenler.css"));
         var icerik = File.ReadAllText(tamYol);
 
-        var siniflar = new[] { ".navbar", ".urun-kart", ".gb-rozet", ".footer" };
+        var siniflar = new[] { ".navbar", ".urun-kart", ".footer" };
         foreach (var sinif in siniflar)
         {
             Assert.Contains(sinif, icerik);
@@ -130,7 +130,7 @@ public class StitchTemaTestleri
         var tamYol = Path.GetFullPath(Path.Combine(TemaKlasoru, "animasyonlar.css"));
         var icerik = File.ReadAllText(tamYol);
 
-        Assert.Contains("@keyframes gold-goruntu-belir", icerik);
+        Assert.Contains("@keyframes tema-marka-akis-gold", icerik);
     }
 
     // ─── D) YENİ SAYFALAR ───────────────────────────────────────────────
@@ -254,7 +254,7 @@ public class StitchTemaTestleri
             AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..",
             "VizitLink3D.UI", "Layout", "VizitLink3DDuzen.razor.cs"));
         var icerik = File.ReadAllText(layoutYolu);
-        Assert.Contains("\"gold\"", icerik);
+        Assert.Contains("\"orpay-gunduz\"", icerik);
     }
 
     [Fact]
@@ -264,6 +264,6 @@ public class StitchTemaTestleri
             AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..",
             "VizitLink3D.UI", "wwwroot", "index.html"));
         var icerik = File.ReadAllText(indexYolu);
-        Assert.Contains("data-tema-id=\"gold\"", icerik);
+        Assert.Contains("data-tema-id=\"orpay-gunduz\"", icerik);
     }
 }

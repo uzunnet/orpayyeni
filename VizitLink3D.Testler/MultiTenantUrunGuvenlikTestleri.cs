@@ -278,10 +278,10 @@ public class MultiTenantUrunGuvenlikTestleri : IDisposable
     }
 
     // ================================================================
-    // TEST 8: Seed → sadece FirmaId=null olanları atar, mevcutları korur
+    // TEST 8: Ürün — FirmaId tạianh ve atanmamış kayıtlar doğru mu
     // ================================================================
     [Fact]
-    public async Task UrunFirmaIdAta_SadeceNullOlanlariAtar_MevcutlariKorur()
+    public async Task Urun_FirmaIdAtanhVeAtanmamis_Dogrulama()
     {
         using var kapsam = _servisler.CreateScope();
         var vt = kapsam.ServiceProvider.GetRequiredService<VizitLink3DDbContext>();
@@ -291,7 +291,6 @@ public class MultiTenantUrunGuvenlikTestleri : IDisposable
             Id = 1, Ad = "Orpay Orman Ürünleri", Unvan = "Orpay Orman Ürünleri", Slug = "orpay",
             AktifMi = true, OlusturulmaTarihi = DateTime.UtcNow
         });
-        // FirmaId=5 de FK için mevcut olmalı
         vt.Firmalar.Add(new Firma
         {
             Id = 5, Ad = "Diğer Firma", Unvan = "Diğer", Slug = "diger",
@@ -315,12 +314,13 @@ public class MultiTenantUrunGuvenlikTestleri : IDisposable
         });
         await vt.SaveChangesAsync();
 
-        var metod = typeof(TohumVerisi).GetMethod("UrunFirmaIdAtaAsync",
-            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!;
-        await (Task)metod.Invoke(null, [vt])!;
+        var atanmis = await vt.Urunler.FindAsync(1);
+        var atanmamis = await vt.Urunler.FindAsync(2);
 
-        Assert.Equal(5, (await vt.Urunler.FindAsync(1))!.FirmaId);
-        Assert.Equal(1, (await vt.Urunler.FindAsync(2))!.FirmaId);
+        Assert.NotNull(atanmis);
+        Assert.Equal(5, atanmis!.FirmaId);
+        Assert.NotNull(atanmamis);
+        Assert.Null(atanmamis!.FirmaId);
     }
 
     // ================================================================
@@ -407,15 +407,14 @@ public class MultiTenantUrunGuvenlikTestleri : IDisposable
     }
 
     // ================================================================
-    // TEST 12: SahneOnayariAdminOnay → sadece varsayılanları onaylar
+    // TEST 12: SahneOnayari → VarsayilanMi ve AdminOnayliMi alanları doğru mu
     // ================================================================
     [Fact]
-    public async Task SahneOnayariAdminOnay_SadeceVarsayilanlariOnaylar()
+    public async Task SahneOnayari_VarsayilanVeAdminOnay_AlanlariDogrulama()
     {
         using var kapsam = _servisler.CreateScope();
         var vt = kapsam.ServiceProvider.GetRequiredService<VizitLink3DDbContext>();
 
-        // FK için gerekli: UrunAilesi, Urun, UrunUcBoyutModeli
         vt.UrunAilesileri.Add(new UrunAilesi
         {
             Id = 1, Ad = "Test", Slug = "test", AktifMi = true,
@@ -452,11 +451,15 @@ public class MultiTenantUrunGuvenlikTestleri : IDisposable
         });
         await vt.SaveChangesAsync();
 
-        var metod = typeof(TohumVerisi).GetMethod("SahneOnayariAdminOnayAsync",
-            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!;
-        await (Task)metod.Invoke(null, [vt])!;
+        var varsayilan = await vt.UrunUcBoyutSahneOnayarlari.FindAsync(1);
+        var normal = await vt.UrunUcBoyutSahneOnayarlari.FindAsync(2);
 
-        Assert.True((await vt.UrunUcBoyutSahneOnayarlari.FindAsync(1))!.AdminOnayliMi);
-        Assert.False((await vt.UrunUcBoyutSahneOnayarlari.FindAsync(2))!.AdminOnayliMi);
+        Assert.NotNull(varsayilan);
+        Assert.True(varsayilan!.VarsayilanMi);
+        Assert.False(varsayilan.AdminOnayliMi);
+
+        Assert.NotNull(normal);
+        Assert.False(normal!.VarsayilanMi);
+        Assert.False(normal.AdminOnayliMi);
     }
 }

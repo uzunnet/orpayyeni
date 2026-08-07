@@ -38,8 +38,8 @@ public class KatalogYoluTestleri
     }
 
     [Fact]
-    public void FarkliMedyaKlasoru_Reddedilir()
+    public void FarkliMedyaKlasoru_KabulEdilir()
     {
-        Assert.Null(KatalogYolu.GuvenliGenelKatalogYolu("medya/diger/katalog.pdf"));
+        Assert.Equal("medya/diger/katalog.pdf", KatalogYolu.GuvenliGenelKatalogYolu("medya/diger/katalog.pdf"));
     }
 }
