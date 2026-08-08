@@ -1,9 +1,6 @@
-
 services:
   vizitlink3d-api:
-    build:
-      context: .
-      dockerfile: VizitLink3D.Api/Dockerfile
+    image: ghcr.io/uzunnet/orpay-vizitlink3d-api:latest
     container_name: orpay-api
     restart: unless-stopped
     ports:
@@ -31,9 +28,7 @@ services:
       start_period: 15s
 
   vizitlink3d-ui:
-    build:
-      context: .
-      dockerfile: VizitLink3D.UI/Dockerfile
+    image: ghcr.io/uzunnet/orpay-vizitlink3d-ui:latest
     container_name: orpay-ui
     restart: unless-stopped
     ports:
