@@ -13,14 +13,14 @@ services:
       - Saas__LocalTekFirmaZorla=true
       - FORCE_SEED=1
     expose:
-      - "5015"
+      - "8080"
     volumes:
       - orpay-veri:/app/Veri
       - orpay-medya:/app/wwwroot/medya
     networks:
       - orpay-net
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5015/api/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
