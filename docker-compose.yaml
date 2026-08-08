@@ -1,0 +1,55 @@
+
+services:
+  vizitlink3d-api:
+    build:
+      context: .
+      dockerfile: VizitLink3D.Api/Dockerfile
+    container_name: orpay-api
+    restart: unless-stopped
+    ports:
+      - "5015:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - VeriTabani__Yol=/app/Veri/vizitlink3d.db
+      - Kestrel__Endpoints__Http__Url=http://+:8080
+      - Jwt__Anahtar=${JWT_ANAHTAR:-VizitLink3D_Production_Gizli_Anahtari_2026}
+      - Cors__IzinliDomainler__0=http://localhost:5013
+      - Cors__IzinliDomainler__1=https://localhost:5013
+      - Saas__VarsayilanFirmaSlug=orpay
+      - Saas__LocalTekFirmaZorla=true
+      - FORCE_SEED=1
+    volumes:
+      - orpay-veri:/app/Veri
+      - orpay-medya:/app/wwwroot/medya
+    networks:
+      - orpay-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+  vizitlink3d-ui:
+    build:
+      context: .
+      dockerfile: VizitLink3D.UI/Dockerfile
+    container_name: orpay-ui
+    restart: unless-stopped
+    ports:
+      - "5013:80"
+    depends_on:
+      vizitlink3d-api:
+        condition: service_healthy
+    networks:
+      - orpay-net
+
+volumes:
+  orpay-veri:
+    driver: local
+  orpay-medya:
+    driver: local
+
+networks:
+  orpay-net:
+    driver: bridge
