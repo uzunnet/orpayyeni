@@ -3188,6 +3188,6 @@ button.orpay-chip {
     animation: orpayPageSlideIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 @keyframes orpayPageSlideIn {
-    0% { opacity: 0; transform: translateY(20px); }
-    100% { opacity: 1; transform: translateY(0); }
+    0% { opacity: 0; }
+    100% { opacity: 1; }
 }
