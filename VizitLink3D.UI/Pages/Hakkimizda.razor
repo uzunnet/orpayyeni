@@ -94,7 +94,7 @@
 </section>
 
 <!-- Vizyon & Misyon -->
-<section class="bolum reveal">
+<section id="vizyon-misyon" class="bolum reveal">
     <div class="grid-2">
         <div class="glass-panel vizyon-misyon-kart">
             <span class="material-symbols-outlined vizyon-misyon-kart-ikon">visibility</span>
@@ -105,6 +105,126 @@
             <span class="material-symbols-outlined vizyon-misyon-kart-ikon">flag</span>
             <h3 class="vizyon-misyon-kart-baslik">@dil.T("kurumsal.misyon", "Misyonumuz")</h3>
             <p class="bolum-metin-alt">@dil.T("kurumsal.misyonAciklama", "Modern uretim teknolojileri ve uzman kadromuzla, musteri beklentilerini asan kalitede urunler sunarak, ulke ekonomisine ve sektorun gelisimine katki saglamak.")</p>
+        </div>
+    </div>
+</section>
+
+<!-- Ekibimiz -->
+<section id="ekibimiz" class="bolum reveal">
+    <div class="bolum-merkezi">
+        <h2 class="bolum-baslik">@dil.T("kurumsal.ekibimizBaslik", "Uzman Kadromuz")</h2>
+        <p class="bolum-metin-alt" style="max-width:700px;margin:0 auto 3rem;">@dil.T("kurumsal.ekibimizAciklama", "Deneyimli ve uzman kadromuzla müşteri beklentilerini en üst düzeyde karşılıyoruz.")</p>
+        <div class="grid-4">
+            <div class="glass-panel" style="padding:2rem;text-align:center;">
+                <span class="material-symbols-outlined" style="font-size:3rem;color:var(--tema-ana-renk);">engineering</span>
+                <h3 style="margin:1rem 0 0.5rem;font-size:1.1rem;">@dil.T("kurumsal.ekip.uretim", "Üretim Uzmanları")</h3>
+                <p style="opacity:0.7;font-size:0.9rem;">@dil.T("kurumsal.ekip.uretimAciklama", "Modern makine parkurumuzda uzman ekipler")</p>
+            </div>
+            <div class="glass-panel" style="padding:2rem;text-align:center;">
+                <span class="material-symbols-outlined" style="font-size:3rem;color:var(--tema-ana-renk);">design_services</span>
+                <h3 style="margin:1rem 0 0.5rem;font-size:1.1rem;">@dil.T("kurumsal.ekip.tasarim", "Tasarım Ekibi")</h3>
+                <p style="opacity:0.7;font-size:0.9rem;">@dil.T("kurumsal.ekip.tasarimAciklama", "Yenilikçi tasarım çözümleri")</p>
+            </div>
+            <div class="glass-panel" style="padding:2rem;text-align:center;">
+                <span class="material-symbols-outlined" style="font-size:3rem;color:var(--tema-ana-renk);">quality</span>
+                <h3 style="margin:1rem 0 0.5rem;font-size:1.1rem;">@dil.T("kurumsal.ekip.kalite", "Kalite Kontrol")</h3>
+                <p style="opacity:0.7;font-size:0.9rem;">@dil.T("kurumsal.ekip.kaliteAciklama", "Sıkı kalite standartları")</p>
+            </div>
+            <div class="glass-panel" style="padding:2rem;text-align:center;">
+                <span class="material-symbols-outlined" style="font-size:3rem;color:var(--tema-ana-renk);">local_shipping</span>
+                <h3 style="margin:1rem 0 0.5rem;font-size:1.1rem;">@dil.T("kurumsal.ekip.lojistik", "Lojistik")</h3>
+                <p style="opacity:0.7;font-size:0.9rem;">@dil.T("kurumsal.ekip.lojistikAciklama", "Zamanında teslimat organizasyonu")</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Sertifikalarimiz -->
+<section id="sertifikalar" class="bolum bolum-koyu reveal">
+    <div class="bolum-merkezi">
+        <h2 class="bolum-baslik">@dil.T("kurumsal.sertifikalarBaslik", "Sertifikalarımız")</h2>
+        <p class="bolum-metin-alt" style="max-width:700px;margin:0 auto 3rem;">@dil.T("kurumsal.sertifikalarAciklama", "Ulusal ve uluslararası standartlara uygunluk sertifikalarımızla kalitemizi belgeliyoruz.")</p>
+        <div style="display:flex;justify-content:center;gap:3rem;flex-wrap:wrap;">
+            <div class="glass-panel" style="padding:2rem 3rem;text-align:center;min-width:180px;">
+                <span class="material-symbols-outlined" style="font-size:3rem;color:var(--tema-ana-renk);">verified</span>
+                <h3 style="margin:1rem 0 0.3rem;font-size:1rem;">ISO 9001</h3>
+                <p style="opacity:0.6;font-size:0.85rem;">@dil.T("kurumsal.sertifika.kalite", "Kalite Yönetimi")</p>
+            </div>
+            <div class="glass-panel" style="padding:2rem 3rem;text-align:center;min-width:180px;">
+                <span class="material-symbols-outlined" style="font-size:3rem;color:var(--tema-ana-renk);">eco</span>
+                <h3 style="margin:1rem 0 0.3rem;font-size:1rem;">ISO 14001</h3>
+                <p style="opacity:0.6;font-size:0.85rem;">@dil.T("kurumsal.sertifika.cevre", "Çevre Yönetimi")</p>
+            </div>
+            <div class="glass-panel" style="padding:2rem 3rem;text-align:center;min-width:180px;">
+                <span class="material-symbols-outlined" style="font-size:3rem;color:var(--tema-ana-renk);">health_and_safety</span>
+                <h3 style="margin:1rem 0 0.3rem;font-size:1rem;">ISO 45001</h3>
+                <p style="opacity:0.6;font-size:0.85rem;">@dil.T("kurumsal.sertifika.isg", "İş Sağlığı ve Güvenliği")</p>
+            </div>
+            <div class="glass-panel" style="padding:2rem 3rem;text-align:center;min-width:180px;">
+                <span class="material-symbols-outlined" style="font-size:3rem;color:var(--tema-ana-renk);">forest</span>
+                <h3 style="margin:1rem 0 0.3rem;font-size:1rem;">FSC</h3>
+                <p style="opacity:0.6;font-size:0.85rem;">@dil.T("kurumsal.sertifika.fsc", "Sürdürülebilir Ormancılık")</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Bayiler -->
+<section id="bayiler" class="bolum reveal">
+    <div class="bolum-merkezi">
+        <h2 class="bolum-baslik">@dil.T("kurumsal.bayilerBaslik", "Bayilerimiz")</h2>
+        <p class="bolum-metin-alt" style="max-width:700px;margin:0 auto 3rem;">@dil.T("kurumsal.bayilerAciklama", "Türkiye genelinde geniş bayi ağımızla müşterilerimize yakın çözümler sunuyoruz.")</p>
+        <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;">
+            <div class="glass-panel" style="padding:1.5rem 2.5rem;text-align:center;min-width:200px;">
+                <span class="material-symbols-outlined" style="font-size:2.5rem;color:var(--tema-ana-renk);">location_on</span>
+                <h3 style="margin:0.8rem 0 0.3rem;font-size:1rem;">@dil.T("kurumsal.bayi.istanbul", "İstanbul")</h3>
+                <p style="opacity:0.6;font-size:0.85rem;">@dil.T("kurumsal.bayi.istanbulAlt", "Ana Bölge")</p>
+            </div>
+            <div class="glass-panel" style="padding:1.5rem 2.5rem;text-align:center;min-width:200px;">
+                <span class="material-symbols-outlined" style="font-size:2.5rem;color:var(--tema-ana-renk);">location_on</span>
+                <h3 style="margin:0.8rem 0 0.3rem;font-size:1rem;">@dil.T("kurumsal.bayi.ankara", "Ankara")</h3>
+                <p style="opacity:0.6;font-size:0.85rem;">@dil.T("kurumsal.bayi.ankaraAlt", "Bölge Merkez")</p>
+            </div>
+            <div class="glass-panel" style="padding:1.5rem 2.5rem;text-align:center;min-width:200px;">
+                <span class="material-symbols-outlined" style="font-size:2.5rem;color:var(--tema-ana-renk);">location_on</span>
+                <h3 style="margin:0.8rem 0 0.3rem;font-size:1rem;">@dil.T("kurumsal.bayi.izmir", "İzmir")</h3>
+                <p style="opacity:0.6;font-size:0.85rem;">@dil.T("kurumsal.bayi.izmirAlt", "Ege Bölgesi")</p>
+            </div>
+            <div class="glass-panel" style="padding:1.5rem 2.5rem;text-align:center;min-width:200px;">
+                <span class="material-symbols-outlined" style="font-size:2.5rem;color:var(--tema-ana-renk);">public</span>
+                <h3 style="margin:0.8rem 0 0.3rem;font-size:1rem;">@dil.T("kurumsal.bayi.ihracat", "35+ Ülke")</h3>
+                <p style="opacity:0.6;font-size:0.85rem;">@dil.T("kurumsal.bayi.ihracatAlt", "İhracat Ağı")</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Fabrikamiz -->
+<section id="fabrikamiz" class="bolum bolum-koyu reveal">
+    <div class="bolum-merkezi">
+        <h2 class="bolum-baslik">@dil.T("kurumsal.fabrikaBaslik", "Fabrikamız")</h2>
+        <div class="grid-2" style="max-width:900px;margin:0 auto;gap:3rem;align-items:center;">
+            <div>
+                <p class="bolum-metin-aciklama">@dil.T("kurumsal.fabrika1", "Tosya Organize Sanayi Bölgesi'ndeki 50.000 m² kapalı alana sahip modern tesislerimizde, en son teknoloji CNC makineleri ve otomasyon sistemleriyle üretim yapmaktayız.")</p>
+                <p class="bolum-metin-alt">@dil.T("kurumsal.fabrika2", "Yıllık 2 milyon adet kapasite ile Türkiye'nin en büyük panel kapı üreticilerinden biriyiz.")</p>
+                <div style="display:flex;gap:2rem;margin-top:2rem;flex-wrap:wrap;">
+                    <div style="text-align:center;">
+                        <h3 style="font-size:2rem;color:var(--tema-ana-renk);font-weight:700;">50K</h3>
+                        <p style="opacity:0.6;font-size:0.85rem;">@dil.T("kurumsal.fabrika.alan", "m² Alan")</p>
+                    </div>
+                    <div style="text-align:center;">
+                        <h3 style="font-size:2rem;color:var(--tema-ana-renk);font-weight:700;">2M+</h3>
+                        <p style="opacity:0.6;font-size:0.85rem;">@dil.T("kurumsal.fabrika.kapasite", "Yıllık Kapasite")</p>
+                    </div>
+                    <div style="text-align:center;">
+                        <h3 style="font-size:2rem;color:var(--tema-ana-renk);font-weight:700;">500+</h3>
+                        <p style="opacity:0.6;font-size:0.85rem;">@dil.T("kurumsal.fabrika.calisan", "Çalışan")</p>
+                    </div>
+                </div>
+            </div>
+            <div class="glass-panel" style="padding:0;overflow:hidden;">
+                <img src="/medya/urunler/panel-kapi/TURUVA/TURUVA_01.jpg" alt="@dil.T("kurumsal.fabrikaGorsel", "Fabrika")" style="width:100%;height:100%;object-fit:cover;min-height:300px;" />
+            </div>
         </div>
     </div>
 </section>
