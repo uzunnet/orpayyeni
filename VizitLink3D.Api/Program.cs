@@ -88,19 +88,26 @@ var izinliDomainler = (yapici.Configuration.GetSection("Cors:IzinliDomainler").G
     .ToArray();
 yapici.Services.AddCors(sec => sec.AddDefaultPolicy(politika =>
 {
-    if (yapici.Environment.IsDevelopment())
-    {
-        politika.SetIsOriginAllowed(_ => true)
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials();
-        return;
-    }
-
-    politika.WithOrigins(izinliDomainler)
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
+    politika.SetIsOriginAllowed(origin =>
+        {
+            if (string.IsNullOrEmpty(origin)) return false;
+            // Development'ta her Origin'e izin ver
+            if (yapici.Environment.IsDevelopment()) return true;
+            // Listede dogrudan varsa kabul et
+            if (izinliDomainler.Contains(origin, StringComparer.OrdinalIgnoreCase)) return true;
+            // localhost uzerinden her turlu erisime izin ver (Docker, Orca, VS Code tunnel vb.)
+            try
+            {
+                var uri = new Uri(origin);
+                if (uri.Host == "localhost" || uri.Host.EndsWith(".localhost"))
+                    return true;
+            }
+            catch { }
+            return false;
+        })
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials();
 }));
 
 yapici.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
