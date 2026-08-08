@@ -17,6 +17,10 @@ public class DashboardKontrolcu(VizitLink3DDbContext vt) : ControllerBase
     [HttpGet("ozet")]
     public async Task<Cevap<DashboardOzeti>> OzetGetir()
     {
+        // FAZ 5.2: Cross-tenant izolasyon
+        if (!SuperAdminMi() && !KullaniciFirmaIleEslesiyor())
+            return Cevap<DashboardOzeti>.Hata("Bu firmanin verilerine erisim yetkiniz yok.");
+
         var simdi = DateTime.UtcNow;
         // AuditLog append-only bir tablodur. En yüksek Id, toplam kaydı verir ve
         // birincil anahtar indeksinden okunduğu için dashboard'u bloklamaz.
@@ -67,6 +71,10 @@ public class DashboardKontrolcu(VizitLink3DDbContext vt) : ControllerBase
     [HttpGet("komuta-merkezi")]
     public async Task<Cevap<DashboardKomutaMerkezi>> KomutaMerkeziGetir()
     {
+        // FAZ 5.2: Cross-tenant izolasyon
+        if (!SuperAdminMi() && !KullaniciFirmaIleEslesiyor())
+            return Cevap<DashboardKomutaMerkezi>.Hata("Bu firmanin verilerine erisim yetkiniz yok.");
+
         var simdi = DateTime.UtcNow;
         var bugun = simdi.Date;
         var haftaBasi = bugun.AddDays(-6);
@@ -364,6 +372,24 @@ public class DashboardKontrolcu(VizitLink3DDbContext vt) : ControllerBase
         if (!string.IsNullOrWhiteSpace(sehir) && !string.IsNullOrWhiteSpace(ulke)) return $"{sehir}, {ulke}";
         if (!string.IsNullOrWhiteSpace(ulke)) return ulke;
         return "Konum bekleniyor";
+    }
+
+    private bool SuperAdminMi()
+    {
+        return User.IsInRole("SuperAdmin");
+    }
+
+    private bool KullaniciFirmaIleEslesiyor()
+    {
+        var middlewareFirmaSlug = HttpContext.Items["FirmaSlug"]?.ToString();
+        if (string.IsNullOrEmpty(middlewareFirmaSlug))
+            return false;
+
+        var jwtFirmaSlug = User.Claims.FirstOrDefault(c => c.Type == "FirmaSlug")?.Value;
+        if (string.IsNullOrEmpty(jwtFirmaSlug))
+            return false;
+
+        return string.Equals(jwtFirmaSlug, middlewareFirmaSlug, StringComparison.OrdinalIgnoreCase);
     }
 }
 

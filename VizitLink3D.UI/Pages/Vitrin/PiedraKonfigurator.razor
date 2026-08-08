@@ -1,4 +1,4 @@
-@page "/vitrin/piedra"
+﻿@page "/vitrin/piedra"
 @layout VizitLink3D.UI.Layout.AdminDuzen
 @using VizitLink3D.UI.Servisler
 
@@ -33,7 +33,7 @@
                         <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                             <div>
                                 <MudText Typo="Typo.caption" Color="Color.Success">SEÇİLİ PARÇA</MudText>
-                                <MudText Typo="Typo.body2" class="gb-font-700">@_secilenParca</MudText>
+                                <MudText Typo="Typo.body2" class="orpay-font-700">@_secilenParca</MudText>
                                 <MudText Typo="Typo.caption" Color="Color.Secondary">@(sp?.Tahmin ?? "")</MudText>
                             </div>
                             <MudIconButton Icon="@Icons.Material.Filled.Close" Size="Size.Small" OnClick="SecimiTemizle" />
@@ -93,7 +93,7 @@
                         <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                             <div style="flex:1; min-width:0;">
                                 <MudText Typo="Typo.body2" Style="font-weight:600; font-size:11px;">@p.Tahmin</MudText>
-                                <MudText Typo="Typo.caption" Color="Color.Secondary" class="gb-font-10">@p.Isim</MudText>
+                                <MudText Typo="Typo.caption" Color="Color.Secondary" class="orpay-font-10">@p.Isim</MudText>
                                 @if (!string.IsNullOrEmpty(p.Malzeme))
                                 {
                                     var m = _malzemeler.FirstOrDefault(x => x.Kod == p.Malzeme);
@@ -113,7 +113,7 @@
                 @* IÅIK AYARI *@
                 <MudText Typo="Typo.caption" Color="Color.Secondary">IÅIK: @((int)(_isikSeviyesi * 100))%</MudText>
                 <MudSlider @bind-Value="_isikSeviyesi" Min="0.2" Max="2.0" Step="0.1" Class="mb-1" />
-                <MudButton Variant="Variant.Text" Size="Size.Small" OnClick="() => IsikDegisti(_isikSeviyesi)" FullWidth="true" class="gb-font-10">Işık Uygula</MudButton>
+                <MudButton Variant="Variant.Text" Size="Size.Small" OnClick="() => IsikDegisti(_isikSeviyesi)" FullWidth="true" class="orpay-font-10">Işık Uygula</MudButton>
 
                 @* KAPAK AÇISI *@
                 <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mt-2 mb-1">KAPAK AÇISI</MudText>

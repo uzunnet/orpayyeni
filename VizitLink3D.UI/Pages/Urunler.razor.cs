@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using VizitLink3D.Ortak.Modeller.Urunler;
 using VizitLink3D.UI.Models;
@@ -13,6 +13,7 @@ public partial class Urunler : ComponentBase, IDisposable
     [Inject] private ApiIstemcisi Api { get; set; } = default!;
     [Inject] private NavigationManager Nav { get; set; } = default!;
     [Inject] private IJSRuntime JS { get; set; } = default!;
+    [Inject] private FirmaBilgisiServisi FirmaBilgisi { get; set; } = default!;
 
     private List<Urun> _urunler = [];
     private Dictionary<int, UrunAilesi> _aileler = [];
@@ -21,6 +22,13 @@ public partial class Urunler : ComponentBase, IDisposable
     private string? HataMesaji;
     private string? _seciliKoleksiyonSlug;
     private string? _kancaHedefi;
+    private string _firmaSlug = "varsayilan";
+
+    // Sayfalama ve Sıralama State
+    private int _guncelSayfa = 1;
+    private int _sayfaBoyutu = 12;
+    private string _siralamaSekli = "varsayilan";
+    private int _toplamSayfa = 1;
 
     protected override async Task OnInitializedAsync()
     {
@@ -30,7 +38,11 @@ public partial class Urunler : ComponentBase, IDisposable
         {
             _yukleniyor = true;
             HataMesaji = null;
+            _firmaSlug = await FirmaBilgisi.GetSlugAsync();
+            await AyarlariYukleAsync();
             await Task.WhenAll(UrunleriYukleAsync(), AileleriYukleAsync(), KategorileriYukleAsync());
+
+            SayfalamayiGuncelle();
 
             var parca = new Uri(Nav.Uri).Fragment;
             if (!string.IsNullOrWhiteSpace(parca))
@@ -65,6 +77,15 @@ public partial class Urunler : ComponentBase, IDisposable
             _kancaHedefi = null;
             await JS.InvokeVoidAsync("vizitlink3dKancayaKaydir", hedef);
         }
+
+        // Her render sonrasinda (kategori degisimi dahil) ekrana yeni gelen kartlarin gorunur olmasini sagla.
+        await JS.InvokeVoidAsync("eval", @"
+            setTimeout(() => {
+                document.querySelectorAll('.orpay-reveal:not(.gorunur):not(.aktif):not(.active)').forEach((el, i) => {
+                    setTimeout(() => el.classList.add('gorunur', 'aktif', 'active'), (i % 4) * 80);
+                });
+            }, 50);
+        ");
     }
 
     private void DilDegistiginde() => InvokeAsync(StateHasChanged);
@@ -99,12 +120,82 @@ public partial class Urunler : ComponentBase, IDisposable
             .ToDictionary(x => x.Id);
     }
 
-    private IReadOnlyList<Urun> TumUrunler => _urunler
-        .Where(x => x.AktifMi && !x.SilindiMi)
-        .OrderByDescending(x => x.OneCikanMi)
-        .ThenBy(x => x.SiraNo)
-        .ThenBy(x => x.Ad)
-        .ToList();
+    private IReadOnlyList<Urun> TumUrunler
+    {
+        get
+        {
+            var liste = _urunler.Where(x => x.AktifMi && !x.SilindiMi);
+
+            // Sıralama
+            if (_siralamaSekli == "ada_gore_artan")
+                liste = liste.OrderBy(x => x.Ad);
+            else if (_siralamaSekli == "ada_gore_azalan")
+                liste = liste.OrderByDescending(x => x.Ad);
+            else // varsayılan
+                liste = liste.OrderByDescending(x => x.OneCikanMi)
+                             .ThenBy(x => x.SiraNo)
+                             .ThenBy(x => x.Ad);
+
+            return liste.ToList();
+        }
+    }
+
+    private async Task AyarlariYukleAsync()
+    {
+        try
+        {
+            var sozluk = await Api.GetAsync<Dictionary<string, string>>("api/sayfa-icerigi/ayarlar");
+            if (sozluk != null)
+            {
+                if (int.TryParse(sozluk.GetValueOrDefault("UrunSayfaBoyutu", "12"), out var urunSayfaBoyutu))
+                    _sayfaBoyutu = urunSayfaBoyutu;
+                
+                _siralamaSekli = sozluk.GetValueOrDefault("UrunVarsayilanSiralama", "varsayilan");
+            }
+        }
+        catch { /* Varsayılanlar kullanılır */ }
+    }
+
+    private IEnumerable<Urun> FiltrelenmisUrunler =>
+        TumUrunler.Where(x => string.IsNullOrWhiteSpace(_seciliKoleksiyonSlug) 
+                           || SlugaCevir(KategoriAdi(x)) == _seciliKoleksiyonSlug 
+                           || SlugaCevir(KoleksiyonAnahtari(x)) == _seciliKoleksiyonSlug);
+
+    private IReadOnlyList<Urun> SayfalanmisUrunler =>
+        FiltrelenmisUrunler.Skip((_guncelSayfa - 1) * _sayfaBoyutu).Take(_sayfaBoyutu).ToList();
+
+    private void SayfalamayiGuncelle()
+    {
+        var filtrelenmisAdet = FiltrelenmisUrunler.Count();
+        _toplamSayfa = Math.Max(1, (int)Math.Ceiling((double)filtrelenmisAdet / _sayfaBoyutu));
+        
+        if (_guncelSayfa > _toplamSayfa) _guncelSayfa = _toplamSayfa;
+    }
+
+    private async Task SayfaDegisti(int yeniSayfa)
+    {
+        _guncelSayfa = yeniSayfa;
+        
+        // Yeni sayfada animasyonları tetikle
+        await JS.InvokeVoidAsync("eval", @"
+            document.querySelectorAll('.orpay-urunler-yeni__kart').forEach(el => {
+                el.classList.remove('gorunur', 'aktif', 'active');
+            });
+            setTimeout(() => {
+                document.querySelectorAll('.orpay-reveal:not(.gorunur)').forEach((el, i) => {
+                    setTimeout(() => el.classList.add('gorunur', 'aktif', 'active'), (i % 4) * 80);
+                });
+            }, 50);
+        ");
+    }
+
+    private async Task SiralamaDegisti(string yeniSiralama)
+    {
+        _siralamaSekli = yeniSiralama;
+        _guncelSayfa = 1; // Sıralama değişince ilk sayfaya dön
+        SayfalamayiGuncelle();
+        await SayfaDegisti(1);
+    }
 
     private IReadOnlyList<Urun> VitrinUrunleri =>
         TumUrunler.Where(x => x.OneCikanMi).Take(3).Concat(TumUrunler.Take(3)).DistinctBy(x => x.Id).Take(3).ToList();
@@ -124,6 +215,12 @@ public partial class Urunler : ComponentBase, IDisposable
         metin.Trim().ToLowerInvariant()
             .Replace(" ", "-").Replace("ı", "i").Replace("ş", "s")
             .Replace("ğ", "g").Replace("ü", "u").Replace("ö", "o").Replace("ç", "c");
+
+    private IReadOnlyList<VizitLink3D.Ortak.Modeller.Urunler.UrunKategori> AktifKategoriler =>
+        _kategoriler.Values.Where(x => x.AktifMi && !x.SilindiMi).OrderBy(x => x.SiraNo).ThenBy(x => x.Ad).ToList();
+
+    private string KategoriSlug(VizitLink3D.Ortak.Modeller.Urunler.UrunKategori kategori) =>
+        kategori.Slug ?? SlugaCevir(kategori.Ad);
 
     private IEnumerable<string> KoleksiyonAdlari =>
         TumUrunler.Select(KoleksiyonAnahtari).Distinct()
@@ -152,10 +249,14 @@ public partial class Urunler : ComponentBase, IDisposable
     private void KoleksiyonSec(string? koleksiyonSlug)
     {
         _seciliKoleksiyonSlug = _seciliKoleksiyonSlug == koleksiyonSlug ? null : koleksiyonSlug;
+        _guncelSayfa = 1;
+        SayfalamayiGuncelle();
+        // Animasyonlar render sonrasi OnAfterRenderAsync'te veya SayfaDegisti gibi calisabilir.
+        _ = SayfaDegisti(1);
     }
 
     private string KoleksiyonSinifi(string? koleksiyonSlug) =>
-        _seciliKoleksiyonSlug == koleksiyonSlug ? "gb-chip gb-chip--active" : "gb-chip";
+        _seciliKoleksiyonSlug == koleksiyonSlug ? "orpay-chip gb-chip--active" : "orpay-chip";
 
     private string KoleksiyonAdi(Urun urun) =>
         UrunGorunumYardimcisi.KoleksiyonAdiBul(urun, _aileler);
@@ -163,9 +264,27 @@ public partial class Urunler : ComponentBase, IDisposable
     private string KategoriAdi(Urun urun) =>
         UrunGorunumYardimcisi.KategoriAdiBul(urun, _kategoriler);
 
+    private string NormalizeUrl(string url)
+    {
+        if (_firmaSlug == "localhost" || _firmaSlug == "127.0.0.1" || _firmaSlug == "platform") _firmaSlug = "orpay";
+        if (string.IsNullOrWhiteSpace(url)) return url;
+        string tmp = url;
+        if (tmp.StartsWith(Api.ApiBaseUrl, StringComparison.OrdinalIgnoreCase))
+            tmp = tmp.Substring(Api.ApiBaseUrl.Length);
+            
+        if (tmp.StartsWith("/medya/", StringComparison.OrdinalIgnoreCase))
+            return $"{Api.ApiBaseUrl}/firmalar/{_firmaSlug}{tmp}";
+            
+        if (tmp.StartsWith("medya/", StringComparison.OrdinalIgnoreCase))
+            return $"{Api.ApiBaseUrl}/firmalar/{_firmaSlug}/{tmp}";
+            
+        return url;
+    }
+
     private string GorselUrl(Urun urun) =>
-        UrunGorunumYardimcisi.AnaGorselUrl(urun, Api.ApiBaseUrl);
+        NormalizeUrl(UrunGorunumYardimcisi.AnaGorselUrl(urun, Api.ApiBaseUrl));
 
     private static string OzetMetni(Urun urun) =>
         UrunGorunumYardimcisi.OzetMetniBul(urun);
 }
+

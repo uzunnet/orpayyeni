@@ -1,0 +1,60 @@
+{
+  "id": "luxe-industrial-light",
+  "kod": "LUXE_INDUSTRIAL_LIGHT",
+  "ad": "Luxe Industrial Light",
+  "slug": "luxe-industrial-light",
+  "aciklama": "Stitch AI — EB Garamond + Work Sans + JetBrains Mono, glassmorphism, yumuşak köşe, koyu yeşil vurgu. Orpay gündüz premium teması.",
+  "kaynak": "stitch",
+  "stitchProjeId": null,
+  "aktif": true,
+  "varsayilanMi": false,
+  "premium": false,
+  "fiyat": 0,
+  "paraBirimi": "TRY",
+  "thumbnailUrl": "/css/temalar/luxe-industrial-light/ekran-goruntusu.jpg",
+  "olusturulmaTarihi": "2026-07-24T00:00:00Z",
+  "versiyon": 1,
+  "colorMode": "LIGHT",
+  "renkler": {
+    "birincil": "#f4fbf1", "ikincil": "#e9f0e6", "vurgu": "#006d37", "vurguAcik": "#27ae60", "vurguKoyu": "#00391a",
+    "ikincilVurgu": "#4e6073", "ikincilVurguAcik": "#6b7d8f", "ikincilVurguKoyu": "#36485b",
+    "arkaPlan": "#f4fbf1", "arkaPlan2": "#ffffff", "yuzey": "#f4fbf1", "yuzeyHover": "#e9f0e6",
+    "cizgi": "rgba(189, 195, 199, 0.30)", "cizgiAcik": "rgba(189, 195, 199, 0.15)",
+    "metin": "#171d17", "metinIkincil": "#474746", "metinSoluk": "#6d7a6e",
+    "metinTers": "#ffffff", "basari": "#006d37", "uyari": "#4e6073", "hata": "#ba1a1a", "bilgi": "#4e6073",
+    "camBg": "rgba(255, 255, 255, 0.80)", "camCizgi": "rgba(189, 195, 199, 0.40)", "ormanIsilti": "rgba(39, 174, 96, 0.08)",
+    "derinAntrasit": "#f4fbf1"
+  },
+  "tipografi": {
+    "baslikAilesi": "EB Garamond", "baslikFallback": "Georgia, serif", "baslikAgirlik": 500, "baslikHarfAraligi": "-0.02em",
+    "govdeAilesi": "Work Sans", "govdeFallback": "system-ui, sans-serif", "govdeAgirlik": 400,
+    "vurguAilesi": "JetBrains Mono", "monoAilesi": "JetBrains Mono", "boyutSkalaRatio": 1.250, "baslikBuyuklukClamp": "clamp(1.8rem, 4vw, 3.5rem)"
+  },
+  "geometri": {
+    "koseSm": 2, "koseMd": 4, "koseLg": 8, "koseXl": 12, "koseTam": 9999, "borderKalinlik": 1, "borderStil": "solid"
+  },
+  "golgeler": {
+    "sm": "0 2px 8px rgba(0, 0, 0, 0.04)", "md": "0 4px 20px rgba(0, 0, 0, 0.04)",
+    "lg": "0 10px 40px rgba(0, 0, 0, 0.06)", "xl": "0 20px 60px rgba(0, 0, 0, 0.08)",
+    "vurgu": "0 0 10px rgba(0, 109, 55, 0.15)", "altinVurgu": "0 0 10px rgba(78, 96, 115, 0.15)",
+    "glowStil": "hafif"
+  },
+  "glassmorphism": {
+    "aktif": true, "blur": "12px", "blurSaturate": 1.5, "bgOpacity": 0.80, "borderOpacity": 0.40, "yariSaydam": true
+  },
+  "animasyon": {
+    "hizi": "normal", "gecisHizli": "0.15s ease", "gecisNormal": "0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    "gecisYavas": "0.6s cubic-bezier(0.4, 0, 0.2, 1)", "cubicBezier": "cubic-bezier(0.4, 0, 0.2, 1)",
+    "hoverYukseklik": 2, "hoverOlcek": 1.02, "scrollReveal": true, "magneticCursor": false,
+    "pariltiEfekti": false, "shimmerEfekti": false, "tip": "yumusak-sakin"
+  },
+  "layout": {
+    "header": "glassmorphism", "footer": "cok-sutunlu", "heroTipi": "slider-overlay",
+    "kartStili": "glass", "icerikGenislik": 1280, "kenarBosluk": 64, "sutunSayisi": 12, "bolumAyirici": "hairline"
+  },
+  "ikonSeti": "Material Symbols Outlined", "glassmorphismAktif": true,
+  "etiketler": ["stitch", "aydinlik", "yesil", "endustriyel", "glassmorphism", "premium"],
+  "adVarsayilanTr": "Luxe Industrial Light", "adVarsayilanEn": "Luxe Industrial Light",
+  "aciklamaVarsayilanTr": "Stitch AI lüks endüstriyel gündüz teması — EB Garamond + Work Sans, glassmorphism, yeşil vurgu.",
+  "aciklamaVarsayilanEn": "Stitch AI luxury industrial light theme — EB Garamond + Work Sans, glassmorphism."
+}

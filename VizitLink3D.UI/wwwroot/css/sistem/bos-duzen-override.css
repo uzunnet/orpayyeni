@@ -1,0 +1,34 @@
+/*
+ * BosDuzen Public Override
+ * Global stilleri bastirarak sayfanin dogru gorunmesini saglar
+ */
+
+/* Sayfa icindeki inline stillerin calismasi icin global override */
+.orpay-shell, .orpay-header, .orpay-page, .orpay-panel, .orpay-footer,
+.orpay-shell, .orpay-header, .orpay-page, .orpay-panel, .orpay-footer,
+[data-tema-id] {
+    all: unset !important;
+}
+
+/* Override global a stilleri */
+body a { 
+    color: inherit; 
+    text-decoration: none;
+}
+
+/* Tema degiskenlerini acik tema ile degistir */
+:root {
+    --tema-arkaplan: #ffffff !important;
+    --tema-arkaplan-2: #f8f6f2 !important;
+    --tema-yuzey: #ffffff !important;
+    --tema-yuzey-hover: #f5f5f5 !important;
+    --tema-metin: #1a1a1a !important;
+    --tema-metin-ikincil: #444444 !important;
+    --tema-metin-soluk: #888888 !important;
+    --tema-metin-ters: #ffffff !important;
+    --tema-cizgi: rgba(0,0,0,0.08) !important;
+    --tema-cizgi-acik: rgba(0,0,0,0.04) !important;
+    --tema-vurgu: #27ae60 !important;
+    --tema-cam-bg: rgba(255,255,255,0.9) !important;
+    --tema-cam-cizgi: rgba(0,0,0,0.08) !important;
+}

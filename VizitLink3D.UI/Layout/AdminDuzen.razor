@@ -42,13 +42,14 @@
                 @* Logo başlık *@
                 <div class="admin-sidebar-brand">
                     <div class="admin-sidebar-brand-icon">
-                        @if (!string.IsNullOrEmpty(_logoUrl))
+                        @if (!string.IsNullOrWhiteSpace(_logoUrl))
                         {
                             <img src="@LogoTamYolu" alt="@_firmaAdi" width="100" height="32" class="admin-sidebar-logo-img" style="object-fit: contain;" />
                         }
                         else
                         {
-                            <img src="/img/vizitlink3d-logo.svg" alt="@_firmaAdi" width="100" height="32" class="admin-sidebar-logo-img" />
+                            @* FAZ 4: Logo API'den gelmediginde firma adinin ilk harfi gosterilir. *@
+                            <span class="admin-sidebar-brand-text">@(_firmaAdi.Length > 0 ? _firmaAdi[..1] : "A")</span>
                         }
                     </div>
                 </div>

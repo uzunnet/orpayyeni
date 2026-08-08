@@ -21,7 +21,7 @@ public partial class RenkSecimPaneli : ComponentBase
 
     private string RenkSwatchSinifi(RalRengi renk)
     {
-        var temel = "gb-renk-swatch";
+        var temel = "orpay-renk-swatch";
         if (renk.HexKod == _seciliRenk?.HexKod)
             temel += " gb-renk-secili";
         return temel;

@@ -1,0 +1,295 @@
+﻿/**
+ * VizitLink3D Tema Motoru v3.0
+ * data-tema-id tabanli, lazy load CSS, localStorage, MutationObserver.
+ * Geriye uyumluluk: data-site-tema, tema-luxe-dark/light class korumasi.
+ */
+window.vizitlink3dTema = {
+    /**
+     * Tema yukler — data-tema-id set eder, CSS dosyalarini lazy load eder.
+     * @param {string} temaSlug Ornek: 'luxe-industrial-dark'
+     */
+    temaYukle: async function (temaSlug) {
+        if (!temaSlug) return;
+        if (window.location.pathname.indexOf('/admin') === 0) {
+            this.adminTemaIzoleEt();
+            return;
+        }
+
+        var root = document.documentElement;
+        var cacheKey = 'tema-css-' + temaSlug;
+        if (sessionStorage.getItem(cacheKey) === 'yuklendi') {
+            this._attrSet(temaSlug);
+            return;
+        }
+
+        // eski tema CSS'lerini temizle
+        this._temaLinkleriniKaldir(temaSlug);
+
+        // yeni tema CSS'lerini lazy load
+        var dosyalar = ['tokens', 'bilesenler', 'animasyonlar'];
+        try {
+            var yuklemePromises = dosyalar.map(function (dosya) {
+                return new Promise(function (resolve, reject) {
+                    var parcaKey = temaSlug + '-' + dosya;
+                    if (document.querySelector('link[data-tema-parca="' + parcaKey + '"]')) {
+                        resolve();
+                        return;
+                    }
+                    var link = document.createElement('link');
+                    link.rel = 'stylesheet';
+                    link.href = '/css/temalar/' + temaSlug + '/' + dosya + '.css?v=' + Date.now();
+                    link.setAttribute('data-tema-parca', parcaKey);
+                    link.onload = function () { resolve(); };
+                    link.onerror = function () {
+                        console.warn('Tema CSS yuklenemedi: ' + dosya);
+                        resolve(); // hata olsa da devam
+                    };
+                    document.head.appendChild(link);
+                });
+            });
+
+            await Promise.all(yuklemePromises);
+            sessionStorage.setItem(cacheKey, 'yuklendi');
+        } catch (e) {
+            console.error('Tema CSS yukleme hatasi:', e);
+        }
+
+        this._attrSet(temaSlug);
+    },
+
+    /**
+     * Attribute'lari set eder — data-tema-id (birincil) + geriye uyumluluk
+     */
+    _attrSet: function (temaSlug) {
+        var root = document.documentElement;
+        root.setAttribute('data-tema-id', temaSlug);
+        root.setAttribute('data-site-tema', temaSlug);
+
+        var mod = temaSlug === 'luxe-industrial-light' ? 'acik' : 'koyu';
+        root.setAttribute('data-tema-mod', mod);
+        root.style.colorScheme = mod === 'acik' ? 'light' : 'dark';
+        localStorage.setItem('temaMod', mod);
+
+        // geriye uyumlu class
+        if (temaSlug === 'luxe-industrial-light') {
+            root.className = 'tema-luxe-light';
+        } else if (temaSlug === 'luxe-industrial-dark') {
+            root.className = 'tema-luxe-dark';
+        }
+
+        localStorage.setItem('vizitlink3d_site_tema', temaSlug);
+        localStorage.setItem('orpay_site_tema', temaSlug);
+    },
+
+    /**
+     * Eski tema linklerini kaldirir
+     */
+    _temaLinkleriniKaldir: function (yeniTemaSlug) {
+        var tumLinkler = document.querySelectorAll('link[data-tema-parca]');
+        for (var i = 0; i < tumLinkler.length; i++) {
+            var link = tumLinkler[i];
+            var parca = link.getAttribute('data-tema-parca') || '';
+            if (!parca.startsWith(yeniTemaSlug + '-')) {
+                link.parentNode && link.parentNode.removeChild(link);
+            }
+        }
+        var tumStyleler = document.querySelectorAll('style[data-tema-parca]');
+        for (var j = 0; j < tumStyleler.length; j++) {
+            var style = tumStyleler[j];
+            var sParca = style.getAttribute('data-tema-parca') || '';
+            if (!sParca.startsWith(yeniTemaSlug + '-')) {
+                style.parentNode && style.parentNode.removeChild(style);
+            }
+        }
+    },
+
+    /**
+     * Tema modunu (acik/koyu) degistirir.
+     */
+    modUygula: function (mod) {
+        var root = document.documentElement;
+        root.setAttribute('data-tema-mod', mod);
+        localStorage.setItem('temaMod', mod);
+        root.style.colorScheme = mod === 'acik' ? 'light' : 'dark';
+    },
+
+    /**
+     * Orpay icin gece/gunduz toggle — luxe-industrial-dark <-> luxe-industrial-light
+     */
+    orpayTemaDegistir: function () {
+        var suanki = document.documentElement.getAttribute('data-tema-id') ||
+                    localStorage.getItem('orpay_site_tema') ||
+                    localStorage.getItem('vizitlink3d_site_tema') ||
+                    'luxe-industrial-dark';
+
+        var yeniSlug = suanki === 'luxe-industrial-light'
+            ? 'luxe-industrial-dark'
+            : 'luxe-industrial-light';
+
+        sessionStorage.removeItem('tema-css-' + suanki);
+        localStorage.setItem('vizitlink3d_site_tema', yeniSlug);
+        localStorage.setItem('orpay_site_tema', yeniSlug);
+
+        this.temaYukle(yeniSlug);
+    },
+
+    /**
+     * Admin panel — site temasindan izole, her zaman koyu mod.
+     */
+    adminTemaIzoleEt: function () {
+        var root = document.documentElement;
+        root.removeAttribute('data-tema-id');
+        root.removeAttribute('data-site-tema');
+        root.setAttribute('data-tema-mod', 'koyu');
+        root.style.colorScheme = 'dark';
+        localStorage.setItem('temaMod', 'koyu');
+
+        var temaLinkleri = document.querySelectorAll('link[data-tema-parca]');
+        temaLinkleri.forEach(function (link) {
+            link.parentNode && link.parentNode.removeChild(link);
+        });
+        var temaStyleleri = document.querySelectorAll('style[data-tema-parca]');
+        temaStyleleri.forEach(function (s) {
+            s.parentNode && s.parentNode.removeChild(s);
+        });
+    },
+
+    /**
+     * Baslatma — localStorage'dan okur, yoksa API'den ceker.
+     */
+    siteBaslat: async function (varsayilanTema) {
+        if (!varsayilanTema) varsayilanTema = 'luxe-industrial-dark';
+        if (window.location.pathname.indexOf('/admin') === 0) {
+            this.adminTemaIzoleEt();
+            return;
+        }
+
+        var temaSlug = localStorage.getItem('orpay_site_tema') ||
+                      localStorage.getItem('vizitlink3d_site_tema');
+
+        if (!temaSlug) {
+            var apiTemelUrl = window.vizitlink3dApiBaseUrl || window.location.origin;
+            try {
+                var cevap = await fetch(apiTemelUrl + '/api/firma-tema', {
+                    headers: { 'X-Firma': localStorage.getItem('aktif_firma') || 'orpay' }
+                });
+                if (cevap.ok) {
+                    var json = await cevap.json();
+                    temaSlug = json && json.veri && json.veri.siteTema;
+                }
+            } catch (e) { /* API yoksa varsayilan kullan */ }
+            temaSlug = temaSlug || varsayilanTema;
+        }
+
+        this.temaYukle(temaSlug);
+    },
+
+    /**
+     * Geriye uyumlu: siteUygula — eski kodlar bozulmasin.
+     */
+    siteUygula: function (temaSlug) {
+        this.temaYukle(temaSlug);
+    },
+
+    /**
+     * Geriye uyumlu: orpayTemaBaslat
+     */
+    orpayTemaBaslat: function () {
+        var kayitliTema = localStorage.getItem('orpay_site_tema') ||
+                         localStorage.getItem('vizitlink3d_site_tema') ||
+                         'luxe-industrial-dark';
+        this.temaYukle(kayitliTema);
+    },
+
+    /**
+     * Admin tema uygula — eski API
+     */
+    uygula: function (birincil, vurgu, arkaPlan, yuzey, koyuTemaMi, adminTemaAdi) {
+        var root = document.documentElement;
+        root.setAttribute('data-admin-tema', adminTemaAdi || '');
+        this.adminTemaIzoleEt();
+        root.style.setProperty('--admin-bg', arkaPlan);
+        root.style.setProperty('--admin-surface', yuzey);
+        root.style.setProperty('--admin-surface-hover', koyuTemaMi ? '#1a1a1a' : '#f0f0f0');
+        root.style.setProperty('--admin-surface-raised', koyuTemaMi ? '#161616' : '#fafafa');
+        root.style.setProperty('--admin-primary', birincil);
+        root.style.setProperty('--admin-primary-light', koyuTemaMi ? '#151515' : '#f5f5f5');
+        root.style.setProperty('--admin-accent', vurgu);
+        root.style.setProperty('--admin-accent-light', vurgu + 'CC');
+        root.style.setProperty('--admin-text', koyuTemaMi ? '#ffffff' : '#1a1a1a');
+        root.style.setProperty('--admin-text-secondary', koyuTemaMi ? 'rgba(255,255,255,0.70)' : 'rgba(0,0,0,0.65)');
+        root.style.setProperty('--admin-text-muted', koyuTemaMi ? 'rgba(255,255,255,0.40)' : 'rgba(0,0,0,0.40)');
+        root.style.setProperty('--admin-text-dim', koyuTemaMi ? 'rgba(255,255,255,0.20)' : 'rgba(0,0,0,0.15)');
+        root.style.setProperty('--admin-border', koyuTemaMi ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.08)');
+        root.style.setProperty('--admin-border-light', koyuTemaMi ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)');
+        root.style.setProperty('--admin-border-focus', 'rgba(' + this._hexToRgb(vurgu) + ',0.25)');
+        root.style.setProperty('--admin-shadow', koyuTemaMi ? '0 4px 24px rgba(0,0,0,0.3)' : '0 4px 24px rgba(0,0,0,0.06)');
+        root.style.setProperty('--admin-shadow-hover', koyuTemaMi ? '0 8px 32px rgba(0,0,0,0.5)' : '0 8px 32px rgba(0,0,0,0.1)');
+        root.style.setProperty('--admin-shadow-glow', '0 0 20px rgba(' + this._hexToRgb(vurgu) + ',0.08)');
+    },
+
+    /**
+     * Geriye uyumlu adminModUygula
+     */
+    adminModUygula: function (_mod) {
+        this.uygula('#C5A059', '#d4a574', '#0a0a0a', '#111111', true, 'orpay-admin');
+        document.documentElement.setAttribute('data-tema-mod', 'koyu');
+        document.documentElement.style.colorScheme = 'dark';
+        localStorage.setItem('temaMod', 'koyu');
+    },
+
+    _hexToRgb: function (hex) {
+        var h = hex.replace('#', '');
+        if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+        var r = parseInt(h.substring(0, 2), 16);
+        var g = parseInt(h.substring(2, 4), 16);
+        var b = parseInt(h.substring(4, 6), 16);
+        return r + ',' + g + ',' + b;
+    }
+};
+
+/**
+ * MutationObserver — data-tema-id silinirse localStorage'dan geri yukler.
+ */
+(function () {
+    var gozlemci = new MutationObserver(function (mutations) {
+        mutations.forEach(function (m) {
+            if (m.attributeName === 'data-tema-id') {
+                var mevcut = document.documentElement.getAttribute('data-tema-id');
+                if (!mevcut && window.location.pathname.indexOf('/admin') !== 0) {
+                    var kayitli = localStorage.getItem('orpay_site_tema') ||
+                                  localStorage.getItem('vizitlink3d_site_tema') ||
+                                  'luxe-industrial-dark';
+                    document.documentElement.setAttribute('data-tema-id', kayitli);
+                }
+            }
+        });
+    });
+
+    if (document.documentElement) {
+        gozlemci.observe(document.documentElement, { attributes: true, attributeFilter: ['data-tema-id'] });
+    }
+
+    // Tema degisikligini localStorage'dan dinle (SignalR fallback)
+    window.addEventListener('storage', function (e) {
+        if (e.key === 'orpay_site_tema' || e.key === 'vizitlink3d_site_tema') {
+            var yeniTema = e.newValue;
+            if (yeniTema && typeof vizitlink3dTema !== 'undefined') {
+                vizitlink3dTema.temaYukle(yeniTema);
+            }
+        }
+    });
+})();
+
+// Dil yardimci sablonu
+window.vizitlink3dDil = {
+    tercihDiliniGetir: function () {
+        var diller = navigator.languages && navigator.languages.length
+            ? navigator.languages
+            : [navigator.language || navigator.userLanguage || 'tr'];
+        return diller[0] || 'tr';
+    },
+    htmlDiliniAyarla: function (dil) {
+        document.documentElement.setAttribute('lang', dil || 'tr');
+    }
+};

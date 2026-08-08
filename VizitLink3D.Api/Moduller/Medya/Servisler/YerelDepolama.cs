@@ -4,9 +4,21 @@ public class YerelDepolama : IDepolamaAdaptoru
 {
     private readonly string _kokDizin;
 
-    public YerelDepolama(IWebHostEnvironment ortam)
+    // FAZ 3: MedyaKlasoru dinamik — firma bazli firmalar/{slug}/medya/ yolu kullanilir.
+    // FirmaCozumlemeMiddleware tarafindan HttpContext.Items["MedyaKlasoru"] set edilir.
+    public YerelDepolama(IWebHostEnvironment ortam, IHttpContextAccessor httpErisimi)
     {
-        _kokDizin = Path.Combine(ortam.WebRootPath, "medya");
+        var firmaMedyaKlasoru = httpErisimi.HttpContext?.Items["MedyaKlasoru"] as string;
+
+        if (!string.IsNullOrEmpty(firmaMedyaKlasoru))
+        {
+            _kokDizin = Path.Combine(ortam.WebRootPath, firmaMedyaKlasoru);
+        }
+        else
+        {
+            _kokDizin = Path.Combine(ortam.WebRootPath, "medya");
+        }
+
         if (!Directory.Exists(_kokDizin))
             Directory.CreateDirectory(_kokDizin);
     }

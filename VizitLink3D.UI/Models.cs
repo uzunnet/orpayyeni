@@ -162,6 +162,11 @@ public static class UrunGorunumYardimcisi
 {
     public static string AnaGorselUrl(Urun urun, string apiBaseUrl)
     {
+        // Once Medyalar listesini dene (Include ile gelirse)
+        if (urun.Medyalar?.Count > 0)
+            return $"{apiBaseUrl.TrimEnd('/')}{urun.Medyalar[0].MedyaUrl}";
+
+        // Fallback: eski API endpoint'i
         if (urun.AnaGorselMedyaId is long medyaId and > 0)
             return $"{apiBaseUrl.TrimEnd('/')}/api/medya/dosya/{medyaId}";
 

@@ -3,132 +3,67 @@
 
 <PageTitle>@DilServisi.T("menu.iletisim", "İletişim")</PageTitle>
 
-<section class="gb-iletisim">
-    <header class="gb-iletisim__hero">
-        <span class="gb-iletisim__rozet">@DilServisi.T("iletisim.rozet", "ORPAY SHOWROOM")</span>
-        <h1>@DilServisi.T("iletisim.baslik", "Hayalinizdeki banyoyu birlikte tasarlayalım.")</h1>
-        <p>@DilServisi.T("iletisim.aciklama", "Ürünler, ölçüler, renk seçenekleri ve proje teklifleriniz için uzman ekibimize doğrudan ulaşın.")</p>
-    </header>
-
-    <div class="gb-iletisim__grid">
-        <aside class="gb-iletisim__bilgiler gb-panel">
-            <div class="gb-iletisim__bilgi-baslik">
-                <span>@DilServisi.T("iletisim.bilgiEtiketi", "BİZE ULAŞIN")</span>
-                <h2>@DilServisi.T("iletisim.bilgiBaslik", "Showroom ve satış ekibi")</h2>
-            </div>
-
-            <div class="gb-iletisim__bilgi-listesi">
-                <article class="gb-iletisim__bilgi-kart">
-                    <MudIcon Icon="@Icons.Material.Outlined.Phone" />
-                    <div>
-                        <span>@DilServisi.T("iletisim.telefon", "Telefon")</span>
-                        @foreach (var tel in _telefonlar)
-                        {
-                            <a href="@($"tel:{tel}")">@tel</a>
-                        }
-                    </div>
-                </article>
-
-                @if (!string.IsNullOrWhiteSpace(_whatsapp))
-                {
-                    <article class="gb-iletisim__bilgi-kart">
-                        <MudIcon Icon="@Icons.Material.Outlined.Chat" />
-                        <div>
-                            <span>@DilServisi.T("iletisim.whatsapp", "WhatsApp")</span>
-                            <a href="@($"https://wa.me/{new string(_whatsapp.Where(char.IsDigit).ToArray())}")" target="_blank" rel="noopener">@DilServisi.T("iletisim.whatsappAksiyon", "Hızlı mesaj gönder")</a>
-                        </div>
-                    </article>
-                }
-
-                @if (!string.IsNullOrWhiteSpace(_email))
-                {
-                    <article class="gb-iletisim__bilgi-kart">
-                        <MudIcon Icon="@Icons.Material.Outlined.MailOutline" />
-                        <div>
-                            <span>@DilServisi.T("iletisim.eposta", "E-posta")</span>
-                            <a href="@($"mailto:{_email}")">@_email</a>
-                        </div>
-                    </article>
-                }
-
-                <article class="gb-iletisim__bilgi-kart">
-                    <MudIcon Icon="@Icons.Material.Outlined.LocationOn" />
-                    <div>
-                        <span>@DilServisi.T("iletisim.fabrika", "Fabrika")</span>
-                        <p>@_adres</p>
-                    </div>
-                </article>
-
-                @if (!string.IsNullOrWhiteSpace(_showroomAdres))
-                {
-                    <article class="gb-iletisim__bilgi-kart">
-                        <MudIcon Icon="@Icons.Material.Outlined.Storefront" />
-                        <div>
-                            <span>@DilServisi.T("iletisim.showroom", "Showroom")</span>
-                            <p>@_showroomAdres</p>
-                        </div>
-                    </article>
-                }
-
-                @if (!string.IsNullOrWhiteSpace(_calismaSaatleri))
-                {
-                    <article class="gb-iletisim__bilgi-kart">
-                        <MudIcon Icon="@Icons.Material.Outlined.Schedule" />
-                        <div>
-                            <span>@DilServisi.T("iletisim.calismaSaatleri", "Çalışma saatleri")</span>
-                            <p>@_calismaSaatleri</p>
-                        </div>
-                    </article>
-                }
-            </div>
-        </aside>
-
-        <section class="gb-iletisim__form-panel gb-panel">
-            <span class="gb-iletisim__rozet">@DilServisi.T("iletisim.formRozet", "TEKLİF VE BİLGİ TALEBİ")</span>
-            <h2>@DilServisi.T("iletisim.formBaslik", "Size nasıl yardımcı olabiliriz?")</h2>
-            <p>@DilServisi.T("iletisim.formAciklama", "Mesajınız doğrudan yönetim panelindeki iletişim kutusuna iletilir.")</p>
-
-            <MudForm @ref="_form" Class="gb-iletisim__form">
-                <div class="gb-iletisim__form-ikili">
-                    <MudTextField @bind-Value="_formVerisi.AdSoyad" Label="@DilServisi.T("iletisim.adSoyad", "Ad soyad")" Required="true" RequiredError="@DilServisi.T("iletisim.adSoyadZorunlu", "Ad soyad zorunludur.")" Variant="Variant.Outlined" />
-                    <MudTextField @bind-Value="_formVerisi.Telefon" Label="@DilServisi.T("iletisim.telefon", "Telefon")" Variant="Variant.Outlined" />
-                </div>
-                <MudTextField @bind-Value="_formVerisi.Eposta" Label="@DilServisi.T("iletisim.eposta", "E-posta")" InputType="InputType.Email" Required="true" RequiredError="@DilServisi.T("iletisim.epostaZorunlu", "E-posta zorunludur.")" Variant="Variant.Outlined" />
-                <MudTextField @bind-Value="_formVerisi.Konu" Label="@DilServisi.T("iletisim.konu", "İlgilendiğiniz ürün veya konu")" Variant="Variant.Outlined" />
-                <MudTextField @bind-Value="_formVerisi.Mesaj" Label="@DilServisi.T("iletisim.mesaj", "Mesajınız")" Required="true" RequiredError="@DilServisi.T("iletisim.mesajZorunlu", "Mesaj alanı zorunludur.")" Lines="6" Variant="Variant.Outlined" />
-
-                @if (!string.IsNullOrWhiteSpace(_formDurumMesaji))
-                {
-                    <div class="@(_formBasariliMi ? "gb-iletisim__durum gb-iletisim__durum--basarili" : "gb-iletisim__durum gb-iletisim__durum--hata")">@_formDurumMesaji</div>
-                }
-
-                <MudButton OnClick="MesajGonderAsync" Disabled="_gonderiliyor" Variant="Variant.Filled" Class="gb-btn gb-btn--altin gb-iletisim__gonder">
-                    @if (_gonderiliyor)
-                    {
-                        <MudProgressCircular Indeterminate="true" Size="Size.Small" />
-                    }
-                    else
-                    {
-                        <MudIcon Icon="@Icons.Material.Outlined.Send" />
-                        @DilServisi.T("iletisim.gonder", "Mesajı gönder")
-                    }
-                </MudButton>
-            </MudForm>
-        </section>
+<section class="orpay-urunler-yeni">
+    <!-- Hero -->
+    <div class="orpay-urunler-yeni__hero">
+        <div class="orpay-urunler-yeni__hero-ic">
+            <span class="orpay-kicker">İletişim</span>
+            <h1 class="orpay-urunler-yeni__baslik">Bize Ulaşın</h1>
+            <p class="orpay-urunler-yeni__aciklama">Ürünler, ölçüler, renk seçenekleri ve proje teklifleriniz için uzman ekibimize doğrudan ulaşın.</p>
+        </div>
     </div>
 
-    @if (!string.IsNullOrWhiteSpace(_haritaUrl))
-    {
-        <section class="gb-iletisim__harita gb-panel">
+    <div style="max-width:var(--tema-icerik-genislik);margin:0 auto;padding:3rem 2rem;display:grid;grid-template-columns:1fr 1fr;gap:3rem">
+        <!-- Iletisim Bilgileri -->
+        <div style="display:flex;flex-direction:column;gap:1.5rem">
             <div>
-                <span class="gb-iletisim__rozet">@DilServisi.T("iletisim.konum", "KONUM")</span>
-                <h2>@DilServisi.T("iletisim.haritaBaslik", "Showroomumuza yol tarifi alın")</h2>
+                <span class="orpay-kicker">Bize Ulaşın</span>
+                <h2 style="font-family:var(--tema-font-baslik);font-size:1.5rem;color:var(--tema-metin);margin:1rem 0 0.5rem">Showroom ve Satış Ekibi</h2>
             </div>
-            @if (!string.IsNullOrWhiteSpace(_haritaBaglantiUrl))
-            {
-                <a class="gb-chip gb-chip--active" href="@_haritaBaglantiUrl" target="_blank" rel="noopener">@DilServisi.T("iletisim.haritaAksiyon", "Haritada aç")</a>
-            }
-            <iframe class="gb-iletisim__harita-cerceve" src="@_haritaUrl" title="@DilServisi.T("iletisim.harita", "Harita")" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-        </section>
-    }
+
+            <div style="display:flex;align-items:center;gap:1rem;padding:1rem;border:1px solid var(--tema-cizgi);border-radius:12px">
+                <div style="width:40px;height:40px;border-radius:8px;background:var(--tema-arkaplan-2);display:flex;align-items:center;justify-content:center;color:var(--tema-vurgu)">📞</div>
+                <div>
+                    <span style="font-size:0.75rem;color:var(--tema-metin-soluk);text-transform:uppercase;letter-spacing:0.1em">Telefon</span>
+                    <a href="tel:+903663136171" style="display:block;color:var(--tema-metin);font-weight:500;text-decoration:none">+90 366 313 61 71</a>
+                </div>
+            </div>
+
+            <div style="display:flex;align-items:center;gap:1rem;padding:1rem;border:1px solid var(--tema-cizgi);border-radius:12px">
+                <div style="width:40px;height:40px;border-radius:8px;background:var(--tema-arkaplan-2);display:flex;align-items:center;justify-content:center;color:var(--tema-vurgu)">✉️</div>
+                <div>
+                    <span style="font-size:0.75rem;color:var(--tema-metin-soluk);text-transform:uppercase;letter-spacing:0.1em">E-posta</span>
+                    <a href="mailto:iletisim@orpayormanurunleri.com.tr" style="display:block;color:var(--tema-metin);font-weight:500;text-decoration:none">iletisim@orpayormanurunleri.com.tr</a>
+                </div>
+            </div>
+
+            <div style="display:flex;align-items:center;gap:1rem;padding:1rem;border:1px solid var(--tema-cizgi);border-radius:12px">
+                <div style="width:40px;height:40px;border-radius:8px;background:var(--tema-arkaplan-2);display:flex;align-items:center;justify-content:center;color:var(--tema-vurgu)">📍</div>
+                <div>
+                    <span style="font-size:0.75rem;color:var(--tema-metin-soluk);text-transform:uppercase;letter-spacing:0.1em">Adres</span>
+                    <span style="display:block;color:var(--tema-metin);font-weight:500">Harsat Mah. Rihtim Boyu Cd. No:242 Tosya/Kastamonu</span>
+                </div>
+            </div>
+
+            <div style="display:flex;align-items:center;gap:1rem;padding:1rem;border:1px solid var(--tema-cizgi);border-radius:12px">
+                <div style="width:40px;height:40px;border-radius:8px;background:var(--tema-arkaplan-2);display:flex;align-items:center;justify-content:center;color:var(--tema-vurgu)">🕐</div>
+                <div>
+                    <span style="font-size:0.75rem;color:var(--tema-metin-soluk);text-transform:uppercase;letter-spacing:0.1em">Çalışma Saatleri</span>
+                    <span style="display:block;color:var(--tema-metin);font-weight:500">Pzt-Cmt 09:00-18:00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Iletisim Formu -->
+        <div style="border:1px solid var(--tema-cizgi);border-radius:12px;padding:2rem;background:#fff">
+            <h3 style="font-family:var(--tema-font-baslik);font-size:1.3rem;color:var(--tema-metin);margin-bottom:1.5rem">Mesaj Gönderin</h3>
+            <div style="display:flex;flex-direction:column;gap:1rem">
+                <input type="text" placeholder="Adınız" style="padding:12px;border:1px solid var(--tema-cizgi);border-radius:8px;font-size:0.9rem;color:var(--tema-metin);background:var(--tema-arkaplan)" />
+                <input type="email" placeholder="E-posta" style="padding:12px;border:1px solid var(--tema-cizgi);border-radius:8px;font-size:0.9rem;color:var(--tema-metin);background:var(--tema-arkaplan)" />
+                <input type="tel" placeholder="Telefon" style="padding:12px;border:1px solid var(--tema-cizgi);border-radius:8px;font-size:0.9rem;color:var(--tema-metin);background:var(--tema-arkaplan)" />
+                <textarea placeholder="Mesajınız" rows="5" style="padding:12px;border:1px solid var(--tema-cizgi);border-radius:8px;font-size:0.9rem;color:var(--tema-metin);background:var(--tema-arkaplan);resize:vertical"></textarea>
+                <a href="mailto:iletisim@orpayormanurunleri.com.tr" class="orpay-btn orpay-btn--birincil" style="text-align:center">Gönder</a>
+            </div>
+        </div>
+    </div>
 </section>

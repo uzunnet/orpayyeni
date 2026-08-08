@@ -1,0 +1,132 @@
+@page "/lisanslar"
+@rendermode InteractiveServer
+
+<PageTitle>Lisans Yönetimi — SuperAdmin</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">Lisans Yönetimi</MudText>
+
+@if (_yukleniyor)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" Class="my-4" />
+}
+else
+{
+    <MudGrid Class="mb-4">
+        <MudItem xs="12" sm="6" md="4">
+            <MudTextField @bind-Value="_firmaFiltresi"
+                          Label="Firma Adı ile Filtrele"
+                          Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Search"
+                          Immediate="true"
+                          Clearable="true"
+                          OnClearButtonClick="@(() => { _firmaFiltresi = string.Empty; FiltreUygula(); })"
+                          TextChanged="@(_ => FiltreUygula())" />
+        </MudItem>
+        <MudItem xs="12" sm="6" md="4">
+            <MudSelect T="string" @bind-Value="_tipFiltresi"
+                       Label="Lisans Tipi"
+                       Clearable="true"
+                       SelectedValuesChanged="@(_ => FiltreUygula())">
+                <MudSelectItem Value="@("Tümü")" />
+                <MudSelectItem Value="@("Demo")" />
+                <MudSelectItem Value="@("Yillik")" />
+                <MudSelectItem Value="@("IkiYillik")" />
+                <MudSelectItem Value="@("UcYillik")" />
+                <MudSelectItem Value="@("BesYillik")" />
+                <MudSelectItem Value="@("Suresiz")" />
+            </MudSelect>
+        </MudItem>
+    </MudGrid>
+
+    @if (_filtrelenmisLisanslar.Count == 0)
+    {
+        <MudAlert Severity="Severity.Info">Filtrelere uygun lisans bulunamadı.</MudAlert>
+    }
+    else
+    {
+        <MudDataGrid Items="@_filtrelenmisLisanslar"
+                     Hover="true"
+                     Dense="true"
+                     Striped="true"
+                     Elevation="1"
+                     Filterable="false"
+                     SortMode="SortMode.Single">
+            <Columns>
+                <PropertyColumn Property="x => x.FirmaAd" Title="Firma Adı" />
+                <PropertyColumn Property="x => x.Domain" Title="Domain" />
+                <PropertyColumn Property="x => x.LisansTipi" Title="Tip">
+                    <CellTemplate>
+                        <MudChip T="string" Size="Size.Small" Color="Color.Info">@context.Item.LisansTipi</MudChip>
+                    </CellTemplate>
+                </PropertyColumn>
+                <TemplateColumn Title="Süre">
+                    <CellTemplate>
+                        @if (context.Item.SuresizMi)
+                        {
+                            <text>Süresiz</text>
+                        }
+                        else if (context.Item.SureYil.HasValue)
+                        {
+                            @($"{context.Item.SureYil} yıl")
+                        }
+                        else
+                        {
+                            @($"{(context.Item.BitisTarihi - context.Item.BaslangicTarihi).Days} gün")
+                        }
+                    </CellTemplate>
+                </TemplateColumn>
+                <TemplateColumn Title="Kalan Gün">
+                    <CellTemplate>
+                        @if (context.Item.SuresizMi)
+                        {
+                            <MudChip T="string" Size="Size.Small" Color="Color.Info">Süresiz</MudChip>
+                        }
+                        else
+                        {
+                            var kalan = (context.Item.BitisTarihi - DateTime.UtcNow).Days;
+                            if (kalan <= 0)
+                            {
+                                <MudChip T="string" Size="Size.Small" Color="Color.Error">Süresi Doldu</MudChip>
+                            }
+                            else if (kalan <= 7)
+                            {
+                                <MudChip T="string" Size="Size.Small" Color="Color.Error">@kalan gün</MudChip>
+                            }
+                            else if (kalan <= 30)
+                            {
+                                <MudChip T="string" Size="Size.Small" Color="Color.Warning">@kalan gün</MudChip>
+                            }
+                            else
+                            {
+                                <MudChip T="string" Size="Size.Small" Color="Color.Success">@kalan gün</MudChip>
+                            }
+                        }
+                    </CellTemplate>
+                </TemplateColumn>
+                <PropertyColumn Property="x => x.AktifMi" Title="Durum">
+                    <CellTemplate>
+                        @if (context.Item.AktifMi)
+                        {
+                            <MudChip T="string" Size="Size.Small" Color="Color.Success">Aktif</MudChip>
+                        }
+                        else
+                        {
+                            <MudChip T="string" Size="Size.Small" Color="Color.Default">Pasif</MudChip>
+                        }
+                    </CellTemplate>
+                </PropertyColumn>
+                <TemplateColumn Title="">
+                    <CellTemplate>
+                        <MudIconButton Icon="@Icons.Material.Filled.Visibility"
+                                       Size="Size.Small"
+                                       Color="Color.Primary"
+                                       Href="@($"/lisans/{context.Item.Id}")" />
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+            <PagerContent>
+                <MudDataGridPager PageSizeOptions="new[] { 10, 25, 50 }" />
+            </PagerContent>
+        </MudDataGrid>
+    }
+}

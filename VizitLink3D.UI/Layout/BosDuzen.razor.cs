@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using VizitLink3D.UI.Servisler;
 
@@ -9,8 +9,7 @@ public partial class BosDuzen : LayoutComponentBase
     [Inject] private DilServisi DilServisi { get; set; } = default!;
     [Inject] private IJSRuntime JS { get; set; } = default!;
 
-    private string _aktifTemaModu = "koyu";
-    private bool KoyuTemaMi => _aktifTemaModu != "acik";
+    private string _aktifTemaModu = "acik";
 
     protected override async Task OnInitializedAsync()
     {
@@ -19,16 +18,13 @@ public partial class BosDuzen : LayoutComponentBase
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (!firstRender)
-        {
-            return;
-        }
+        if (!firstRender) return;
 
         await JS.InvokeVoidAsync("vizitlink3dDil.htmlDiliniAyarla", DilServisi.AktifDil);
 
         var kayitliTemaModu = await JS.InvokeAsync<string?>("localStorage.getItem", "temaMod");
         _aktifTemaModu = string.IsNullOrWhiteSpace(kayitliTemaModu)
-            ? "koyu"
+            ? "acik"
             : (kayitliTemaModu.Equals("acik", StringComparison.OrdinalIgnoreCase) ? "acik" : "koyu");
 
         await JS.InvokeVoidAsync("vizitlink3dTema.adminModUygula", _aktifTemaModu);

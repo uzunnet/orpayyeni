@@ -73,6 +73,12 @@ public class Firma
     [NotMapped]
     public List<string> AktifModulKodlari { get; set; } = new();
 
+    public string? AktifModulKodlariJson { get; set; }
+    public string? Sektor { get; set; }
+    public string? MedyaKlasoru { get; set; }
+    public string? PaketTipi { get; set; }
+    public int MaxKullaniciSayisi { get; set; } = 5;
+
     // Audit
     public DateTime OlusturulmaTarihi { get; set; } = DateTime.UtcNow;
     public DateTime? GuncellenmeTarihi { get; set; }

@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.1.0" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VizitLink3D.Api\VizitLink3D.Api.csproj" />
+    <ProjectReference Include="..\VizitLink3D.Ortak\VizitLink3D.Ortak.csproj" />
+  </ItemGroup>
+
+  <!-- Api projesinin static web asset'lerinin konsol uygulamasına karışmasını önle -->
+  <Target Name="RemoveApiStaticWebAssets" BeforeTargets="GenerateStaticWebAssetsManifest">
+    <ItemGroup>
+      <StaticWebAsset Remove="@(StaticWebAsset)" Condition="'%(StaticWebAsset.SourceId)' == 'VizitLink3D.Api'" />
+    </ItemGroup>
+  </Target>
+
+</Project>

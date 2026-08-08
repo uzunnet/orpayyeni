@@ -61,7 +61,7 @@ public class EdgeCaseTestleri
     [Fact]
     public void Kullanici_Rol_EnumDegerleriTutarlı()
     {
-        var roller = new[] { Rol.Kullanici, Rol.Editor, Rol.Admin, Rol.SuperAdmin };
+        var roller = new[] { Rol.Kullanici, Rol.Editor, Rol.FirmaAdmin, Rol.SuperAdmin };
         Assert.Equal(4, roller.Distinct().Count());
     }
 

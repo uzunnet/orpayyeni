@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="tr" data-tema-id="orpay-gunduz">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>ORPAY</title>
+    <base href="/" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&family=Hanken+Grotesk:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+    <link href="css/sistem/tokens.css" rel="stylesheet" />
+    <link href="css/app.css" rel="stylesheet" />
+    <link href="css/sistem/orpay-public-shell.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/temalar/orpay-gunduz/tokens.css" />
+    <link rel="stylesheet" href="css/temalar/orpay-gunduz/bilesenler.css" />
+    <link rel="stylesheet" href="css/temalar/orpay-gunduz/animasyonlar.css" />
+    <link rel="stylesheet" href="css/temalar/orpay-luxe-industrial/tokens.css" />
+    <link rel="stylesheet" href="css/temalar/orpay-luxe-industrial/bilesenler.css" />
+    <link rel="stylesheet" href="css/temalar/orpay-luxe-industrial/animasyonlar.css" />
+    <link href="css/sistem/public-image-fix.css" rel="stylesheet" />
+    <link href="css/sistem/orpay-urunler-yeni.css" rel="stylesheet" />
+    <link href="css/sistem/orpay-tema-gecis.css" rel="stylesheet" />
+    <link href="css/sistem/orpay-animasyonlar.css" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link href="VizitLink3D.UI.styles.css" rel="stylesheet" />
+    <!-- Otomatik firma tespiti: hostname'i localStorage'a yaz -->
+    <script>
+        (function() {
+            if (!localStorage.getItem('aktif_firma')) {
+                localStorage.setItem('aktif_firma', window.location.hostname);
+            }
+        })();
+    </script>
+</head>
+<body>
+    <div id="app">
+        <div class="ilk-yukleme">
+            <p class="ilk-yukleme-metin">ORPAY</p>
+        </div>
+    </div>
+    <div id="blazor-error-ui">Bir hata olustu. <a href="">Yeniden yukle</a></div>
+    <script src="js/tema.js"></script>
+    <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+    <script>
+        window.vizitlink3dApiBaseUrl = (function() {
+            var h = window.location.hostname || '';
+            if (h === 'localhost' || h === '127.0.0.1') return 'http://localhost:5015';
+            return window.location.origin;
+        })();
+    </script>
+    <script src="_framework/blazor.webassembly.js"></script>
+</body>
+</html>

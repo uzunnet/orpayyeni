@@ -1,4 +1,4 @@
-@page "/admin/uc-boyut-model-yonetimi"
+﻿@page "/admin/uc-boyut-model-yonetimi"
 @layout VizitLink3D.UI.Layout.AdminDuzen
 @using VizitLink3D.Ortak.Modeller.Urunler
 @using Microsoft.AspNetCore.Authorization
@@ -102,7 +102,7 @@
                 <MudItem xs="12" md="4">
                     <MudSelect @bind-Value="_form.CevreAyarJson" Label='@DilServisi.T("admin.3d.hdriOrtam", "HDRI ortam")' Class="mb-3 admin-select">
                         <MudSelectItem Value="@("")">@DilServisi.T("admin.3d.ortamVarsayilan", "Varsayılan iç mekan")</MudSelectItem>
-                        <MudSelectItem Value="@("banyo")">@DilServisi.T("admin.3d.ortamBanyo", "Banyo")</MudSelectItem>
+                        <MudSelectItem Value="@("banyo")">@DilServisi.T("admin.3d.ortamKapi", "Kapı")</MudSelectItem>
                         <MudSelectItem Value="@("mutfak")">@DilServisi.T("admin.3d.ortamMutfak", "Mutfak")</MudSelectItem>
                         <MudSelectItem Value="@("fabrika")">@DilServisi.T("admin.3d.ortamFabrika", "Endüstriyel stüdyo")</MudSelectItem>
                         <MudSelectItem Value="@("icmekan")">@DilServisi.T("admin.3d.ortamIcMekan", "Stüdyo iç mekan")</MudSelectItem>
@@ -292,3 +292,4 @@ else
         }
     }
 }
+

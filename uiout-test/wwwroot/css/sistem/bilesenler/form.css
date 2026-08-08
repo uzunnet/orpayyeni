@@ -1,0 +1,5 @@
+/* Form — VizitLink3D */
+.vizit-form-grup{margin-bottom:1.5rem}
+.vizit-form-etiket{display:block;margin-bottom:.5rem;font-weight:600;font-size:.9rem;color:var(--vizit-primary, #1A1A27)}
+.vizit-form-input{width:100%;padding:10px 14px;border:1px solid #ddd;font-size:1rem;transition:border-color .2s}
+.vizit-form-input:focus{border-color:var(--vizit-accent, #C8952A);outline:none;box-shadow:0 0 0 3px rgba(200,149,42,.1)}

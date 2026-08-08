@@ -1,0 +1,45 @@
+/*
+ * Ortak Animasyonlar — Tüm temalar için temel keyframe'ler
+ * Tema-özgü animasyonlar kendi animasyonlar.css dosyalarında tanımlanır.
+ */
+
+/* Fade In */
+@keyframes ortak-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Slide Up (scroll reveal) */
+@keyframes ortak-slide-up {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Scale In */
+@keyframes ortak-scale-in {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Uygulama sınıfları */
+.anim-fade-in {
+    animation: ortak-fade-in 0.4s ease forwards;
+}
+
+.anim-slide-up {
+    animation: ortak-slide-up 0.5s ease forwards;
+}
+
+.anim-scale-in {
+    animation: ortak-scale-in 0.4s ease forwards;
+}
+
+/* Geçici overlay (tema geçişi flicker önleme) */
+body.tema-gecis-yapiliyor::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.02);
+    pointer-events: none;
+    z-index: 99999;
+}

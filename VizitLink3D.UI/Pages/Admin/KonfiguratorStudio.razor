@@ -1,4 +1,4 @@
-@page "/admin/konfigurator-studio/{ModelId:int?}"
+﻿@page "/admin/konfigurator-studio/{ModelId:int?}"
 @layout VizitLink3D.UI.Layout.AdminDuzen
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize]
@@ -17,15 +17,15 @@
 }
 else
 {
-    <MudGrid Class="gb-konfigurator-studio">
+    <MudGrid Class="orpay-konfigurator-studio">
         @* ===== SOL PANEL — Model Secimi ve Parca Listesi ===== *@
-        <MudItem xs="12" lg="3" Class="gb-ks-sol-panel">
+        <MudItem xs="12" lg="3" Class="orpay-ks-sol-panel">
             <MudSelect T="int?"
                        Label="@dil.T("admin.ks.modelSecimi", "Model Secimi")"
                        AnchorOrigin="Origin.BottomCenter"
                        Value="_seciliModelId"
                        ValueChanged="ModelSecAsync"
-                       Class="gb-ks-model-secimi"
+                       Class="orpay-ks-model-secimi"
                        Variant="Variant.Outlined">
                 @foreach (var model in _modeller)
                 {
@@ -47,13 +47,13 @@ else
                               DebounceInterval="300"
                               Adornment="Adornment.Start"
                               AdornmentIcon="@Icons.Material.Filled.Search"
-                              Class="gb-ks-arama mt-3" />
+                              Class="orpay-ks-arama mt-3" />
 
-                <MudText Typo="Typo.caption" Class="gb-ks-meta-etiket mt-2">
+                <MudText Typo="Typo.caption" Class="orpay-ks-meta-etiket mt-2">
                     @_filtreliParcalar.Count @dil.T("admin.ks.parca", "parca")
                 </MudText>
 
-                <MudList T="UrunUcBoyutParcasi" Class="gb-ks-parca-listesi" Clickable="true">
+                <MudList T="UrunUcBoyutParcasi" Class="orpay-ks-parca-listesi" Clickable="true">
                     @if (!_filtreliParcalar.Any())
                     {
                         <MudAlert Severity="Severity.Info" Class="ma-2">
@@ -76,8 +76,8 @@ else
         </MudItem>
 
         @* ===== ORTA PANEL — 3D Viewer ===== *@
-        <MudItem xs="12" lg="6" Class="gb-ks-orta-panel">
-            <div class="gb-ks-viewer-sarici">
+        <MudItem xs="12" lg="6" Class="orpay-ks-orta-panel">
+            <div class="orpay-ks-viewer-sarici">
                 @if (_seciliModelId.HasValue && !string.IsNullOrWhiteSpace(_modelYolu))
                 {
                     <UcBoyutGoruntuleyici @key="_seciliModelId"
@@ -88,7 +88,7 @@ else
                 }
                 else if (!_seciliModelId.HasValue)
                 {
-                    <div class="gb-ks-bos-durum">
+                    <div class="orpay-ks-bos-durum">
                                 <MudIcon Icon="@Icons.Material.Filled.ViewInAr" Size="Size.Large" Color="Color.Default" />
                         <MudText Typo="Typo.subtitle1">
                             @dil.T("admin.ks.modelSecilmedi", "Lutfen sol panelden bir model secin.")
@@ -97,7 +97,7 @@ else
                 }
                 else
                 {
-                    <div class="gb-ks-bos-durum">
+                    <div class="orpay-ks-bos-durum">
                                 <MudIcon Icon="@Icons.Material.Filled.Warning" Size="Size.Large" Color="Color.Default" />
                         <MudText Typo="Typo.subtitle1">
                             @dil.T("admin.ks.modelYoluYok", "Secili model icin 3D dosya bulunamadi.")
@@ -108,7 +108,7 @@ else
         </MudItem>
 
         @* ===== SAG PANEL — Parca Editoru + Sahne Presetleri ===== *@
-        <MudItem xs="12" lg="3" Class="gb-ks-sag-panel">
+        <MudItem xs="12" lg="3" Class="orpay-ks-sag-panel">
             <MudTabs ActivePanelIndex="_aktifSekme" ActivePanelIndexChanged="@(idx => _aktifSekme = idx)">
                 @* === Sekme 1: Parca Editoru === *@
                 <MudTabPanel Text="@dil.T("admin.ks.parcaEditoru", "Parca Editoru")">
@@ -121,7 +121,7 @@ else
                     else
                     {
                         <div class="pa-2">
-                            <p class="gb-ks-meta-etiket">@dil.T("admin.ks.meshAdi", "MESH ADI")</p>
+                            <p class="orpay-ks-meta-etiket">@dil.T("admin.ks.meshAdi", "MESH ADI")</p>
                             <MudTextField Value="@(_parcaFormMeshAdi ?? "")"
                                           ReadOnly="true"
                                           Variant="Variant.Outlined"
@@ -191,8 +191,8 @@ else
                                           Margin="Margin.Dense"
                                           Class="admin-mono-field" />
 
-                            <MudText Typo="Typo.caption" Class="gb-ks-meta-etiket mt-2">@dil.T("admin.ks.ozellikler", "OZELLIKLER")</MudText>
-                            <div class="gb-ks-switch-grubu">
+                            <MudText Typo="Typo.caption" Class="orpay-ks-meta-etiket mt-2">@dil.T("admin.ks.ozellikler", "OZELLIKLER")</MudText>
+                            <div class="orpay-ks-switch-grubu">
                                 <MudSwitch @bind-Value="_parcaFormRenklenebilirMi"
                                            Label="@dil.T("admin.ks.renklenebilir", "Renklenebilir")" Color="Color.Primary" />
                                 <MudSwitch @bind-Value="_parcaFormMalzemeDegisebilirMi"
@@ -222,7 +222,7 @@ else
                                           Margin="Margin.Dense"
                                           Class="admin-mono-field" />
 
-                            <div class="gb-ks-kaydet-alani d-flex gap-2 justify-end">
+                            <div class="orpay-ks-kaydet-alani d-flex gap-2 justify-end">
                                 <MudButton Variant="Variant.Outlined"
                                            OnClick="@(() => { ParcaFormTemizle(); StateHasChanged(); })"
                                            Color="Color.Error" Size="Size.Small">
@@ -255,7 +255,7 @@ else
                     </MudButton>
 
                     <MudTable Items="@_sahneOnayarlari" Hover="true" Dense="true" Elevation="0"
-                              Class="gb-ks-preset-tablo">
+                              Class="orpay-ks-preset-tablo">
                         <HeaderContent>
                             <MudTh>@dil.T("admin.ks.ad", "Ad")</MudTh>
                             <MudTh>@dil.T("admin.ks.kod", "Kod")</MudTh>
@@ -295,7 +295,7 @@ else
                             </MudTd>
                         </RowTemplate>
                         <NoRecordsContent>
-                            <div class="gb-ks-preset-bos">
+                            <div class="orpay-ks-preset-bos">
                                 @dil.T("admin.ks.presetYok", "Henuz bir preset tanimlanmamis.")
                             </div>
                         </NoRecordsContent>

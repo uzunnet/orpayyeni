@@ -7,25 +7,25 @@ public sealed class MobilMenuGorunumYardimcisiTestleri
     [Fact]
     public void MenuKapaliykenYalnizcaTemelSinifiDondurur()
     {
-        Assert.Equal("gb-mobil-menu", MobilMenuGorunumYardimcisi.MenuSinifi(false));
+        Assert.Equal("orpay-mobil-menu", MobilMenuGorunumYardimcisi.MenuSinifi(false));
     }
 
     [Fact]
     public void MenuAcikkenAcikSinifiniDondurur()
     {
-        Assert.Equal("gb-mobil-menu gb-mobil-menu--acik", MobilMenuGorunumYardimcisi.MenuSinifi(true));
+        Assert.Equal("orpay-mobil-menu orpay-mobil-menu--acik", MobilMenuGorunumYardimcisi.MenuSinifi(true));
     }
 
     [Fact]
     public void DugmeKapaliykenYalnizcaTemelSinifiDondurur()
     {
-        Assert.Equal("gb-mobil-menu-dugme", MobilMenuGorunumYardimcisi.DugmeSinifi(false));
+        Assert.Equal("orpay-mobil-menu-dugme", MobilMenuGorunumYardimcisi.DugmeSinifi(false));
     }
 
     [Fact]
     public void DugmeAcikkenAcikSinifiniDondurur()
     {
-        Assert.Equal("gb-mobil-menu-dugme gb-mobil-menu-dugme--acik", MobilMenuGorunumYardimcisi.DugmeSinifi(true));
+        Assert.Equal("orpay-mobil-menu-dugme orpay-mobil-menu-dugme--acik", MobilMenuGorunumYardimcisi.DugmeSinifi(true));
     }
 
     [Fact]

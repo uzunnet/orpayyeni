@@ -100,6 +100,14 @@
                                 var teknikCizimUrl = TeknikCizimUrl;
                                 <span class="gb-detail-teknik-onizleme">
                                     <MudIcon Icon="@Icons.Material.Outlined.ZoomIn" Size="Size.Small" />
+                                    @if (!string.IsNullOrWhiteSpace(_urun.Aciklama))
+                                    {
+                                        <div style="padding:1.5rem;border:1px solid var(--tema-cizgi);border-radius:12px">
+                                            <div class="orpay-aciklama-icerik" style="color:var(--tema-metin-ikincil);line-height:1.7;font-size:0.9rem">
+                                                @((MarkupString)_urun.Aciklama)
+                                            </div>
+                                        </div>
+                                    }
                                     <img src="@teknikCizimUrl" alt="@dil.T("urun.teknikOlculer", "Teknik Ölçüler")" class="gb-detail-teknik-onizleme__gorsel" />
                                 </span>
                             }

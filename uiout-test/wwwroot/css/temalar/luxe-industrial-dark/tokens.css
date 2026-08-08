@@ -1,0 +1,116 @@
+﻿/*
+ * Luxe Industrial Dark — tokens.css
+ * Stitch DESIGN.md'den üretildi.
+ * Orpay koyu premium teması.
+ * EB Garamond + Hanken Grotesk, glassmorphism, sharp industrial.
+ */
+
+:root[data-tema-id="luxe-industrial-dark"],
+html.tema-luxe-dark {
+    /* === RENK === */
+    --tema-birincil: #0d0d0d;
+    --tema-ikincil: #121212;
+    --tema-vurgu: #27ae60;
+    --tema-vurgu-acik: #61de8a;
+    --tema-vurgu-koyu: #006d37;
+    --tema-vurgu-ikincil: #e9c349;
+    --tema-vurgu-ikincil-acik: #f0d86a;
+    --tema-vurgu-ikincil-koyu: #af8d11;
+    --tema-arkaplan: #0d0d0d;
+    --tema-arkaplan-2: #121212;
+    --tema-yuzey: #131313;
+    --tema-yuzey-hover: #1c1b1b;
+    --tema-yuzey-alcak: #0e0e0e;
+    --tema-yuzey-yuksek: #201f1f;
+    --tema-cizgi: rgba(255, 255, 255, 0.10);
+    --tema-cizgi-acik: rgba(255, 255, 255, 0.05);
+    --tema-metin: #e5e2e1;
+    --tema-metin-ikincil: #bccabc;
+    --tema-metin-soluk: #879487;
+    --tema-metin-ters: #0d0d0d;
+    --tema-basari: #27ae60;
+    --tema-uyari: #e9c349;
+    --tema-hata: #ffb4ab;
+    --tema-bilgi: #879487;
+
+    /* === TIPOGRAFI === */
+    --tema-font-baslik: 'EB Garamond', Georgia, serif;
+    --tema-font-govde: 'Hanken Grotesk', system-ui, sans-serif;
+    --tema-font-vurgu: 'Hanken Grotesk', system-ui, sans-serif;
+    --tema-font-mono: 'JetBrains Mono', monospace;
+    --tema-font-label: 'Hanken Grotesk', system-ui, sans-serif;
+    --tema-baslik-agirlik: 500;
+    --tema-baslik-harf-araligi: -0.02em;
+    --tema-baslik-buyukluk: clamp(2rem, 5vw, 4.5rem);
+    --tema-govde-boyut-lg: 1.125rem;
+    --tema-govde-boyut: 1rem;
+    --tema-label-boyut: 0.75rem;
+    --tema-label-harf-araligi: 0.2em;
+    --tema-label-agirlik: 700;
+
+    /* === BOŞLUK === */
+    --tema-bosluk-xs: 0.25rem;
+    --tema-bosluk-sm: 0.5rem;
+    --tema-bosluk-md: 1rem;
+    --tema-bosluk-lg: 1.5rem;
+    --tema-bosluk-xl: 2.5rem;
+    --tema-bosluk-2xl: 4rem;
+    --tema-bosluk-3xl: 5rem;
+    --tema-bosluk-4xl: 8rem;
+
+    /* === GEOMETRI === */
+    --tema-kose-sm: 0px;
+    --tema-kose-md: 0px;
+    --tema-kose-lg: 0px;
+    --tema-kose-xl: 0px;
+    --tema-kose-tam: 0px;
+    --tema-border-kalinlik: 1px;
+    --tema-border-stil: solid;
+
+    /* === GOLGE === */
+    --tema-golge-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+    --tema-golge-md: 0 4px 20px rgba(0, 0, 0, 0.5);
+    --tema-golge-lg: 0 10px 40px rgba(0, 0, 0, 0.6);
+    --tema-golge-xl: 0 20px 60px rgba(0, 0, 0, 0.7);
+    --tema-golge-vurgu: 0 0 20px rgba(39, 174, 96, 0.30);
+    --tema-golge-altin: 0 0 15px rgba(233, 195, 73, 0.25);
+
+    /* === GLASSMORPHISM === */
+    --tema-cam-bg: rgba(26, 26, 26, 0.70);
+    --tema-cam-cizgi: rgba(255, 255, 255, 0.10);
+    --tema-cam-blur: blur(12px) saturate(150%);
+    --tema-cam-golge: 0 4px 24px rgba(0, 0, 0, 0.3);
+    --tema-orman-isilti: rgba(39, 174, 96, 0.15);
+    --tema-cam-bg-acik: rgba(26, 26, 26, 0.40);
+
+    /* === ANIMASYON === */
+    --tema-gecis-hizli: 0.15s ease;
+    --tema-gecis-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --tema-gecis-yavas: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    --tema-bezier: cubic-bezier(0.4, 0, 0.2, 1);
+    --tema-anim-suresi: 0.8s;
+    --tema-hover-yukseklik: 4px;
+    --tema-hover-olcek: 1.05;
+
+    /* === LAYOUT === */
+    --tema-icerik-genislik: 1440px;
+    --tema-kenar-bosluk: 64px;
+    --tema-kenar-bosluk-mobil: 20px;
+    --tema-sutun-sayisi: 12;
+    --tema-bolum-gap: 128px;
+    --tema-gutter: 32px;
+
+    /* === LEGACY UYUMLULUK === */
+    --vizit-primary: var(--tema-arkaplan);
+    --vizit-accent: var(--tema-vurgu-ikincil);
+    --vizit-bg-base: var(--tema-arkaplan);
+    --vizit-text: var(--tema-metin);
+    --vizit-text-inverse: var(--tema-metin-ters);
+    --vizit-font-serif: var(--tema-font-baslik);
+    --vizit-font-sans: var(--tema-font-govde);
+    --vizit-radius-md: var(--tema-kose-md);
+    --vizit-transition: var(--tema-gecis-normal);
+    --vizit-shadow-md: var(--tema-golge-md);
+    --vizit-shadow-lux: var(--tema-golge-altin);
+    --vizit-border: var(--tema-cizgi);
+}

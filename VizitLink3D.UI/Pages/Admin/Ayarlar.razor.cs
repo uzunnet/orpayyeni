@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Net.Http;
 using MudBlazor;
@@ -39,6 +39,10 @@ public partial class Ayarlar : ComponentBase
     private string _instagram = "";
     private string _facebook = "";
     private string _youtube = "";
+
+    // Ürün Listeleme
+    private int _urunSayfaBoyutu = 12;
+    private string _urunVarsayilanSiralama = "varsayilan";
 
     // Görsel optimizasyonu
     private int _resimMaksimumKenar = 1000;
@@ -84,6 +88,11 @@ public partial class Ayarlar : ComponentBase
                 _instagram = MarkaMetniNormalizeEt(sozluk.GetValueOrDefault("Instagram", sozluk.GetValueOrDefault("InstagramUrl", _instagram)), _instagram);
                 _facebook = MarkaMetniNormalizeEt(sozluk.GetValueOrDefault("Facebook", sozluk.GetValueOrDefault("FacebookUrl", _facebook)), _facebook);
                 _youtube = MarkaMetniNormalizeEt(sozluk.GetValueOrDefault("Youtube", sozluk.GetValueOrDefault("YoutubeUrl", _youtube)), _youtube);
+                
+                if (int.TryParse(sozluk.GetValueOrDefault("UrunSayfaBoyutu", "12"), out var urunSayfaBoyutu))
+                    _urunSayfaBoyutu = urunSayfaBoyutu;
+                
+                _urunVarsayilanSiralama = sozluk.GetValueOrDefault("UrunVarsayilanSiralama", "varsayilan");
             }
 
             await ResimAyarlariYukle();
@@ -224,6 +233,11 @@ public partial class Ayarlar : ComponentBase
                 ayarlar["FacebookUrl"] = _facebook;
                 ayarlar["Youtube"] = _youtube;
                 ayarlar["YoutubeUrl"] = _youtube;
+            }
+            else if (bolum == 6)
+            {
+                ayarlar["UrunSayfaBoyutu"] = _urunSayfaBoyutu.ToString();
+                ayarlar["UrunVarsayilanSiralama"] = _urunVarsayilanSiralama;
             }
 
             foreach (var (anahtar, deger) in ayarlar)

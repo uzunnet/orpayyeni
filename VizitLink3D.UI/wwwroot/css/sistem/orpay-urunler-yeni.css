@@ -1,0 +1,211 @@
+/* ============================================ */
+/* ORPAY Urunler Sayfasi - Yeni Sablon          */
+/* Gold Banyo ile tamamen farkli yapida         */
+/* ============================================ */
+
+/* Hero bolumu - acik, temiz, buyuk baslik */
+.orpay-urunler-yeni {
+    padding: 0;
+    max-width: var(--tema-icerik-genislik, 1280px);
+    margin: 0 auto;
+}
+
+.orpay-urunler-yeni__hero {
+    padding: 4rem 2rem 3rem;
+    text-align: center;
+    border-bottom: 1px solid var(--tema-cizgi);
+}
+
+.orpay-urunler-yeni__hero-ic {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.orpay-urunler-yeni__baslik {
+    font-family: var(--tema-font-baslik, serif);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 600;
+    color: var(--tema-metin);
+    margin: 1rem 0 0.75rem;
+    letter-spacing: var(--tema-baslik-harf-araligi, -0.02em);
+}
+
+.orpay-urunler-yeni__aciklama {
+    color: var(--tema-metin-ikincil);
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+/* Filtre Wrapper (Sıralama + Kategori barı) - Glassmorphism */
+.orpay-urunler-yeni__filtre-wrapper {
+    background: var(--tema-cam-bg, rgba(255, 255, 255, 0.7));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    border-radius: 20px;
+    margin: -1.5rem 2rem 2rem 2rem;
+    position: relative;
+    z-index: 10;
+}
+
+/* Filtre bolumu - yatay, temiz */
+.orpay-urunler-yeni__filtre {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+}
+
+.orpay-urunler-yeni__filtre button {
+    padding: 10px 24px;
+    border-radius: 999px;
+    border: 1px solid rgba(0,0,0,0.05);
+    background: rgba(255,255,255,0.8);
+    color: var(--tema-metin-ikincil);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+}
+
+.orpay-urunler-yeni__filtre button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
+    color: var(--tema-vurgu);
+    border-color: var(--tema-vurgu);
+}
+
+.orpay-urunler-yeni__filtre button.aktif {
+    background: var(--tema-vurgu);
+    color: var(--tema-kart-bg, #fff);
+    border-color: var(--tema-vurgu);
+    box-shadow: 0 6px 20px rgba(var(--tema-vurgu-rgb, 0,0,0), 0.2);
+}
+
+/* Sıralama Select Ozellestirmesi (MudBlazor Override) */
+.orpay-urunler-yeni__filtre-wrapper .mud-input-control {
+    margin-top: 0 !important;
+}
+.orpay-urunler-yeni__filtre-wrapper .mud-input-outlined {
+    background: var(--tema-cam-bg, rgba(255,255,255,0.8)) !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(0,0,0,0.05) !important;
+    transition: all 0.3s ease;
+}
+.orpay-urunler-yeni__filtre-wrapper .mud-input-outlined:hover {
+    background: var(--tema-kart-bg, #fff) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* Urun grid - 3 sutun, kartlar basit */
+.orpay-urunler-yeni__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    padding: 2rem;
+}
+
+/* Urun karti - minimal, acik tema */
+.orpay-urunler-yeni__kart {
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    border: 1px solid var(--tema-cizgi);
+    background: var(--tema-kart-bg, #fff);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.orpay-urunler-yeni__kart:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    transform: translateY(-4px);
+}
+
+/* Gorsel - kapı boyutlarına uygun, tam boyutlu ve efektli */
+.orpay-urunler-yeni__kart-gorsel {
+    height: auto;
+    background: var(--tema-arkaplan-2, #fafafa);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-bottom: 1px solid var(--tema-cizgi);
+    position: relative;
+}
+
+.orpay-urunler-yeni__kart-gorsel img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    padding: 0;
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.orpay-urunler-yeni__kart:hover .orpay-urunler-yeni__kart-gorsel img {
+    transform: scale(1.05);
+}
+
+/* Icerik - temiz, bosluklu */
+.orpay-urunler-yeni__kart-icerik {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+}
+
+.orpay-urunler-yeni__kart-kod {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--tema-vurgu);
+}
+
+.orpay-urunler-yeni__kart-ad {
+    font-family: var(--tema-font-baslik, serif);
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--tema-metin);
+    margin: 0;
+}
+
+.orpay-urunler-yeni__kart-aciklama {
+    font-size: 0.85rem;
+    color: var(--tema-metin-ikincil);
+    line-height: 1.5;
+    margin: 0;
+    flex: 1;
+}
+
+.orpay-urunler-yeni__kart-aksiyon {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--tema-vurgu);
+    margin-top: 0.5rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .orpay-urunler-yeni__grid {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+    }
+    .orpay-urunler-yeni__hero {
+        padding: 3rem 1.5rem 2rem;
+    }
+    .orpay-urunler-yeni__filtre {
+        padding: 1rem;
+    }
+}
+
+/* Pagination Modernizasyonu (MudBlazor default ayarlarına bırakıldı) */
+
+.orpay-ozellikler { margin-top:1.5rem; background:#f9f9f9; padding:1.5rem; border-radius:12px; border:1px solid var(--tema-cizgi); } .orpay-ozellikler h4 { font-size:1.1rem; color:var(--tema-metin); margin-bottom:1rem; font-weight:600; text-transform:uppercase; letter-spacing:1px; } .orpay-ozellikler ul { list-style:none; padding:0; margin:0; } .orpay-ozellikler li { padding:0.75rem 0; border-bottom:1px solid rgba(0,0,0,0.05); font-size:0.95rem; color:var(--tema-metin-ikincil); } .orpay-ozellikler li:last-child { border-bottom:none; } .orpay-ozellikler strong { color:var(--tema-metin); min-width:140px; display:inline-block; }

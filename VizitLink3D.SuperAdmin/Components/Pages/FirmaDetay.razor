@@ -1,0 +1,325 @@
+@page "/firmalar/{Id:int}"
+@rendermode InteractiveServer
+
+<PageTitle>Firma Detay — SuperAdmin</PageTitle>
+
+@if (_yukleniyor)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" Class="my-4" />
+}
+else if (_firma == null)
+{
+    <MudAlert Severity="Severity.Error">Firma bulunamadı.</MudAlert>
+}
+else
+{
+    <MudBreadcrumbs Items="_breadcrumbs" Class="mb-2" />
+
+    <MudText Typo="Typo.h4" GutterBottom="true">@_firma.Ad</MudText>
+
+    <MudTabs @bind-ActivePanelIndex="_aktifSekme" Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-4">
+
+        @* ── Genel Bilgiler Sekmesi ── *@
+        <MudTabPanel Text="Genel Bilgiler" Icon="Icons.Material.Filled.Business">
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_ad" Label="Firma Adı" Required="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_unvan" Label="Ünvan" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudTextField @bind-Value="_slug" Label="Slug" ReadOnly="true"
+                                  HelperText="Slug değiştirilemez." />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudTextField @bind-Value="_domain" Label="Domain" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudTextField @bind-Value="_sektor" Label="Sektör" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_adres" Label="Adres" Lines="2" />
+                </MudItem>
+                <MudItem xs="12" md="3">
+                    <MudTextField @bind-Value="_sehir" Label="Şehir" />
+                </MudItem>
+                <MudItem xs="12" md="3">
+                    <MudTextField @bind-Value="_ilce" Label="İlçe" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudTextField @bind-Value="_telefon1" Label="Telefon 1" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudTextField @bind-Value="_telefon2" Label="Telefon 2" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudTextField @bind-Value="_eposta" Label="E-posta" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudTextField @bind-Value="_paketTipi" Label="Paket Tipi" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudNumericField @bind-Value="_maxKullaniciSayisi" Label="Max Kullanıcı" Min="1" Max="1000" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudSwitch @bind-Value="_aktifMi" Label="Aktif" Color="Color.Success" />
+                    <MudSwitch @bind-Value="_demoMu" Label="Demo" Color="Color.Warning" Class="ml-4" />
+                </MudItem>
+
+                @* ── Medya & Tema ── *@
+                <MudItem xs="12">
+                    <MudDivider Class="my-4" />
+                    <MudText Typo="Typo.h6" GutterBottom="true">Medya & Tema</MudText>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_logo" Label="Logo Yolu" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_favicon" Label="Favicon Yolu" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_adminTema" Label="Admin Tema" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_siteTema" Label="Site Tema" />
+                </MudItem>
+
+                @* ── Sosyal Medya ── *@
+                <MudItem xs="12">
+                    <MudDivider Class="my-4" />
+                    <MudText Typo="Typo.h6" GutterBottom="true">Sosyal Medya</MudText>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_instagram" Label="Instagram" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_facebook" Label="Facebook" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_twitter" Label="Twitter / X" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_linkedIn" Label="LinkedIn" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_youtubeKanal" Label="YouTube" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_pinterest" Label="Pinterest" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_tiktokKanal" Label="TikTok" />
+                </MudItem>
+            </MudGrid>
+        </MudTabPanel>
+
+        @* ── Lisans Sekmesi ── *@
+        <MudTabPanel Text="Lisans" Icon="Icons.Material.Filled.CardMembership">
+            <MudText Typo="Typo.h6" GutterBottom="true">Mevcut Lisanslar</MudText>
+
+            @if (_mevcutLisanslar.Count == 0)
+            {
+                <MudAlert Severity="Severity.Info" Class="mb-4">Bu firmaya ait lisans bulunmuyor.</MudAlert>
+            }
+            else
+            {
+                <MudTable Items="@_mevcutLisanslar" Hover="true" Striped="true" Elevation="1" Class="mb-6">
+                    <HeaderContent>
+                        <MudTh>Tip</MudTh>
+                        <MudTh>Başlangıç</MudTh>
+                        <MudTh>Bitiş</MudTh>
+                        <MudTh>Durum</MudTh>
+                        <MudTh>Oluşturulma</MudTh>
+                        <MudTh></MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd>@context.Tip</MudTd>
+                        <MudTd>@context.BaslangicTarihi.ToString("dd.MM.yyyy")</MudTd>
+                        <MudTd>@context.BitisTarihi.ToString("dd.MM.yyyy")</MudTd>
+                        <MudTd>
+                            @if (context.AktifMi)
+                            {
+                                <MudChip T="string" Color="Color.Success" Size="Size.Small">Aktif</MudChip>
+                            }
+                            else
+                            {
+                                <MudChip T="string" Color="Color.Default" Size="Size.Small">Pasif</MudChip>
+                            }
+                        </MudTd>
+                        <MudTd>@context.OlusturulmaTarihi.ToString("dd.MM.yyyy")</MudTd>
+                        <MudTd>
+                            <MudIconButton Icon="Icons.Material.Filled.Delete" Color="Color.Error"
+                                           Size="Size.Small" OnClick="@(() => LisansSil(context))" />
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+            }
+
+            <MudDivider Class="my-4" />
+
+            <MudText Typo="Typo.h6" GutterBottom="true">Yeni Lisans Oluştur</MudText>
+            <MudGrid>
+                <MudItem xs="12" md="3">
+                    <MudTextField @bind-Value="_yeniLisansTip" Label="Lisans Tipi"
+                                  HelperText="Yillik, Aylik, Demo" />
+                </MudItem>
+                <MudItem xs="12" md="3">
+                    <MudDatePicker @bind-Date="_yeniLisansBaslangic" Label="Başlangıç Tarihi"
+                                   DateFormat="dd.MM.yyyy" />
+                </MudItem>
+                <MudItem xs="12" md="3">
+                    <MudDatePicker @bind-Date="_yeniLisansBitis" Label="Bitiş Tarihi"
+                                   DateFormat="dd.MM.yyyy" />
+                </MudItem>
+                <MudItem xs="12" md="3">
+                    <MudTextField @bind-Value="_yeniLisansAciklama" Label="Açıklama" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                               StartIcon="Icons.Material.Filled.Add" OnClick="LisansOlustur">
+                        Lisans Oluştur
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
+        </MudTabPanel>
+
+        @* ── Modüller Sekmesi ── *@
+        <MudTabPanel Text="Modüller" Icon="Icons.Material.Filled.Extension">
+            @if (_tumModuller.Count == 0)
+            {
+                <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Small" />
+            }
+            else
+            {
+                var kategoriler = _tumModuller.Where(m => !string.IsNullOrEmpty(m.Kategori)).Select(m => m.Kategori!).Distinct().OrderBy(k => k).ToList();
+
+                foreach (var kategori in kategoriler)
+                {
+                    <MudText Typo="Typo.subtitle1" GutterBottom="true" Class="mt-4 mb-2">
+                        <MudIcon Icon="Icons.Material.Filled.Folder" Class="mr-1" />@kategori
+                    </MudText>
+                    <MudGrid>
+                        @foreach (var modul in _tumModuller.Where(m => m.Kategori == kategori))
+                        {
+                            <MudItem xs="12" sm="6" md="4">
+                                <MudCheckBox @bind-Value="_firmaModulIdleri[modul.Id]"
+                                             Label="@modul.Ad"
+                                             Color="@(modul.SistemModuluMu ? Color.Error : modul.VarsayilanMi ? Color.Success : Color.Primary)"
+                                             Disabled="@(modul.SistemModuluMu)" />
+                                @if (modul.SistemModuluMu)
+                                {
+                                    <MudText Typo="Typo.caption" Color="Color.Error" Class="ml-8">Sistem Modülü</MudText>
+                                }
+                                else if (modul.VarsayilanMi)
+                                {
+                                    <MudText Typo="Typo.caption" Color="Color.Success" Class="ml-8">Varsayılan</MudText>
+                                }
+                            </MudItem>
+                        }
+                    </MudGrid>
+                }
+            }
+        </MudTabPanel>
+
+        @* ── İstatistikler Sekmesi ── *@
+        <MudTabPanel Text="İstatistikler" Icon="Icons.Material.Filled.Analytics">
+            <MudGrid>
+                <MudItem xs="12" sm="6" md="3">
+                    <MudCard Elevation="1">
+                        <MudCardContent>
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">Oluşturulma</MudText>
+                            <MudText Typo="Typo.h6">@_firma.OlusturulmaTarihi.ToString("dd.MM.yyyy")</MudText>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+                <MudItem xs="12" sm="6" md="3">
+                    <MudCard Elevation="1">
+                        <MudCardContent>
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">Son Güncelleme</MudText>
+                            <MudText Typo="Typo.h6">
+                                @(_firma.GuncellenmeTarihi?.ToString("dd.MM.yyyy") ?? "—")
+                            </MudText>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+                <MudItem xs="12" sm="6" md="3">
+                    <MudCard Elevation="1">
+                        <MudCardContent>
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">Atanan Modül</MudText>
+                            <MudText Typo="Typo.h6">@_firmaModulIdleri.Count(kv => kv.Value)</MudText>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+                <MudItem xs="12" sm="6" md="3">
+                    <MudCard Elevation="1">
+                        <MudCardContent>
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">Aktif Lisans</MudText>
+                            <MudText Typo="Typo.h6">@_mevcutLisanslar.Count(l => l.AktifMi)</MudText>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+            </MudGrid>
+
+            <MudDivider Class="my-4" />
+
+            <MudGrid>
+                <MudItem xs="12" sm="6" md="4">
+                    <MudCard Elevation="1">
+                        <MudCardContent>
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">Paket Tipi</MudText>
+                            <MudText Typo="Typo.body1">@(_firma.PaketTipi ?? "Tanımsız")</MudText>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+                <MudItem xs="12" sm="6" md="4">
+                    <MudCard Elevation="1">
+                        <MudCardContent>
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">Max Kullanıcı</MudText>
+                            <MudText Typo="Typo.body1">@_firma.MaxKullaniciSayisi</MudText>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+                <MudItem xs="12" sm="6" md="4">
+                    <MudCard Elevation="1">
+                        <MudCardContent>
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">Durum</MudText>
+                            @if (_firma.AktifMi)
+                            {
+                                <MudChip T="string" Color="Color.Success" Size="Size.Small">Aktif</MudChip>
+                            }
+                            else
+                            {
+                                <MudChip T="string" Color="Color.Default" Size="Size.Small">Pasif</MudChip>
+                            }
+                            @if (_firma.DemoMu)
+                            {
+                                <MudChip T="string" Color="Color.Warning" Size="Size.Small" Class="ml-2">Demo</MudChip>
+                            }
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+            </MudGrid>
+        </MudTabPanel>
+    </MudTabs>
+
+    @* ── Kaydet Butonu ── *@
+    <MudStack Row="true" Class="mt-4">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                   StartIcon="Icons.Material.Filled.Save"
+                   Disabled="@_kaydediliyor"
+                   OnClick="Kaydet">
+            @(_kaydediliyor ? "Kaydediliyor..." : "Kaydet")
+        </MudButton>
+        <MudButton Href="/firmalar" Variant="Variant.Outlined" Color="Color.Secondary">Geri Dön</MudButton>
+    </MudStack>
+}
+
+@code {
+    private List<BreadcrumbItem> _breadcrumbs = new()
+    {
+        new("Anasayfa", "/"),
+        new("Firmalar", "/firmalar"),
+        new("Firma Detay", null, disabled: true)
+    };
+}

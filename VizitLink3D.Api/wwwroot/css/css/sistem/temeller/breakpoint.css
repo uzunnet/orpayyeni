@@ -1,0 +1,4 @@
+/* Breakpoint — VizitLink3D */
+@media (max-width: 480px) { .vizit-mobil-gizle { display: none !important; } }
+@media (min-width: 481px) and (max-width: 768px) { .vizit-tablet-gizle { display: none !important; } }
+@media (min-width: 769px) { .vizit-masaustu-gizle { display: none !important; } }

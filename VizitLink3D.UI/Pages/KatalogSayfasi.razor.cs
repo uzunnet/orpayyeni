@@ -11,11 +11,15 @@ public partial class KatalogSayfasi : ComponentBase
     [Inject] private NavigationManager Navigasyon { get; set; } = default!;
     [Inject] private DilServisi DilServisi { get; set; } = default!;
 
+    [Inject] private FirmaBilgisiServisi FirmaBilgisi { get; set; } = default!;
+
     private List<Katalog> _kataloglar = [];
     private bool _yukleniyor = true;
+    private string _firmaSlug = "orpay";
 
     protected override async Task OnInitializedAsync()
     {
+        _firmaSlug = await FirmaBilgisi.GetSlugAsync();
         _kataloglar = (await Api.GetAsync<List<Katalog>>("api/kataloglar") ?? [])
             .Where(katalog => katalog.AktifMi)
             .OrderBy(katalog => katalog.SiraNo)

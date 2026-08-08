@@ -1,0 +1,120 @@
+@page "/lisans/{Id:int}"
+@rendermode InteractiveServer
+
+<PageTitle>Lisans Detayı — SuperAdmin</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">Lisans Detayı</MudText>
+
+@if (_yukleniyor)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" Class="my-4" />
+}
+else if (_lisans is null)
+{
+    <MudAlert Severity="Severity.Error">Lisans bulunamadı.</MudAlert>
+}
+else
+{
+    <MudCard Elevation="2" Class="pa-4">
+        <MudCardContent>
+            <EditForm Model="@_lisans" OnValidSubmit="KaydetAsync">
+                <MudGrid>
+                    <MudItem xs="12" md="6">
+                        <MudTextField @bind-Value="_lisans.FirmaAd"
+                                      Label="Firma"
+                                      ReadOnly="true"
+                                      Variant="Variant.Outlined" />
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudTextField @bind-Value="_lisans.BirincilDomain"
+                                      Label="Birincil Domain"
+                                      Required="true"
+                                      Variant="Variant.Outlined" />
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudTextField @bind-Value="_lisans.YedekDomain"
+                                      Label="Yedek Domain"
+                                      Variant="Variant.Outlined" />
+                    </MudItem>
+                    <MudItem xs="12" md="4">
+                        <MudTextField @bind-Value="_lisans.LisansTipi"
+                                      Label="Lisans Tipi"
+                                      Required="true"
+                                      Variant="Variant.Outlined" />
+                    </MudItem>
+                    <MudItem xs="12" md="4">
+                        <MudDatePicker @bind-Date="_baslangicTarihi"
+                                       Label="Başlangıç Tarihi"
+                                       Required="true"
+                                       Variant="Variant.Outlined" />
+                    </MudItem>
+                    <MudItem xs="12" md="4">
+                        <MudDatePicker @bind-Date="_bitisTarihi"
+                                       Label="Bitiş Tarihi"
+                                       Required="true"
+                                       Variant="Variant.Outlined" />
+                    </MudItem>
+                    <MudItem xs="12" md="4">
+                        <MudNumericField @bind-Value="_lisans.SureYil"
+                                         Label="Süre (Yıl)"
+                                         Min="1"
+                                         Max="99"
+                                         Variant="Variant.Outlined" />
+                    </MudItem>
+                    <MudItem xs="12" md="4">
+                        <MudSwitch @bind-Value="_lisans.SuresizMi"
+                                   Label="Süresiz"
+                                   Color="Color.Warning" />
+                    </MudItem>
+                    <MudItem xs="12" md="4">
+                        <MudSwitch @bind-Value="_lisans.DemoMu"
+                                   Label="Demo"
+                                   Color="Color.Info" />
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudTextField @bind-Value="_lisans.Notlar"
+                                      Label="Notlar"
+                                      Lines="3"
+                                      Variant="Variant.Outlined" />
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudSwitch @bind-Value="_lisans.AktifMi"
+                                   Label="Aktif"
+                                   Color="Color.Success" />
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudDivider Class="my-4" />
+                        <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-2">
+                            Kalan Gün: @HesaplaKalanGun()
+                        </MudText>
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudButton ButtonType="ButtonType.Submit"
+                                   Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   Disabled="@_kaydediyor"
+                                   StartIcon="@Icons.Material.Filled.Save"
+                                   Class="mr-2">
+                            @(_kaydediyor ? "Kaydediliyor..." : "Kaydet")
+                        </MudButton>
+                        <MudButton Variant="Variant.Outlined"
+                                   Color="Color.Secondary"
+                                   OnClick="YenileAsync"
+                                   Disabled="@_yenileniyor"
+                                   StartIcon="@Icons.Material.Filled.Refresh"
+                                   Class="mr-2">
+                            Yenile
+                        </MudButton>
+                        <MudButton Href="/lisanslar"
+                                   Variant="Variant.Outlined"
+                                   Color="Color.Default">
+                            Listeye Dön
+                        </MudButton>
+                    </MudItem>
+                </MudGrid>
+            </EditForm>
+        </MudCardContent>
+    </MudCard>
+}

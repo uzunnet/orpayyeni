@@ -1,0 +1,648 @@
+﻿<!DOCTYPE html>
+
+<html class="light" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Orpay Orman Ürünleri | Yüksek Kalite Kapı Yüzeyleri</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&amp;family=Hanken+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<style>
+        /* Custom Styles & Overrides */
+        body { background-color: #f4fbf1; color: #1c1b1b; }
+        .light body { background-color: #131313; color: #e5e2e1; }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px) saturate(150%);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+        .dark .glass-panel {
+            background: rgba(26, 26, 26, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: none;
+        }
+
+        .text-glow {
+            text-shadow: 0 0 20px rgba(39, 174, 96, 0.3);
+        }
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .slider-img { transition: opacity 1s ease-in-out; }
+        .slider-img.hidden { opacity: 0; }
+        .slider-img.active { opacity: 1; }
+
+        /* Accordion */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-button.active .material-symbols-outlined {
+            transform: rotate(180deg);
+        }
+        
+        /* Testimonial Carousel */
+        .testimonial-slide {
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        /* Industrial Pulse Animation */
+        @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.02); }
+        }
+        .industrial-pulse {
+            animation: pulse-subtle 4s ease-in-out infinite;
+        }
+
+        /* Particle Background */
+        .particle {
+            position: absolute;
+            background-color: rgba(39, 174, 96, 0.1);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: float 15s infinite linear;
+        }
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "inverse-primary": "#006d37",
+                        "on-error": "#690005",
+                        "on-surface-variant": "#474746",
+                        "secondary-fixed-dim": "#e9c349",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#1c1b1b",
+                        "on-surface": "#1c1b1b",
+                        "on-background": "#1c1b1b",
+                        "surface-variant": "#d5dcd2",
+                        "surface-bright": "#f4fbf1",
+                        "surface": "#f4fbf1",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "error-container": "#ffdad6",
+                        "primary": "#27ae60",
+                        "on-primary-fixed-variant": "#005228",
+                        "tertiary-fixed": "#e5e2e1",
+                        "background": "#f4fbf1",
+                        "on-secondary-fixed-variant": "#574500",
+                        "inverse-surface": "#313030",
+                        "on-secondary-container": "#342800",
+                        "on-secondary": "#ffffff",
+                        "surface-dim": "#d5dcd2",
+                        "surface-container": "#eaede8",
+                        "surface-container-high": "#e4e8e2",
+                        "on-primary": "#ffffff",
+                        "primary-fixed": "#7efba4",
+                        "surface-tint": "#27ae60",
+                        "surface-container-low": "#eff6ec",
+                        "on-error-container": "#410002",
+                        "tertiary-container": "#f1efee",
+                        "error": "#ba1a1a",
+                        "forest-glow": "rgba(39, 174, 96, 0.15)",
+                        "secondary-container": "#ffe088",
+                        "primary-fixed-dim": "#61de8a",
+                        "inverse-on-surface": "#f1efee",
+                        "secondary": "#af8d11",
+                        "tertiary": "#5d5e5e",
+                        "on-primary-container": "#00210c",
+                        "on-secondary-fixed": "#241a00",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-highest": "#dee2dc",
+                        "outline": "#727971",
+                        "deep-anthracite": "#121212",
+                        "on-tertiary-container": "#181c18",
+                        "secondary-fixed": "#ffe088",
+                        "outline-variant": "#c2c9c1",
+                        "primary-container": "#7efba4",
+                        "glass-stroke": "rgba(0, 0, 0, 0.1)",
+                        "on-primary-fixed": "#00210c"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "stack-sm": "8px",
+                        "margin-x": "64px",
+                        "section-gap": "128px",
+                        "container-max": "1440px",
+                        "stack-md": "24px",
+                        "gutter": "32px"
+                    },
+                    fontFamily: {
+                        "label-sm": ["Hanken Grotesk"],
+                        "display-lg": ["EB Garamond"],
+                        "headline-lg-mobile": ["EB Garamond"],
+                        "headline-lg": ["EB Garamond"],
+                        "title-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "body-md": ["Hanken Grotesk"],
+                        "headline-md": ["EB Garamond"]
+                    },
+                    fontSize: {
+                        "label-sm": ["12px", { "lineHeight": "1.4", "letterSpacing": "0.2em", "fontWeight": "700" }],
+                        "display-lg": ["72px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["32px", { "lineHeight": "1.2", "fontWeight": "500" }],
+                        "headline-lg": ["48px", { "lineHeight": "1.2", "fontWeight": "500" }],
+                        "title-lg": ["20px", { "lineHeight": "1.5", "letterSpacing": "0.1em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.7", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-md": ["32px", { "lineHeight": "1.3", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background font-body-md text-on-background overflow-x-hidden dark:bg-[#131313] dark:text-[#e5e2e1] relative">
+<!-- Ambient Particles Container -->
+<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden" id="particles-container"></div>
+<!-- Top Navigation -->
+<nav class="fixed top-0 w-full z-50 bg-surface/90 dark:bg-[#131313]/80 backdrop-blur-xl border-b border-glass-stroke shadow-sm backdrop-saturate-150 transition-all duration-300">
+<div class="flex justify-between items-center px-margin-x py-4 max-w-container-max mx-auto">
+<div class="h-10">
+<img alt="Orpay Logo" class="h-full object-contain filter drop-shadow-md cursor-pointer hover:scale-105 transition-transform" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAM67FFe8nfluYoPRawkAVKQe6h93SnTk4lwISR6s3rBgEY_7VKr5hZuv1rb7FBOQCeAJ7VDbaehY37W2KaM5SHbJqDur3HB86Ubf46kmGGJ98Z6iyk2H3mR6m28vrRNU97Zk_jMOVOOYsP40VNMYAbJFDySpWN4Kh6LxlHzFdvIRpkadwS7H7B81r3C0BWSLW7nJ8lyggAdChfrxS83k7Fjzi0irMcUAU77KPjOZRnFbvOEh9ta-7N"/>
+</div>
+<div class="hidden md:flex gap-8 items-center">
+<a class="font-label-sm text-label-sm tracking-widest uppercase text-primary border-b-2 border-primary pb-1 hover:text-primary-fixed-dim transition-colors duration-300" href="#">ANA SAYFA</a>
+<a class="font-label-sm text-label-sm tracking-widest uppercase text-on-surface hover:text-primary transition-colors duration-300" href="#">ÜRÜNLER</a>
+<a class="font-label-sm text-label-sm tracking-widest uppercase text-on-surface hover:text-primary transition-colors duration-300" href="#">KATALOG</a>
+<a class="font-label-sm text-label-sm tracking-widest uppercase text-on-surface hover:text-primary transition-colors duration-300" href="#">KURUMSAL</a>
+<a class="font-label-sm text-label-sm tracking-widest uppercase text-on-surface hover:text-primary transition-colors duration-300" href="#">HABERLER</a>
+<a class="font-label-sm text-label-sm tracking-widest uppercase text-on-surface hover:text-primary transition-colors duration-300" href="#">İLETİŞİM</a>
+</div>
+<div class="hidden md:flex items-center gap-4">
+<!-- Language Switcher -->
+<div class="flex items-center gap-2 border-r border-glass-stroke pr-4">
+<button class="font-label-sm text-label-sm text-primary font-bold hover:scale-110 transition-transform">TR</button>
+<span class="text-glass-stroke">|</span>
+<button class="font-label-sm text-label-sm text-on-surface hover:text-primary transition-colors hover:scale-110">EN</button>
+</div>
+<!-- Theme Toggle -->
+<button class="text-on-surface hover:text-primary transition-colors hover:rotate-12 transform" id="theme-toggle">
+<span class="material-symbols-outlined block dark:hidden">dark_mode</span>
+<span class="material-symbols-outlined hidden dark:block">light_mode</span>
+</button>
+<a class="inline-flex items-center justify-center px-6 py-3 bg-primary text-white font-label-sm text-label-sm tracking-widest uppercase hover:bg-primary/90 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 rounded border border-transparent ml-2" href="#">
+                    TEKLİF AL
+                </a>
+</div>
+<!-- Mobile Menu Toggle -->
+<button class="md:hidden text-primary hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</nav>
+<!-- Hero Slider -->
+<header class="relative w-full h-screen min-h-[600px] overflow-hidden bg-surface-container-lowest dark:bg-deep-anthracite">
+<div class="absolute inset-0" id="hero-slider">
+<img alt="Orpay Hero Slide 1" class="slider-img active absolute inset-0 w-full h-full object-cover object-center opacity-80" src="https://lh3.googleusercontent.com/aida/AP1WRLvXn_gOsBVbker0rMW4oflxfdGSrO-VNdkViNIt3SpUhrqQBZW5KFLF8ongNEv-Wewm1B-SzNfmxgUC7rqSUMbEM9mpgiewidHpQXVh5LTUupEA-OlCaMhc7e5XNv9cuQcWyLZnGFXYVRNVvwyIw8uuxEtB17nJtqkgnLS5-zYr5Qpp_D_SIOgbmOQqr9aN2_lldxO3zCstXbljgbpwACO-zGOEk23zy19wHNAyxJdhhkMaLBkmQzbVKH4"/>
+<img alt="Orpay Hero Slide 2" class="slider-img hidden absolute inset-0 w-full h-full object-cover object-center opacity-80" src="https://lh3.googleusercontent.com/aida/AP1WRLur_x2eSUirUZpqQnttRpvWSs0oCpMniSwcozqe_YJ6um5BQd4kGQNc97SrVn6taZ--n0lmLXXMhM5OCHouQcY5qDWFdj3VQCWYepUssU32rUx8Zht2zCvIVVgWkIhSkHq64yzNpaZ7i7Cny6Q0ZxFo09bXyWwmi3mvpmQw3Shp9Xr4UktsVKH91z5P3-Y88Ecm8yVCBryY9lpwbv8JmftvK-O9eTL4CZAufdRdYXtvqBqqKNW-e0jUbgw"/>
+<img alt="Orpay Hero Slide 3" class="slider-img hidden absolute inset-0 w-full h-full object-cover object-center opacity-80" src="https://lh3.googleusercontent.com/aida/AP1WRLv9iLK5iNTq5FVqY7fVWDguLIFdlMU92t6vnTLR-qbDuPOvcUBXW2IEWJXNRm3NykjNtIJRkahzBWjjcDGeW2mN4vaSwT47IJ3svMuPbtz-hHenNwpXnmex3SOuN1vhv6qwIxKjMJI6ZbF5qg4fODsmlPh3gZOcErOGJShRWRz4z3SlspaPFQbZdldgtkn8EliF0U4XLS83w7uYHygq3mws277uOBlA3BHYfmLtxcIpE-B_PTkcaQv1d3k"/>
+</div>
+<div class="absolute inset-0 bg-gradient-to-b from-white/60 via-white/30 to-background dark:from-background/40 dark:to-background/90"></div>
+<div class="relative z-10 h-full flex flex-col justify-center items-center text-center px-6 pt-20">
+<h1 class="font-display-lg text-display-lg text-on-surface dark:text-white mb-6 text-glow reveal drop-shadow-lg max-w-4xl tracking-tight">İnovasyon Yolculuğunda Bir Adım Önde Olun!</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant dark:text-white/90 max-w-2xl mb-10 reveal delay-100 font-medium">Mimari vizyonunuzu yüksek teknoloji ürünü kapı yüzeyleri ve ahşap çözümleriyle hayata geçirin.</p>
+<div class="flex gap-4 reveal delay-200">
+<a class="px-8 py-4 bg-primary text-white font-label-sm text-label-sm tracking-widest uppercase rounded shadow-lg shadow-primary/30 hover:bg-inverse-primary hover:-translate-y-1 transition-all duration-300" href="#">Ürünleri Keşfet</a>
+<a class="px-8 py-4 bg-white/80 backdrop-blur-sm border border-outline text-on-surface font-label-sm text-label-sm tracking-widest uppercase rounded hover:bg-white hover:shadow-md hover:-translate-y-1 transition-all duration-300 dark:bg-transparent dark:border-secondary dark:text-secondary dark:hover:bg-secondary/10" href="#">Kurumsal</a>
+</div>
+</div>
+</header>
+<!-- Kurumsal Özet -->
+<section class="py-section-gap px-margin-x max-w-container-max mx-auto reveal relative z-10">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter items-center">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface dark:text-secondary mb-6 leading-tight">Mimari Hassasiyet,<br/><span class="text-primary">Endüstriyel Güç</span></h2>
+<div class="h-1 w-20 bg-primary mb-8 rounded-full"></div>
+<p class="font-body-lg text-body-lg text-on-surface-variant dark:text-on-surface-variant leading-relaxed mb-6">
+                    ORPAY ORMAN ÜRÜNLERİ LTD. ŞTİ., ticaret ahlakına verdiği önem ve yaptığı sağlam işlerle orman ürünlerinde bir çok firmaya çözüm ortağı olmuştur.
+                </p>
+<p class="font-body-md text-body-md text-tertiary dark:text-tertiary leading-relaxed">
+                    Kapıya dair akla gelebilecek bütün ham maddeler için kapısı açık alan ORPAY ORMAN ÜRÜNLERİ hizmet sektöründe markalaşmanın haklı gururunu yaşamaktadır. Modern tesislerimizde, en son teknolojiyle üretilen ürünlerimiz, yaşam alanlarınıza değer katar.
+                </p>
+</div>
+<div class="relative h-[500px] rounded-xl overflow-hidden glass-panel group shadow-2xl shadow-primary/10 border-white/50">
+<img alt="Kurumsal Görsel" class="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida/AP1WRLvB1Cf7oF9ctVhgz7GhxlirwLrwu2FJe4ACGtL6lHGDqTv0XqpWo5O1TSqDzkNNj5GZmIEEKziEULPplizuaNFNGzAdNmlPGFR1B4Q1MyxrE5X9rclmkYLH7u4GNnEDwrINnZKgQJ5xRjQuKjZymbAhqjjsegBMwl8Wy0_FzOjPj4pziVWuPxiICnQjsEygDVbkah6-9b8KT5WZ6U4Uqlkh4c_W-pV8NNxwgDyRAevtxlcG4KuZ8fC7WJ0"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+<div class="absolute bottom-8 left-8 border-l-4 border-primary pl-4 backdrop-blur-md bg-white/10 p-4 rounded-r-lg">
+<p class="font-headline-md text-headline-md text-white font-bold drop-shadow-md">10+</p>
+<p class="font-label-sm text-label-sm text-primary-container uppercase tracking-wider font-bold">Yıllık Tecrübe</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Nasıl Çalışırız -->
+<section class="py-section-gap px-margin-x bg-surface-container-low dark:bg-surface-container-low border-y border-glass-stroke reveal relative z-10">
+<div class="max-w-container-max mx-auto text-center">
+<h2 class="font-headline-lg text-headline-lg text-on-surface dark:text-secondary mb-16">Nasıl Çalışırız?</h2>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative">
+<!-- Line connecting steps (desktop) -->
+<div class="hidden md:block absolute top-12 left-[12.5%] right-[12.5%] h-px bg-outline-variant z-0 dark:bg-glass-stroke"></div>
+<div class="relative z-10 flex flex-col items-center group">
+<div class="w-24 h-24 rounded-full glass-panel flex items-center justify-center mb-6 text-primary border border-primary/20 bg-white shadow-lg group-hover:scale-110 group-hover:shadow-primary/20 transition-all duration-300 dark:bg-surface dark:border-secondary/30 dark:text-secondary">
+<span class="material-symbols-outlined text-4xl group-hover:animate-bounce">contact_support</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-on-surface dark:text-white mb-2">1. İletişim</h3>
+<p class="font-body-md text-body-md text-tertiary text-center">İhtiyaçlarınızı belirlemek için bizimle iletişime geçin.</p>
+</div>
+<div class="relative z-10 flex flex-col items-center group delay-100">
+<div class="w-24 h-24 rounded-full glass-panel flex items-center justify-center mb-6 text-primary border border-primary/20 bg-white shadow-lg group-hover:scale-110 group-hover:shadow-primary/20 transition-all duration-300 dark:bg-surface dark:border-secondary/30 dark:text-secondary">
+<span class="material-symbols-outlined text-4xl group-hover:rotate-12 transition-transform">design_services</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-on-surface dark:text-white mb-2">2. Projelendirme</h3>
+<p class="font-body-md text-body-md text-tertiary text-center">Size özel çözümler ve tasarımlar hazırlayalım.</p>
+</div>
+<div class="relative z-10 flex flex-col items-center group delay-200">
+<div class="w-24 h-24 rounded-full glass-panel flex items-center justify-center mb-6 text-primary border border-primary/20 bg-white shadow-lg group-hover:scale-110 group-hover:shadow-primary/20 transition-all duration-300 dark:bg-surface dark:border-secondary/30 dark:text-secondary">
+<span class="material-symbols-outlined text-4xl group-hover:rotate-90 transition-transform duration-500">precision_manufacturing</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-on-surface dark:text-white mb-2">3. Üretim</h3>
+<p class="font-body-md text-body-md text-tertiary text-center">Modern tesislerimizde yüksek kalitede üretim.</p>
+</div>
+<div class="relative z-10 flex flex-col items-center group delay-300">
+<div class="w-24 h-24 rounded-full glass-panel flex items-center justify-center mb-6 text-primary border border-primary/20 bg-white shadow-lg group-hover:scale-110 group-hover:shadow-primary/20 transition-all duration-300 dark:bg-surface dark:border-secondary/30 dark:text-secondary">
+<span class="material-symbols-outlined text-4xl group-hover:translate-x-2 transition-transform">local_shipping</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-on-surface dark:text-white mb-2">4. Teslimat</h3>
+<p class="font-body-md text-body-md text-tertiary text-center">Zamanında ve güvenli teslimat garantisi.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Ürün Grupları (Grid) -->
+<section class="py-section-gap px-margin-x bg-surface dark:bg-surface reveal relative z-10">
+<div class="max-w-container-max mx-auto">
+<div class="text-center mb-16">
+<h2 class="font-headline-lg text-headline-lg text-on-surface dark:text-white mb-4">Kapı Yüzeyleri</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant dark:text-on-surface-variant">Estetik ve dayanıklılığın buluştuğu yüksek standartlı çözümler.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+<!-- Card 1 -->
+<div class="group relative h-[400px] rounded-xl overflow-hidden glass-panel cursor-pointer shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-500">
+<img alt="PVC Kapı Yüzeyleri" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" src="https://lh3.googleusercontent.com/aida/AP1WRLuDb75bBkU0f_RRHtDI9m5dlbGDW5juVPM4OTnY8oL1TT4CeRxDf6roKp1UpUk9pQ7x1FNM5ey0WjjIpBffbW-YHZRVjwGUBDMKSHlRi4jZAxrNAFp6MDB-kQJPoxQybYeP_Jkn_6wDRw73vxCPg2dGR2p-MRvtMBx4amLv6apCyrKmfvtmb2rvHteo0TnCaAl2NoouzD47IRIXfBCCEtkgxc8aPUfUgcyzNagTv-oPc8AuxqA_PclOgz4"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+<div class="absolute bottom-0 left-0 w-full p-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+<span class="inline-block px-3 py-1 bg-primary/90 text-white font-label-sm text-label-sm rounded mb-3 border border-primary-container shadow-sm backdrop-blur-sm">PREMIUM</span>
+<h3 class="font-title-lg text-title-lg text-white mb-2 group-hover:text-primary-container transition-colors">PVC Kapı Yüzeyleri</h3>
+<p class="font-body-md text-body-md text-white/90 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">Modern tasarımlar için yüksek dayanım.</p>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group relative h-[400px] rounded-xl overflow-hidden glass-panel cursor-pointer shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-500 delay-100">
+<img alt="Melamin Kapı Yüzeyleri" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" src="https://lh3.googleusercontent.com/aida/AP1WRLsjaz7Cu2PpRERJUngPxz5Cgt2Qvn9rvIyYPXeuhM8OFZS2EbeyauomahY_bCxMI3yz9OQTB9Aol5qxtOTSoncPtr4hF0_hkhYq_sN7tlllZfppHOPHPICBg5Mgokiopn0OZzQ9gJgB_DS9BRtzh8sqai8-aIQ4hGy1etSjOYHUEJTvR2eNbq2dpCH2-4ezKMLdzrM5RGEZQNMllEUXu_syklZ_RHRM56-5xji4t3to-cgKyw2iDCvfWKg"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+<div class="absolute bottom-0 left-0 w-full p-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+<h3 class="font-title-lg text-title-lg text-white mb-2 group-hover:text-primary-container transition-colors">Melamin Kapı Yüzeyleri</h3>
+<p class="font-body-md text-body-md text-white/90 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">Doğal ahşap dokusu ve zengin renk seçenekleri.</p>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group relative h-[400px] rounded-xl overflow-hidden glass-panel cursor-pointer shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-500 delay-200">
+<img alt="Orlam Melamin" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" src="https://lh3.googleusercontent.com/aida/AP1WRLvB1Cf7oF9ctVhgz7GhxlirwLrwu2FJe4ACGtL6lHGDqTv0XqpWo5O1TSqDzkNNj5GZmIEEKziEULPplizuaNFNGzAdNmlPGFR1B4Q1MyxrE5X9rclmkYLH7u4GNnEDwrINnZKgQJ5xRjQuKjZymbAhqjjsegBMwl8Wy0_FzOjPj4pziVWuPxiICnQjsEygDVbkah6-9b8KT5WZ6U4Uqlkh4c_W-pV8NNxwgDyRAevtxlcG4KuZ8fC7WJ0"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+<div class="absolute bottom-0 left-0 w-full p-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+<h3 class="font-title-lg text-title-lg text-white mb-2 group-hover:text-primary-container transition-colors">Orlam Melamin</h3>
+<p class="font-body-md text-body-md text-white/90 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">Özel tasarım göbekli yüzeyler.</p>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="group relative h-[400px] rounded-xl overflow-hidden glass-panel cursor-pointer shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-500 delay-300">
+<img alt="Amerikan Panel" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" src="https://lh3.googleusercontent.com/aida/AP1WRLuH64aP4oRqvWWPuAvMFy99nuQyDGzZnp7JoXmxJK2xjIkHV3GXwHS6ELiZ-HAPuTPkY8X525J8kd-XNiLz1nGpqw0jSEcF6NDIhmpjUMOogMgenN0I0ZYP4psvAPQZDsgT592thqLxtWBr6aBCYGwWCt34lIOytfk1vvUz9nXyf_OAG0LB-FRUKnrDSZu6HRr-tCDGMvu0weDJh9afIO9TUXMWz_XrM7rURplDij9zMHP7DNEAjZPzCRc"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+<div class="absolute bottom-0 left-0 w-full p-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+<h3 class="font-title-lg text-title-lg text-white mb-2 group-hover:text-primary-container transition-colors">Amerikan Panel</h3>
+<p class="font-body-md text-body-md text-white/90 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">Klasik ve zamansız panel tasarımları.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Diğer Ürünler -->
+<section class="py-section-gap px-margin-x max-w-container-max mx-auto reveal relative z-10">
+<h2 class="font-headline-lg text-headline-lg text-on-surface dark:text-secondary mb-12 text-center">Tamamlayıcı Çözümler</h2>
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+<!-- Item 1 -->
+<div class="glass-panel p-4 rounded-lg flex flex-col items-center hover:bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group cursor-pointer dark:hover:bg-white/5">
+<div class="w-full h-32 mb-4 overflow-hidden rounded relative bg-surface-container-low">
+<img alt="Kapı Kasaları" class="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida/AP1WRLsWO9mxFH821LFV9DoT7rQqXfiK0vwVwgVk0JcGiNUI8W8hof4WZBVteIeFoidyEC0N376xf1UsvVObeksmoHbg3yX371qsJysZ9Hcht7wTJK_qrhPoodhlcAig5PvBcwqWzYlqWKN4YEl6ns5chBj0sbdOUhPWhejgyzznP3D0991UQ4Ca7jbH_BGLMyLkXEe15-nMuF-rXVu-r8ICaLT1iIOmC79fq0HTKYade_liFeenyfqk4Tc45Wo"/>
+</div>
+<h4 class="font-title-lg text-title-lg text-on-surface dark:text-white text-center group-hover:text-primary transition-colors">Kapı Kasaları</h4>
+</div>
+<!-- Item 2 -->
+<div class="glass-panel p-4 rounded-lg flex flex-col items-center hover:bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group cursor-pointer dark:hover:bg-white/5">
+<div class="w-full h-32 mb-4 overflow-hidden rounded relative bg-surface-container-low">
+<img alt="Pervaz Modelleri" class="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida/AP1WRLv2MTKY-l3BasNumz18k6tOH-lbLx9zIgqew7dEp3ki0QGA8MGoaF4MxYoUcnjTNR_sRuMOYjSUsKouLDvONnLy99kc0vw8cjDgLHpDHJPNkNXe0HzX9bUEpf-AR5l2L-cOasnRsHlIG2YBBJBbS7oba3Wer9iT6kN1BknLYW_hdcR82STWNDXYG1TvclOqNOYThTfIHyGeCVFD2ikyYJYEZTgkAZnQv8ntEnv2MZBHiXrB-sag4HcUAbs"/>
+</div>
+<h4 class="font-title-lg text-title-lg text-on-surface dark:text-white text-center group-hover:text-primary transition-colors">Pervaz Modelleri</h4>
+</div>
+<!-- Item 3 -->
+<div class="glass-panel p-4 rounded-lg flex flex-col items-center hover:bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group cursor-pointer dark:hover:bg-white/5">
+<div class="w-full h-32 mb-4 overflow-hidden rounded relative bg-surface-container-low">
+<img alt="Kapı Peteği" class="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida/AP1WRLvdSMWmpCFIls25hktQfy01g3ydUsKP6RyiUbUN05ademcZar9NRTmm8Q-EjU9PAOIe9cHrv8BLGytlPWAzdHYS2esxET50fMUvrchrpL0dZBYKEzILRUtyBpmxL1VdZJCqd024Wy6Ml4koqD2UzWqZqoO5z8lcNzDPqtVTb1wU-PgbR8dS3RbeTFnf3bl1W1tmHTtFaBqhOxfscMO_hJMaL-taFGzREGcGPTWcXHzSjl31h_m8o7d04Q"/>
+</div>
+<h4 class="font-title-lg text-title-lg text-on-surface dark:text-white text-center group-hover:text-primary transition-colors">Kapı Peteği</h4>
+</div>
+<!-- Item 4 -->
+<div class="glass-panel p-4 rounded-lg flex flex-col items-center hover:bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group cursor-pointer dark:hover:bg-white/5">
+<div class="w-full h-32 mb-4 overflow-hidden rounded relative bg-surface-container-low">
+<img alt="Tutkal Çeşitleri" class="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida/AP1WRLtmM7MVPJJAk-AVyXjmtLtI8V10F-iconm_bE0Rha8wXY1gqLEV63h2jMFtgwuo5MhwiVS3-0T4PgIPcivMuLKRjDT_eA_4D66DGQdtHr2xRRcFfooQq234vj9NAX8yyVEnMcgo4Szh_lI4_h3WTGLm89etYNERVcggZE9pC31VFZaa0oQflv3pJ9QUbCtKPp3bwYZI5RtFLyDsLntjejnixrBItfV3PC_zNWWCc10nsv2OowKpNS5nURg"/>
+</div>
+<h4 class="font-title-lg text-title-lg text-on-surface dark:text-white text-center group-hover:text-primary transition-colors">Tutkal Çeşitleri</h4>
+</div>
+<!-- Item 5 -->
+<div class="glass-panel p-4 rounded-lg flex flex-col items-center hover:bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group cursor-pointer dark:hover:bg-white/5">
+<div class="w-full h-32 mb-4 overflow-hidden rounded relative bg-surface-container-low">
+<img alt="Pelet" class="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida/AP1WRLurwTwfgtBUlW3eeciYr1vOb1wiI5-iPWaLi2qOUe455T8EhzLme0M1znaPnMDQ0932RhJL5JYoivZJqtBDqcHkAVKMzzYAX7sqcVdZTwsiZ-034AwnQl353RzxqOqbxWdFJtIfSuq74pUa4QTcaI18XWdBDHyQsR34MgJXuKBGvUpljq0n3AJX9qInbK2VcHp7Dcvlh_GrjEzBmSDqY1qaJVVJiSLHKczqWmQcmHgtIVt7Ix_W0lBOfnc"/>
+</div>
+<h4 class="font-title-lg text-title-lg text-on-surface dark:text-white text-center group-hover:text-primary transition-colors">Pelet</h4>
+</div>
+</div>
+</section>
+<!-- Müşteri Yorumları -->
+<section class="py-section-gap px-margin-x bg-surface-container-low dark:bg-surface-container-low border-y border-glass-stroke reveal relative z-10">
+<div class="max-w-container-max mx-auto">
+<h2 class="font-headline-lg text-headline-lg text-on-surface dark:text-secondary mb-12 text-center">Müşteri Yorumları</h2>
+<div class="relative w-full max-w-3xl mx-auto min-h-[250px] flex items-center justify-center bg-white dark:bg-surface p-10 rounded-2xl shadow-xl border border-outline-variant/30">
+<!-- Testimonial 1 -->
+<div class="testimonial-slide absolute inset-0 flex flex-col items-center justify-center text-center opacity-100 z-10 p-8">
+<span class="material-symbols-outlined text-5xl text-primary mb-6 opacity-30">format_quote</span>
+<p class="font-body-lg text-body-lg text-on-surface-variant dark:text-on-surface-variant mb-8 italic font-medium">"Projelerimizde sürekli Orpay'ın melamin kapı yüzeylerini tercih ediyoruz. Kalite ve zamanında teslimat konusunda çok başarılılar."</p>
+<h4 class="font-title-lg text-title-lg text-on-surface dark:text-white">Ahmet Yılmaz</h4>
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-wider mt-1">İç Mimar</span>
+</div>
+<!-- Testimonial 2 -->
+<div class="testimonial-slide absolute inset-0 flex flex-col items-center justify-center text-center opacity-0 z-0 p-8">
+<span class="material-symbols-outlined text-5xl text-primary mb-6 opacity-30">format_quote</span>
+<p class="font-body-lg text-body-lg text-on-surface-variant dark:text-on-surface-variant mb-8 italic font-medium">"Geniş ürün yelpazesi ve özel tasarım seçenekleri ile işlerimizi çok kolaylaştırıyorlar. Güvenilir bir çözüm ortağı."</p>
+<h4 class="font-title-lg text-title-lg text-on-surface dark:text-white">Ayşe Demir</h4>
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-wider mt-1">Proje Yöneticisi</span>
+</div>
+<!-- Testimonial 3 -->
+<div class="testimonial-slide absolute inset-0 flex flex-col items-center justify-center text-center opacity-0 z-0 p-8">
+<span class="material-symbols-outlined text-5xl text-primary mb-6 opacity-30">format_quote</span>
+<p class="font-body-lg text-body-lg text-on-surface-variant dark:text-on-surface-variant mb-8 italic font-medium">"Özellikle Orlam serisi projelerimize büyük değer katıyor. Müşteri iletişimleri de bir o kadar kuvvetli."</p>
+<h4 class="font-title-lg text-title-lg text-on-surface dark:text-white">Can Özkan</h4>
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-wider mt-1">Müteahhit</span>
+</div>
+<!-- Navigation Dots -->
+<div class="absolute -bottom-12 left-0 right-0 flex justify-center gap-3">
+<button class="w-3 h-3 rounded-full bg-primary transition-all duration-300 dot-btn hover:scale-150" onclick="showTestimonial(0)"></button>
+<button class="w-3 h-3 rounded-full bg-outline-variant dark:bg-glass-stroke transition-all duration-300 dot-btn hover:scale-150 hover:bg-primary/50" onclick="showTestimonial(1)"></button>
+<button class="w-3 h-3 rounded-full bg-outline-variant dark:bg-glass-stroke transition-all duration-300 dot-btn hover:scale-150 hover:bg-primary/50" onclick="showTestimonial(2)"></button>
+</div>
+</div>
+</div>
+</section>
+<!-- SSS (FAQ) -->
+<section class="py-section-gap px-margin-x bg-surface dark:bg-surface reveal relative z-10">
+<div class="max-w-3xl mx-auto">
+<h2 class="font-headline-lg text-headline-lg text-on-surface dark:text-secondary mb-12 text-center">Sıkça Sorulan Sorular</h2>
+<div class="flex flex-col gap-4">
+<!-- FAQ Item 1 -->
+<div class="glass-panel rounded-lg border border-outline-variant/50 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+<button class="accordion-button w-full px-6 py-5 flex justify-between items-center text-left hover:bg-surface-container-low transition-colors dark:hover:bg-white/5 bg-white dark:bg-transparent" onclick="toggleAccordion(this)">
+<span class="font-title-lg text-title-lg text-on-surface dark:text-white font-medium">Minimum sipariş miktarınız nedir?</span>
+<span class="material-symbols-outlined text-primary transition-transform duration-300">expand_more</span>
+</button>
+<div class="accordion-content bg-surface-container-low dark:bg-black/20">
+<p class="px-6 pb-5 pt-4 font-body-md text-body-md text-on-surface-variant">Projeye ve ürün tipine göre değişiklik göstermektedir. Detaylı bilgi için iletişim formumuzu doldurabilir veya bizi arayabilirsiniz.</p>
+</div>
+</div>
+<!-- FAQ Item 2 -->
+<div class="glass-panel rounded-lg border border-outline-variant/50 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+<button class="accordion-button w-full px-6 py-5 flex justify-between items-center text-left hover:bg-surface-container-low transition-colors dark:hover:bg-white/5 bg-white dark:bg-transparent" onclick="toggleAccordion(this)">
+<span class="font-title-lg text-title-lg text-on-surface dark:text-white font-medium">Özel ölçü üretim yapıyor musunuz?</span>
+<span class="material-symbols-outlined text-primary transition-transform duration-300">expand_more</span>
+</button>
+<div class="accordion-content bg-surface-container-low dark:bg-black/20">
+<p class="px-6 pb-5 pt-4 font-body-md text-body-md text-on-surface-variant">Evet, mimari projeleriniz için özel ölçü ve tasarımlarda üretim yapabilmekteyiz.</p>
+</div>
+</div>
+<!-- FAQ Item 3 -->
+<div class="glass-panel rounded-lg border border-outline-variant/50 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+<button class="accordion-button w-full px-6 py-5 flex justify-between items-center text-left hover:bg-surface-container-low transition-colors dark:hover:bg-white/5 bg-white dark:bg-transparent" onclick="toggleAccordion(this)">
+<span class="font-title-lg text-title-lg text-on-surface dark:text-white font-medium">Türkiye'nin her yerine gönderim sağlıyor musunuz?</span>
+<span class="material-symbols-outlined text-primary transition-transform duration-300">expand_more</span>
+</button>
+<div class="accordion-content bg-surface-container-low dark:bg-black/20">
+<p class="px-6 pb-5 pt-4 font-body-md text-body-md text-on-surface-variant">Evet, güçlü lojistik ağımız sayesinde Türkiye'nin 81 iline güvenli teslimat sağlıyoruz.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Markalarımız & Footer Pre-area -->
+<section class="py-section-gap px-margin-x bg-surface-container-low dark:bg-surface-container-low border-t border-outline-variant/30 reveal relative z-10">
+<div class="max-w-container-max mx-auto text-center">
+<h2 class="font-headline-md text-headline-md text-on-surface dark:text-secondary mb-12">Markalarımız</h2>
+<div class="flex flex-wrap justify-center items-center gap-16 opacity-70 hover:opacity-100 transition-opacity">
+<!-- Using generic typography for logos as per instruction to use exact strings if any, but styling them elegantly -->
+<div class="text-4xl font-bold tracking-widest text-on-surface dark:text-white border-b-2 border-primary pb-2 hover:text-primary transition-colors cursor-pointer">ORPAN</div>
+<div class="text-4xl font-bold tracking-widest text-on-surface dark:text-white border-b-2 border-secondary pb-2 hover:text-secondary transition-colors cursor-pointer">ORLAM</div>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="w-full py-section-gap border-t border-outline-variant/30 bg-surface-container-highest dark:bg-deep-anthracite max-w-container-max mx-auto px-margin-x grid grid-cols-1 md:grid-cols-4 gap-gutter reveal relative z-10">
+<div>
+<span class="font-headline-lg text-headline-lg text-primary mb-8 block font-bold tracking-widest uppercase">ORPAY</span>
+<p class="font-body-md text-body-md text-on-surface-variant dark:text-on-surface-variant mb-4 max-w-xs">Endüstriyel orman ürünlerinde kalite ve güvenin adresi.</p>
+<div class="flex flex-col gap-2 font-label-sm text-label-sm text-tertiary">
+<a class="hover:text-primary flex items-center gap-2 transition-colors" href="tel:03663136171"><span class="material-symbols-outlined text-sm">phone</span> 0366 313 61 71</a>
+<a class="hover:text-primary flex items-center gap-2 transition-colors" href="mailto:iletisim@orpayormanurunleri.com.tr"><span class="material-symbols-outlined text-sm">mail</span> iletisim@orpay...</a>
+</div>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-title-lg text-title-lg text-on-surface dark:text-white mb-2">Hızlı Menü</h4>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary hover:translate-x-2 transition-all duration-300 flex items-center gap-2" href="#"><span class="material-symbols-outlined text-sm opacity-0 -ml-4 transition-all">chevron_right</span>Koleksiyonlar</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary hover:translate-x-2 transition-all duration-300 flex items-center gap-2" href="#"><span class="material-symbols-outlined text-sm opacity-0 -ml-4 transition-all">chevron_right</span>Katalog</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary hover:translate-x-2 transition-all duration-300 flex items-center gap-2" href="#"><span class="material-symbols-outlined text-sm opacity-0 -ml-4 transition-all">chevron_right</span>Kurumsal</a>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-title-lg text-title-lg text-on-surface dark:text-white mb-2">Bilgi</h4>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary hover:translate-x-2 transition-all duration-300 flex items-center gap-2" href="#"><span class="material-symbols-outlined text-sm opacity-0 -ml-4 transition-all">chevron_right</span>Fabrikamız</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary hover:translate-x-2 transition-all duration-300 flex items-center gap-2" href="#"><span class="material-symbols-outlined text-sm opacity-0 -ml-4 transition-all">chevron_right</span>İletişim</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary hover:translate-x-2 transition-all duration-300 flex items-center gap-2" href="#"><span class="material-symbols-outlined text-sm opacity-0 -ml-4 transition-all">chevron_right</span>KVKK</a>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-title-lg text-title-lg text-on-surface dark:text-white mb-2">Sosyal Medya</h4>
+<div class="flex gap-4">
+<a class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center text-on-surface-variant hover:bg-primary hover:text-white hover:border-primary hover:-translate-y-1 hover:shadow-md transition-all duration-300" href="#"><span class="material-symbols-outlined">share</span></a>
+<!-- Generic icons used for representation -->
+</div>
+</div>
+<div class="col-span-1 md:col-span-4 mt-12 pt-8 border-t border-outline-variant/30 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="font-body-md text-body-md text-tertiary dark:text-tertiary">© 2024 Orpay Orman Ürünleri. Tüm Hakları Saklıdır.</p>
+<p class="font-label-sm text-label-sm text-tertiary dark:text-tertiary">Design By Pixe Digital</p>
+</div>
+</footer>
+<script>
+        // Theme Toggle (Force Light Mode initially as per request, but keep toggle functional)
+        const themeToggle = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+        
+        // Ensure light mode is set initially based on requirements
+        html.classList.remove('dark');
+        html.classList.add('light');
+
+        themeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            html.classList.toggle('light');
+        });
+
+        // Add hover effects to navigation chevron links
+        document.querySelectorAll('footer a').forEach(link => {
+            link.addEventListener('mouseenter', () => {
+                const icon = link.querySelector('.material-symbols-outlined');
+                if(icon) {
+                    icon.classList.remove('opacity-0', '-ml-4');
+                    icon.classList.add('opacity-100', 'ml-0');
+                }
+            });
+            link.addEventListener('mouseleave', () => {
+                const icon = link.querySelector('.material-symbols-outlined');
+                if(icon) {
+                    icon.classList.add('opacity-0', '-ml-4');
+                    icon.classList.remove('opacity-100', 'ml-0');
+                }
+            });
+        });
+
+        // Simple Reveal Animation with staggered delays
+        const reveals = document.querySelectorAll('.reveal');
+        const revealOptions = {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        };
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    // Staggering effect by adding delay inline if not already present
+                    if(!entry.target.classList.contains('delay-100') && !entry.target.classList.contains('delay-200') && !entry.target.classList.contains('delay-300')) {
+                        setTimeout(() => {
+                            entry.target.classList.add('active');
+                        }, (index % 3) * 150);
+                    } else {
+                        entry.target.classList.add('active');
+                    }
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, revealOptions);
+        reveals.forEach(reveal => {
+            revealObserver.observe(reveal);
+        });
+
+        // Simple Slider Logic
+        const slides = document.querySelectorAll('.slider-img');
+        let currentSlide = 0;
+        
+        function nextSlide() {
+            slides[currentSlide].classList.remove('active');
+            slides[currentSlide].classList.add('hidden');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.remove('hidden');
+            slides[currentSlide].classList.add('active');
+        }
+        
+        setInterval(nextSlide, 5000);
+
+        // Accordion Logic
+        function toggleAccordion(button) {
+            button.classList.toggle('active');
+            const content = button.nextElementSibling;
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+        }
+
+        // Testimonial Carousel Logic
+        let currentTestimonial = 0;
+        const testimonials = document.querySelectorAll('.testimonial-slide');
+        const dots = document.querySelectorAll('.dot-btn');
+
+        function showTestimonial(index) {
+            testimonials[currentTestimonial].classList.remove('opacity-100', 'z-10');
+            testimonials[currentTestimonial].classList.add('opacity-0', 'z-0');
+            
+            // Reset dot styles
+            dots.forEach(dot => {
+                dot.classList.remove('bg-primary');
+                dot.classList.add('bg-outline-variant', 'dark:bg-glass-stroke');
+            });
+            
+            currentTestimonial = index;
+            
+            testimonials[currentTestimonial].classList.remove('opacity-0', 'z-0');
+            testimonials[currentTestimonial].classList.add('opacity-100', 'z-10');
+            
+            // Active dot style
+            dots[currentTestimonial].classList.remove('bg-outline-variant', 'dark:bg-glass-stroke');
+            dots[currentTestimonial].classList.add('bg-primary');
+        }
+
+        // Auto-advance testimonials
+        setInterval(() => {
+            let nextIndex = (currentTestimonial + 1) % testimonials.length;
+            showTestimonial(nextIndex);
+        }, 6000);
+
+        // Ambient Particle Generation
+        function createParticles() {
+            const container = document.getElementById('particles-container');
+            const particleCount = 20;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Randomize properties
+                const size = Math.random() * 15 + 5;
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                const delay = Math.random() * 15;
+                const duration = Math.random() * 10 + 10;
+                const opacity = Math.random() * 0.5 + 0.1;
+
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${left}vw`;
+                particle.style.top = `${top}vh`;
+                particle.style.animationDelay = `${delay}s`;
+                particle.style.animationDuration = `${duration}s`;
+                particle.style.opacity = opacity;
+
+                container.appendChild(particle);
+            }
+        }
+        
+        // Initialize particles on load
+        window.addEventListener('load', createParticles);
+    </script>
+</body></html>

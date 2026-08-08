@@ -1,7 +1,7 @@
-@using VizitLink3D.Ortak.Modeller.Urunler
+﻿@using VizitLink3D.Ortak.Modeller.Urunler
 @using VizitLink3D.UI.Bilesenler
 
-<div class="gb-konfigurator-sarici">
+<div class="orpay-konfigurator-sarici">
     @if (_yukleniyor)
     {
         <div class="d-flex justify-center align-center pa-8">
@@ -13,7 +13,7 @@
         <MudGrid Spacing="4">
             <!-- Sol Panel: Parça ve Renk Seçimi -->
             <MudItem xs="12" md="4" lg="3">
-                <div class="gb-konfigurator-sol-panel">
+                <div class="orpay-konfigurator-sol-panel">
                     @if (_parcalar.Any())
                     {
                         <ParcaSecimPaneli Parcalar="_parcalar"
@@ -34,7 +34,7 @@
 
             <!-- Sağ Panel: 3D Görüntüleyici -->
             <MudItem xs="12" md="8" lg="9">
-                <div class="gb-konfigurator-sag-panel">
+                <div class="orpay-konfigurator-sag-panel">
                     @if (!string.IsNullOrEmpty(_modelYolu))
                     {
                         <UcBoyutGoruntuleyici ModelYolu="@_modelYolu"

@@ -7,11 +7,11 @@
 
 <PageTitle>@(_konfigurator?.Ad ?? "Ürün Konfigüratörü") | ORPAY</PageTitle>
 
-<div class="gb-public-konfigurator">
+<div class="orpay-public-konfigurator">
     @* --- YÜKLENİYOR --- *@
     @if (_yukleniyor)
     {
-        <div class="gb-pk-yukleniyor">
+        <div class="orpay-pk-yukleniyor">
             <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
             <MudText Typo="Typo.body2" Class="mt-3">@dil.T("konfigurator.yukleniyor", "Konfigüratör yükleniyor...")</MudText>
         </div>
@@ -19,7 +19,7 @@
     @* --- HATA --- *@
     else if (_hataVar)
     {
-        <div class="gb-pk-hata">
+        <div class="orpay-pk-hata">
             <MudIcon Icon="@Icons.Material.Outlined.ErrorOutline" Size="Size.Large" Color="Color.Error" />
             <MudText Typo="Typo.h6" Class="mt-2">@dil.T("konfigurator.hataBaslik", "Bir sorun oluştu")</MudText>
             <MudText Typo="Typo.body2" Color="Color.Secondary">@_hataMesaji</MudText>
@@ -31,10 +31,10 @@
     @* --- KONFİGÜRATÖR --- *@
     else if (_konfigurator != null)
     {
-        <MudGrid Spacing="0" Class="gb-pk-grid">
+        <MudGrid Spacing="0" Class="orpay-pk-grid">
             @* --- SOL: 3D GÖRÜNTÜLEYİCİ --- *@
-            <MudItem xs="12" lg="8" Class="gb-pk-viewer-col">
-                <div class="gb-pk-viewer-sarici">
+            <MudItem xs="12" lg="8" Class="orpay-pk-viewer-col">
+                <div class="orpay-pk-viewer-sarici">
                     @if (!string.IsNullOrEmpty(_konfigurator.ModelYolu))
                     {
                         <UcBoyutGoruntuleyici ModelYolu="@_konfigurator.ModelYolu"
@@ -43,7 +43,7 @@
                     }
                     else
                     {
-                        <div class="gb-pk-model-yok">
+                        <div class="orpay-pk-model-yok">
                             <MudIcon Icon="@Icons.Material.Outlined.ViewInAr" Size="Size.Large" />
                             <MudText Typo="Typo.body1" Class="mt-2">
                                 @dil.T("konfigurator.3dModelYok", "Bu ürün için 3D model henüz hazır değil.")
@@ -54,12 +54,12 @@
             </MudItem>
 
             @* --- SAĞ: SEÇİM PANELİ --- *@
-            <MudItem xs="12" lg="4" Class="gb-pk-panel-col">
-                <div class="gb-pk-panel">
+            <MudItem xs="12" lg="4" Class="orpay-pk-panel-col">
+                <div class="orpay-pk-panel">
 
                     @* ÜRÜN BAŞLIĞI *@
-                    <div class="gb-pk-urun-baslik">
-                        <MudText Typo="Typo.h5" Class="gb-pk-urun-ad">@_konfigurator.Ad</MudText>
+                    <div class="orpay-pk-urun-baslik">
+                        <MudText Typo="Typo.h5" Class="orpay-pk-urun-ad">@_konfigurator.Ad</MudText>
                         @if (_konfigurator.Fiyat.HasValue)
                         {
                             <MudText Typo="Typo.subtitle1" Color="Color.Primary">
@@ -74,15 +74,15 @@
                     @* SEÇİLİ PARÇA DETAYI *@
                     @if (_secilenParca != null)
                     {
-                        <div class="gb-pk-secili-parca">
-                            <div class="gb-pk-secili-baslik">
+                        <div class="orpay-pk-secili-parca">
+                            <div class="orpay-pk-secili-baslik">
                                 <MudText Typo="Typo.subtitle2" Color="Color.Primary">
                                     @dil.T("konfigurator.secilenParca", "Seçilen Parça")
                                 </MudText>
                                 <MudIconButton Icon="@Icons.Material.Filled.Close" Size="Size.Small"
                                                OnClick="() => _secilenParca = null" />
                             </div>
-                            <MudText Typo="Typo.body1" Class="gb-font-700">@_secilenParca.GorunenAd</MudText>
+                            <MudText Typo="Typo.body1" Class="orpay-font-700">@_secilenParca.GorunenAd</MudText>
                             @if (!string.IsNullOrEmpty(_secilenParca.ParcaTipi))
                             {
                                 <MudChip T="string" Text="@_secilenParca.ParcaTipi" Size="Size.Small" Class="mt-1" />
@@ -94,13 +94,13 @@
                                 <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mt-3 mb-1">
                                     @dil.T("konfigurator.renkSec", "Renk")
                                 </MudText>
-                                <div class="gb-pk-renk-grid">
+                                <div class="orpay-pk-renk-grid">
                                     @foreach (var r in _secilenParca.Renkler)
                                     {
                                         var seciliMi = _parcaRenkSecimleri.TryGetValue(_secilenParca.Id, out var sr) && sr == r.RenkId;
                                         <MudTooltip Text="@($"{r.RalAdi} ({r.RalKodu})")">
                                             <button type="button"
-                                                    class="gb-pk-renk-btn @(seciliMi ? "gb-pk-renk-secili" : "")"
+                                                    class="orpay-pk-renk-btn @(seciliMi ? "orpay-pk-renk-secili" : "")"
                                                     style="background-color: @r.HexKodu;"
                                                     @onclick="() => RenkDegistir(_secilenParca.Id, r.RenkId)"
                                                     title="@r.RalAdi">
@@ -116,16 +116,16 @@
                                 <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mt-3 mb-1">
                                     @dil.T("konfigurator.malzemeSec", "Malzeme")
                                 </MudText>
-                                <div class="gb-pk-malzeme-grid">
+                                <div class="orpay-pk-malzeme-grid">
                                     @foreach (var m in _secilenParca.Malzemeler)
                                     {
                                         var seciliMi = _parcaMalzemeSecimleri.TryGetValue(_secilenParca.Id, out var sm) && sm == m.MalzemeId;
                                         <button type="button"
-                                                class="gb-pk-malzeme-btn @(seciliMi ? "gb-pk-malzeme-secili" : "")"
+                                                class="orpay-pk-malzeme-btn @(seciliMi ? "orpay-pk-malzeme-secili" : "")"
                                                 @onclick="() => MalzemeDegistir(_secilenParca.Id, m.MalzemeId)">
                                             @if (!string.IsNullOrEmpty(m.TeksurResimUrl))
                                             {
-                                                <img src="@m.TeksurResimUrl" alt="@m.MalzemeAdi" class="gb-pk-malzeme-resim" />
+                                                <img src="@m.TeksurResimUrl" alt="@m.MalzemeAdi" class="orpay-pk-malzeme-resim" />
                                             }
                                             <span>@m.MalzemeAdi</span>
                                         </button>
@@ -139,16 +139,16 @@
                                 <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mt-3 mb-1">
                                     @dil.T("konfigurator.dokuSec", "Doku / Kaplama")
                                 </MudText>
-                                <div class="gb-pk-malzeme-grid">
+                                <div class="orpay-pk-malzeme-grid">
                                     @foreach (var d in _secilenParca.Dokular)
                                     {
                                         var seciliMi = _parcaKaplamaSecimleri.TryGetValue(_secilenParca.Id, out var sk) && sk == d.KaplamaId;
                                         <button type="button"
-                                                class="gb-pk-malzeme-btn @(seciliMi ? "gb-pk-malzeme-secili" : "")"
+                                                class="orpay-pk-malzeme-btn @(seciliMi ? "orpay-pk-malzeme-secili" : "")"
                                                 @onclick="() => KaplamaDegistir(_secilenParca.Id, d.KaplamaId)">
                                             @if (!string.IsNullOrEmpty(d.TeksurResimUrl))
                                             {
-                                                <img src="@d.TeksurResimUrl" alt="@d.Ad" class="gb-pk-malzeme-resim" />
+                                                <img src="@d.TeksurResimUrl" alt="@d.Ad" class="orpay-pk-malzeme-resim" />
                                             }
                                             <span>@d.Ad</span>
                                         </button>
@@ -195,21 +195,21 @@
                         <MudText Typo="Typo.subtitle2" Class="mb-2">
                             @dil.T("konfigurator.parcalar", "Parçalar") (@_konfigurator.Parcalar.Count)
                         </MudText>
-                        <div class="gb-pk-parca-liste">
+                        <div class="orpay-pk-parca-liste">
                             @foreach (var p in _konfigurator.Parcalar.OrderBy(p => p.SiraNo))
                             {
                                 var seciliMi = _secilenParca?.Id == p.Id;
                                 <button type="button"
-                                        class="gb-pk-parca-oge @(seciliMi ? "gb-pk-parca-secili" : "")"
+                                        class="orpay-pk-parca-oge @(seciliMi ? "orpay-pk-parca-secili" : "")"
                                         @onclick="() => ParcaSec(p.Id)">
-                                    <div class="gb-pk-parca-bilgi">
-                                        <MudText Typo="Typo.body2" Class="gb-font-600">@p.GorunenAd</MudText>
+                                    <div class="orpay-pk-parca-bilgi">
+                                        <MudText Typo="Typo.body2" Class="orpay-font-600">@p.GorunenAd</MudText>
                                         @if (!string.IsNullOrEmpty(p.ParcaTipi))
                                         {
                                             <MudText Typo="Typo.caption" Color="Color.Secondary">@p.ParcaTipi</MudText>
                                         }
                                     </div>
-                                    <div class="gb-pk-parca-durum">
+                                    <div class="orpay-pk-parca-durum">
                                         @if (p.HareketliMi && !string.IsNullOrEmpty(p.HareketTipi) && p.HareketTipi != "Sabit")
                                         {
                                             <MudIcon Icon="@Icons.Material.Outlined.OpenWith" Size="Size.Small" Color="Color.Secondary" />
@@ -233,14 +233,14 @@
                     <MudDivider Class="my-3" />
 
                     @* --- SEÇİM ÖZETİ VE KAYDET --- *@
-                    <div class="gb-pk-ozet">
+                    <div class="orpay-pk-ozet">
                         <MudText Typo="Typo.subtitle2" Class="mb-2">
                             @dil.T("konfigurator.secimOzeti", "Seçim Özeti")
                         </MudText>
 
                         @if (_konfigurator.Parcalar.Any(p => _parcaRenkSecimleri.ContainsKey(p.Id) || _parcaMalzemeSecimleri.ContainsKey(p.Id)))
                         {
-                            <div class="gb-pk-ozet-liste">
+                            <div class="orpay-pk-ozet-liste">
                                 @foreach (var p in _konfigurator.Parcalar)
                                 {
                                     var degisiklikler = new List<string>();
@@ -259,8 +259,8 @@
 
                                     if (degisiklikler.Count > 0)
                                     {
-                                        <div class="gb-pk-ozet-satir">
-                                            <MudText Typo="Typo.caption" Class="gb-font-600">@p.GorunenAd</MudText>
+                                        <div class="orpay-pk-ozet-satir">
+                                            <MudText Typo="Typo.caption" Class="orpay-font-600">@p.GorunenAd</MudText>
                                             <MudText Typo="Typo.caption" Color="Color.Secondary">@string.Join(", ", degisiklikler)</MudText>
                                         </div>
                                     }

@@ -1,0 +1,217 @@
+﻿/*
+ * Orpay Luxe Industrial — bilesenler.css
+ * CokluTemaServisi tarafından manifest taslağından otomatik üretilir.
+ */
+
+:root[data-tema-id="orpay-luxe-industrial"] {
+    color: var(--tema-metin);
+    background: var(--tema-arkaplan);
+}
+
+:root[data-tema-id="orpay-luxe-industrial"] h1,
+:root[data-tema-id="orpay-luxe-industrial"] h2,
+:root[data-tema-id="orpay-luxe-industrial"] h3 {
+    font-family: var(--tema-font-baslik);
+    font-weight: var(--tema-baslik-agirlik);
+    letter-spacing: var(--tema-baslik-harf-araligi);
+}
+
+:root[data-tema-id="orpay-luxe-industrial"] .navbar {
+    background: var(--tema-yuzey);
+    border-bottom: var(--tema-border-kalinlik) var(--tema-border-stil) var(--tema-cizgi);
+    transition: var(--tema-gecis-normal);
+}
+
+:root[data-tema-id="orpay-luxe-industrial"] .urun-kart {
+    background: var(--tema-cam-bg);
+    backdrop-filter: var(--tema-cam-blur);
+    -webkit-backdrop-filter: var(--tema-cam-blur);
+    border: var(--tema-border-kalinlik) var(--tema-border-stil) var(--tema-cizgi);
+    border-radius: var(--tema-kose-md);
+    box-shadow: var(--tema-golge-md);
+    transition: transform var(--tema-gecis-yavas), box-shadow var(--tema-gecis-yavas), border-color var(--tema-gecis-normal);
+}
+
+:root[data-tema-id="orpay-luxe-industrial"] .urun-kart:hover {
+    transform: translateY(-4px);
+    border-color: var(--tema-vurgu);
+    box-shadow: var(--tema-golge-vurgu), var(--tema-golge-lg);
+}
+
+:root[data-tema-id="orpay-luxe-industrial"] .btn-birincil,
+:root[data-tema-id="orpay-luxe-industrial"] .mud-button-filled {
+    background: var(--tema-vurgu);
+    color: var(--tema-metin-ters);
+    border-radius: var(--tema-kose-md);
+    transition: var(--tema-gecis-normal);
+}
+
+:root[data-tema-id="orpay-luxe-industrial"] .footer {
+    background: var(--tema-birincil);
+    color: var(--tema-metin);
+    border-top: var(--tema-border-kalinlik) var(--tema-border-stil) var(--tema-cizgi);
+}
+
+
+/* ============================================ */
+/* Stitch'ten import: orpay_dinamik_interaktif */
+/* ============================================ */
+
+
+        /* Custom Styles & Overrides */
+:root[data-tema-id="orpay-luxe-industrial"] { background-color: var(--tema-birincil); color: var(--tema-metin); }
+:root[data-tema-id="orpay-luxe-industrial"].dark { background-color: var(--tema-birincil); color: var(--tema-metin); }
+:root[data-tema-id="orpay-luxe-industrial"]:not(.dark) { background-color: #f5f5f5; color: #1c1b1b; }
+        
+        .glass-panel {
+            background: var(--tema-cam-bg);
+            backdrop-filter: blur(12px) saturate(150%);
+            border: 1px solid var(--tema-cam-cizgi);
+        }
+        html:not(.dark) .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .text-glow {
+            text-shadow: 0 0 10px var(--tema-vurgu), 0 0 30px var(--tema-vurgu), 0 0 60px var(--tema-vurgu-acik);
+            transition: text-shadow var(--tema-gecis-normal);
+        }
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .slider-img { transition: opacity 1s ease-in-out; }
+        .slider-img.hidden { opacity: 0; }
+        .slider-img.active { opacity: 1; }
+
+        /* Accordion */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-button.active .material-symbols-outlined {
+            transform: rotate(180deg);
+        }
+        
+        /* Testimonial Carousel */
+        .testimonial-slide {
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        /* ============================================ */
+        /* Particle Animasyonu                         */
+        /* ============================================ */
+
+        @keyframes tema-particle-yuksel-orpay-luxe-industrial {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(var(--particle-drift, 20px)) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .particle-konteyner {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: var(--particle-boyut, 4px);
+            height: var(--particle-boyut, 4px);
+            background: var(--tema-vurgu);
+            border-radius: 50%;
+            box-shadow: 0 0 6px var(--tema-vurgu), 0 0 12px var(--tema-vurgu-acik);
+            animation: tema-particle-yuksel-orpay-luxe-industrial var(--particle-sure, 8s) linear infinite;
+            will-change: transform, opacity;
+        }
+
+        .particle:nth-child(odd) {
+            background: var(--tema-vurgu-acik);
+            box-shadow: 0 0 8px var(--tema-vurgu-acik), 0 0 16px var(--tema-vurgu);
+        }
+
+        .particle:nth-child(3n) {
+            --particle-boyut: 3px;
+            --particle-drift: -15px;
+        }
+
+        .particle:nth-child(3n+1) {
+            --particle-drift: 25px;
+        }
+
+        .particle:nth-child(3n+2) {
+            --particle-drift: -30px;
+        }
+
+        .particle:nth-child(5n) {
+            --particle-sure: 12s;
+            width: 2px;
+            height: 2px;
+        }
+
+        .particle:nth-child(7n) {
+            --particle-sure: 6s;
+        }
+
+        /* ============================================ */
+        /* Industrial Pulse                            */
+        /* ============================================ */
+
+        @keyframes tema-industrial-nabiz-orpay-luxe-industrial {
+            0%, 100% {
+                box-shadow: 0 0 0 0 var(--tema-vurgu);
+            }
+            50% {
+                box-shadow: 0 0 0 8px transparent;
+            }
+        }
+
+        @keyframes tema-industrial-nabiz-border-orpay-luxe-industrial {
+            0%, 100% {
+                border-color: var(--tema-vurgu);
+                box-shadow: var(--tema-golge-vurgu);
+            }
+            50% {
+                border-color: var(--tema-cizgi);
+                box-shadow: none;
+            }
+        }
+
+        .industrial-pulse {
+            animation: tema-industrial-nabiz-orpay-luxe-industrial 2s ease-in-out infinite;
+        }
+
+        .industrial-pulse-border {
+            animation: tema-industrial-nabiz-border-orpay-luxe-industrial 2.5s ease-in-out infinite;
+        }
+
+        .industrial-pulse-yavas {
+            animation: tema-industrial-nabiz-orpay-luxe-industrial 3s ease-in-out infinite;
+        }
+
+        /* Pulse durdurma: hover'da devre dışı */
+        .industrial-pulse:hover,
+        .industrial-pulse-border:hover,
+        .industrial-pulse-yavas:hover {
+            animation-play-state: paused;
+        }

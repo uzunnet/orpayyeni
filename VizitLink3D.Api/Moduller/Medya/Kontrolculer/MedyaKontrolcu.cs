@@ -95,7 +95,9 @@ public class MedyaKontrolcu : ControllerBase
     public async Task<Cevap<MedyaModel>> Yukle([FromForm] IFormFile dosya, [FromForm] int? klasorId)
     {
         await using var stream = dosya.OpenReadStream();
-        int? kullaniciId = null; // TODO: JWT'den al
+        int? kullaniciId = null;
+        if (int.TryParse(User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var id))
+            kullaniciId = id;
         var medya = await _medyaServisi.YukleAsync(stream, dosya.FileName, klasorId, kullaniciId);
         return Cevap<MedyaModel>.Basarili(medya, "Dosya basariyla yuklendi.");
     }

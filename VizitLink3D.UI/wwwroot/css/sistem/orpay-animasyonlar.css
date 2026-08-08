@@ -1,0 +1,187 @@
+﻿/* ============================================ */
+/* ORPAY Animasyonlar ve Efektler               */
+/* ============================================ */
+
+/* Scroll Reveal Animasyonu */
+.orpay-reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.orpay-reveal.aktif {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Gecikmeli reveal */
+.orpay-reveal--gecikme-1 { transition-delay: 0.1s; }
+.orpay-reveal--gecikme-2 { transition-delay: 0.2s; }
+.orpay-reveal--gecikme-3 { transition-delay: 0.3s; }
+.orpay-reveal--gecikme-4 { transition-delay: 0.4s; }
+
+/* Kart hover efekti */
+.orpay-urunler-yeni__kart {
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
+}
+
+.orpay-urunler-yeni__kart:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* Gorsel hover efekti */
+.orpay-urunler-yeni__kart-gorsel img {
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.orpay-urunler-yeni__kart:hover .orpay-urunler-yeni__kart-gorsel img {
+    transform: scale(1.05);
+}
+
+/* Buton hover efekti */
+.orpay-btn {
+    transition: all 0.25s ease;
+}
+
+.orpay-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Filtre pill animasyonu */
+.orpay-urunler-yeni__filtre button {
+    transition: all 0.2s ease;
+}
+
+.orpay-urunler-yeni__filtre button:hover {
+    transform: translateY(-1px);
+}
+
+/* Sayfa gecis animasyonu */
+.orpay-urunler-yeni {
+    animation: orpayFadeIn 0.5s ease-out;
+}
+
+@keyframes orpayFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Hero baslik animasyonu */
+.orpay-urunler-yeni__baslik {
+    animation: orpayFadeUp 0.6s ease-out;
+}
+
+@keyframes orpayFadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Kicker cizgi animasyonu */
+.orpay-kicker {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--tema-vurgu, #27ae60);
+}
+
+.orpay-kicker::before {
+    content: "";
+    width: 36px;
+    height: 2px;
+    background: var(--tema-vurgu, #27ae60);
+    animation: orpayLineGrow 0.8s ease-out 0.3s both;
+}
+
+@keyframes orpayLineGrow {
+    from { width: 0; }
+    to { width: 36px; }
+}
+
+/* Ambient arka plan sekli */
+.orpay-ambient {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.orpay-ambient__sekil {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(39, 174, 96, 0.06) 0%, transparent 70%);
+    filter: blur(80px);
+    animation: orpayAmbientHareket 20s ease-in-out infinite;
+}
+
+.orpay-ambient__sekil--1 {
+    width: 600px; height: 600px; top: -200px; right: -100px;
+    animation-delay: 0s;
+}
+
+.orpay-ambient__sekil--2 {
+    width: 500px; height: 500px; bottom: -150px; left: -100px;
+    animation-delay: -7s;
+}
+
+.orpay-ambient__sekil--3 {
+    width: 400px; height: 400px; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    animation-delay: -14s;
+}
+
+@keyframes orpayAmbientHareket {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(30px, -20px) scale(1.05); }
+    50% { transform: translate(-20px, 30px) scale(0.95); }
+    75% { transform: translate(20px, 20px) scale(1.02); }
+}
+
+/* Header glass efekti */
+.orpay-header {
+    transition: background 0.3s ease;
+}
+
+/* Kart icerik gecis efekti */
+.orpay-urunler-yeni__kart-icerik {
+    transition: background 0.3s ease;
+}
+
+/* Lightbox acilis animasyonu */
+.orpay-lightbox {
+    animation: orpayLightboxAc 0.3s ease-out;
+}
+
+@keyframes orpayLightboxAc {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Sayac animasyonu */
+.orpay-sayac {
+    animation: orpaySayacArt 0.5s ease-out;
+}
+
+@keyframes orpaySayacArt {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Skeleton yukleme animasyonu */
+.orpay-skeleton {
+    background: linear-gradient(90deg, var(--tema-arkaplan-2) 25%, var(--tema-yuzey) 50%, var(--tema-arkaplan-2) 75%);
+    background-size: 200% 100%;
+    animation: orpaySkeleton 1.5s ease-in-out infinite;
+}
+
+@keyframes orpaySkeleton {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}

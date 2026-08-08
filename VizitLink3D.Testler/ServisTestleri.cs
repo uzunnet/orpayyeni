@@ -108,7 +108,7 @@ public class ServisTestleri
     {
         Assert.Equal(0, (int)Rol.Kullanici);
         Assert.Equal(1, (int)Rol.Editor);
-        Assert.Equal(2, (int)Rol.Admin);
+        Assert.Equal(2, (int)Rol.FirmaAdmin);
         Assert.Equal(3, (int)Rol.SuperAdmin);
     }
 

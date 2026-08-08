@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.10">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.10" />
+    <PackageReference Include="MudBlazor" Version="9.8.0" />
+    <PackageReference Include="BCrypt.Net-Next" Version="4.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.10" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VizitLink3D.Api\VizitLink3D.Api.csproj" />
+    <ProjectReference Include="..\VizitLink3D.Ortak\VizitLink3D.Ortak.csproj" />
+  </ItemGroup>
+
+  <!-- İki Web projesi arasında static web asset çakışmasını önle (API projesinin wwwroot'u SuperAdmin'e karışmasın) -->
+  <Target Name="RemoveApiStaticWebAssets" BeforeTargets="GenerateStaticWebAssetsManifest">
+    <ItemGroup>
+      <StaticWebAsset Remove="@(StaticWebAsset)" Condition="'%(StaticWebAsset.SourceId)' == 'VizitLink3D.Api'" />
+    </ItemGroup>
+  </Target>
+
+</Project>

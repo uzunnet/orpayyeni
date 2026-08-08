@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+using System.Text.Json;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
@@ -27,16 +28,18 @@ public partial class AdminDuzen : LayoutComponentBase, IDisposable
     private string _aktifSayfaBasligi = "";
     private List<Bilesenler.Admin.AdminUstBanner.BreadcrumbItem> _breadcrumbs = [];
     private bool _isSuperAdmin;
-    private string _firmaAdi = "VizitLink3D";
+    private string _firmaAdi = string.Empty;
     private string _kullaniciAdi = "";
     private string _rol = "";
     private string _aktifTemaModu = "koyu";
     private string _varsayilanDil = "tr";
     private bool KoyuTemaMi => _aktifTemaModu != "acik";
 
-    private string _logoUrl = "/medya/brand/vizitlink3d-icon.svg";
+    // FAZ 4: Logo ve favicon API'den firma bilgisiyle dinamik yuklenir.
+    // Fallback degerleri kaldirilmistir; _logoUrl null ise UI'da metin tabanli logo gosterilir.
+    private string? _logoUrl;
     private string _faviconUrl = "/favicon.png";
-    private string LogoTamYolu => MarkaVarligiNormalizeEt(_logoUrl, "/medya/brand/vizitlink3d-icon.svg");
+    private string LogoTamYolu => MarkaVarligiNormalizeEt(_logoUrl, string.Empty);
     private string FaviconTamYolu => MarkaVarligiNormalizeEt(_faviconUrl, "/favicon.png");
 
     // Endüstriyel karanlık tema — degiskenler.css --admin-* token'larından beslenir
@@ -120,10 +123,8 @@ public partial class AdminDuzen : LayoutComponentBase, IDisposable
         dil.DilDegisti += OnDilDegisti;
         await KullaniciBilgisiYukleAsync();
         await AdminMenuleriniYukleAsync();
-        await AyarlariYukleAsync();
         await BildirimServisi.BaslatAsync();
         _bildirimSayisi = BildirimServisi.BekleyenSayisi;
-        _ = dil.EksikCevirileriAIileTamamlaAsync();
         Nav.LocationChanged += KonumDegistiginde;
         _ = ZiyaretKaydetAsync(Nav.Uri);
     }
@@ -186,7 +187,7 @@ public partial class AdminDuzen : LayoutComponentBase, IDisposable
             }
             if (!string.IsNullOrWhiteSpace(firma?.Logo))
             {
-                _logoUrl = MarkaVarligiNormalizeEt(firma.Logo, "/medya/brand/vizitlink3d-icon.svg");
+                _logoUrl = MarkaVarligiNormalizeEt(firma.Logo, string.Empty);
             }
             if (!string.IsNullOrWhiteSpace(firma?.Favicon))
             {
@@ -206,7 +207,7 @@ public partial class AdminDuzen : LayoutComponentBase, IDisposable
                 }
                 if (sozluk.TryGetValue("LogoUrl", out var logo) && !string.IsNullOrEmpty(logo))
                 {
-                    _logoUrl = MarkaVarligiNormalizeEt(logo, "/medya/brand/vizitlink3d-icon.svg");
+                    _logoUrl = MarkaVarligiNormalizeEt(logo, string.Empty);
                 }
                 if (sozluk.TryGetValue("FaviconUrl", out var favicon) && !string.IsNullOrEmpty(favicon))
                 {
@@ -224,24 +225,14 @@ public partial class AdminDuzen : LayoutComponentBase, IDisposable
             return varsayilanDeger;
         }
 
-        var normalizeDeger = deger.Contains("vizitlink3d", StringComparison.OrdinalIgnoreCase)
-            ? varsayilanDeger
-            : deger;
-
-        if (normalizeDeger.Equals("/medya/brand/orpay-logo.svg", StringComparison.OrdinalIgnoreCase)
-            || normalizeDeger.Equals("medya/brand/orpay-logo.svg", StringComparison.OrdinalIgnoreCase))
+        if (deger.StartsWith("http://", StringComparison.OrdinalIgnoreCase)
+            || deger.StartsWith("https://", StringComparison.OrdinalIgnoreCase)
+            || deger.StartsWith("/", StringComparison.Ordinal))
         {
-            normalizeDeger = "/medya/brand/vizitlink3d-icon.svg";
+            return deger;
         }
 
-        if (normalizeDeger.StartsWith("http://", StringComparison.OrdinalIgnoreCase)
-            || normalizeDeger.StartsWith("https://", StringComparison.OrdinalIgnoreCase)
-            || normalizeDeger.StartsWith("/", StringComparison.Ordinal))
-        {
-            return normalizeDeger;
-        }
-
-        return "/" + normalizeDeger.TrimStart('~').TrimStart('/');
+        return "/" + deger.TrimStart('~').TrimStart('/');
     }
 
     private async Task AdminMenuleriniYukleAsync()
@@ -251,6 +242,9 @@ public partial class AdminDuzen : LayoutComponentBase, IDisposable
         
         if (liste != null)
         {
+            // FAZ 4.2: Aktif modullere gore menu filtresi
+            var aktifModulKodlari = await AktifModulKodlariniAlAsync();
+            
             foreach (var menu in liste)
             {
                 if (menu.Url != null && menu.Url.StartsWith("/"))
@@ -277,6 +271,23 @@ public partial class AdminDuzen : LayoutComponentBase, IDisposable
                 liste = liste.Where(m => !string.IsNullOrEmpty(m.Url) || m.AltMenuler.Any()).ToList();
             }
 
+            // FAZ 4.2: Modul filtresi — aktif modul yoksa tum menuyu goster
+            if (aktifModulKodlari.Count > 0)
+            {
+                liste = liste.Where(m => MenuModulIleEslesiyor(m, aktifModulKodlari)).ToList();
+                foreach (var menu in liste)
+                {
+                    if (menu.AltMenuler != null && menu.AltMenuler.Any())
+                    {
+                        menu.AltMenuler = menu.AltMenuler
+                            .Where(a => MenuModulIleEslesiyor(a, aktifModulKodlari) || a.SistemMenusuMu)
+                            .ToList();
+                    }
+                }
+                // Bos ust menuleri temizle
+                liste = liste.Where(m => !string.IsNullOrEmpty(m.Url) || m.AltMenuler.Any()).ToList();
+            }
+
             _adminMenuleri = liste;
         }
         else
@@ -284,8 +295,68 @@ public partial class AdminDuzen : LayoutComponentBase, IDisposable
             _adminMenuleri = new();
         }
 
-        SertifikaMenusunuGarantiEt();
-        KapakModeliMenusunuGarantiEt();
+        // Menuler DB'den tam geldigi icin SertifikaMenusunuGarantiEt ve KapakModeliMenusunuGarantiEt kaldirildi
+    }
+
+    /// <summary>
+    /// Menu ogesi URL/YetkiAnahtari icerigi ile aktif modul kodlarini eslestirir.
+    /// </summary>
+    private static bool MenuModulIleEslesiyor(MenuOgesi menu, HashSet<string> aktifModuller)
+    {
+        // Sistem menuleri her zaman gorunur
+        if (menu.SistemMenusuMu) return true;
+        
+        // URL iceriginden modul eslesmesi kontrolu
+        var url = (menu.Url ?? "").ToLowerInvariant();
+        var yetki = (menu.YetkiAnahtari ?? "").ToLowerInvariant();
+        
+        // YetkiAnahtari dogrudan modul kodu olabilir
+        if (!string.IsNullOrEmpty(yetki) && aktifModuller.Contains(yetki))
+            return true;
+        
+        // URL tabanli eslesme
+        if (url.Contains("blog") || url.Contains("haber")) 
+            return aktifModuller.Contains("blog") || aktifModuller.Contains("haberler");
+        if (url.Contains("galeri")) return aktifModuller.Contains("galeri");
+        if (url.Contains("urun")) return aktifModuller.Contains("urunler");
+        if (url.Contains("slayt")) return aktifModuller.Contains("slayt_yonetimi");
+        if (url.Contains("sayfa")) return aktifModuller.Contains("sayfalar");
+        if (url.Contains("menu")) return aktifModuller.Contains("menu_yonetimi");
+        if (url.Contains("tema")) return aktifModuller.Contains("tema_yonetimi");
+        if (url.Contains("proje")) return aktifModuller.Contains("proje_yonetimi");
+        if (url.Contains("referans")) return aktifModuller.Contains("referanslar");
+        if (url.Contains("sertifika")) return aktifModuller.Contains("sertifikalar");
+        if (url.Contains("sss")) return aktifModuller.Contains("sss");
+        if (url.Contains("katalog")) return aktifModuller.Contains("katalog");
+        if (url.Contains("bayi")) return aktifModuller.Contains("bayi_yonetimi");
+        if (url.Contains("ekip")) return aktifModuller.Contains("ekip_yonetimi");
+        if (url.Contains("pwa")) return aktifModuller.Contains("pwa_offline");
+        if (url.Contains("audit") || url.Contains("denetim")) return aktifModuller.Contains("audit_log");
+        if (url.Contains("lisans")) return aktifModuller.Contains("lisans_yonetimi");
+        if (url.Contains("bildirim")) return aktifModuller.Contains("bildirimler");
+        if (url.Contains("medya")) return aktifModuller.Contains("medya_havuzu");
+        if (url.Contains("iletisim") || url.Contains("sohbet")) 
+            return aktifModuller.Contains("iletisim") || aktifModuller.Contains("sohbet");
+        if (url.Contains("ceviri") || url.Contains("dil")) return aktifModuller.Contains("ai_asistan");
+        
+        // Eslesme bulunamazsa varsayilan olarak goster
+        return true;
+    }
+
+    private async Task<HashSet<string>> AktifModulKodlariniAlAsync()
+    {
+        try
+        {
+            var firma = await Api.GetAsync<Firma>("api/firma/guncel");
+            if (firma?.AktifModulKodlariJson != null)
+            {
+                return JsonSerializer.Deserialize<List<string>>(firma.AktifModulKodlariJson)
+                    ?.ToHashSet(StringComparer.OrdinalIgnoreCase) 
+                    ?? new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            }
+        }
+        catch { }
+        return new HashSet<string>(StringComparer.OrdinalIgnoreCase);
     }
 
     private void SertifikaMenusunuGarantiEt()
@@ -469,7 +540,6 @@ public partial class AdminDuzen : LayoutComponentBase, IDisposable
     private async void OnDilDegisti()
     {
         await AdminMenuleriniYukleAsync();
-        _ = dil.EksikCevirileriAIileTamamlaAsync();
         await JS.InvokeVoidAsync("vizitlink3dDil.htmlDiliniAyarla", dil.AktifDil);
         await InvokeAsync(StateHasChanged);
     }

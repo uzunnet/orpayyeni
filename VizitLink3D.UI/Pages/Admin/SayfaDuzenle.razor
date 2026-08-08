@@ -4,7 +4,6 @@
 @using MudBlazor
 @using VizitLink3D.UI.Models
 @using VizitLink3D.UI.Servisler
-@using MudExRichTextEditor
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize]
 
@@ -21,7 +20,7 @@
                     <MudTextField @bind-Value="_sayfaBasligi" Label="@dil.T("admin.sayfaDuzenle.baslik","Sayfa Başlığı")" Required="true" Class="mt-4" />
                     
                     <MudText Typo="Typo.subtitle2" Class="mt-4 mb-2">Sayfa İçeriği (HTML Destekli Editör Alanı)</MudText>
-                    <MudExRichTextEdit @bind-Value="_sayfaIcerigi" Placeholder="Sayfanın içeriğini buraya yazın..." />
+                    <MudTextField @bind-Value="_sayfaIcerigi" Lines="8" Variant="Variant.Outlined" />
                 </MudTabPanel>
 
                 <MudTabPanel Text="@dil.T("admin.sayfaDuzenle.videoMedya","Video & Medya")" Icon="@Icons.Material.Filled.VideoLibrary" Class="pa-4">

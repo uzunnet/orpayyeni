@@ -1,50 +1,38 @@
-﻿using VizitLink3D.Api.VeriTabani;
+using VizitLink3D.Api.VeriTabani;
 using VizitLink3D.Ortak.Modeller;
 using Microsoft.EntityFrameworkCore;
 
 namespace VizitLink3D.Api.VeriTabani;
 
-public static class TohumVerisi
+public static partial class TohumVerisi
 {
     public static async Task TohumlaAsync(VizitLink3DDbContext vt)
     {
-        // === 1. VARSAYILAN FIRMA ===
+        // === 1. PLATFORM VARSAYILAN FIRMASI ===
         if (!vt.Firmalar.Any())
         {
             vt.Firmalar.Add(new Firma
             {
-                Ad = "ORPAY",
-                Unvan = "ORPAY Orman Urunleri",
-                Slug = "orpay",
-                AciklamaKisa = "Orman urunleri ve yapi malzemeleri",
-                Aciklama = "ORPAY, 1992 yilindan beri orman urunleri ve yapi malzemeleri sektorunde hizmet vermektedir.",
+                Ad = "VizitLink3D Platform",
+                Unvan = "VizitLink3D Platform Varsayilan Firma",
+                Slug = "vizitlink3d",
+                AciklamaKisa = "3D urun konfigurator ve dijital showroom platformu",
+                Aciklama = "VizitLink3D, urunlerinizi 3 boyutlu olarak musterilerinize sunmanizi saglayan dijital showroom ve konfigurator platformudur.",
                 Domain = "localhost",
-                Eposta = "info@orpay.com.tr",
-                Telefon1 = "+90 312 000 00 00",
-                Adres = "Ankara / Turkiye",
-                Sehir = "Ankara",
-                KurulusYili = 1992,
-                SiteTema = "gold",
-                AdminTema = "gold",
+                Eposta = "bilgi@3dvizitlink.com.tr",
+                Telefon1 = "+90 000 000 00 00",
+                Adres = "Turkiye",
+                Sehir = "Istanbul",
+                KurulusYili = 2024,
+                SiteTema = "vizitlink3d",
+                AdminTema = "vizitlink3d",
                 AktifMi = true,
                 OlusturulmaTarihi = DateTime.UtcNow
             });
             await vt.SaveChangesAsync();
         }
 
-        // Eski goldbanyo slug'ini orpay'e guncelle (varsa)
-        var goldbanyoFirma = await vt.Firmalar.FirstOrDefaultAsync(f => f.Slug == "goldbanyo");
-        if (goldbanyoFirma != null)
-        {
-            goldbanyoFirma.Slug = "orpay";
-            goldbanyoFirma.Ad = "ORPAY";
-            goldbanyoFirma.Unvan = "ORPAY Orman Urunleri";
-            goldbanyoFirma.Domain = "localhost";
-            goldbanyoFirma.Eposta = "iletisim@orpayormanurunleri.com.tr";
-            await vt.SaveChangesAsync();
-        }
-
-        var firma = await vt.Firmalar.FirstAsync(f => f.Slug == "orpay");
+        var firma = await vt.Firmalar.FirstAsync();
 
         // === 2. ADMIN KULLANICI ===
         if (!vt.Kullanicilar.Any(k => k.KullaniciAdi == "admin"))
@@ -52,10 +40,10 @@ public static class TohumVerisi
             vt.Kullanicilar.Add(new Kullanici
             {
                 FirmaId = firma.Id,
-                AdSoyad = "ORPAY Admin",
-                Eposta = "admin@orpay.com.tr",
+                AdSoyad = "VIZITLINK3D Yonetici",
+                Eposta = "admin@3dvizitlink.com.tr",
                 KullaniciAdi = "admin",
-                SifreHash = BCrypt.Net.BCrypt.HashPassword("Orpay2026!"),
+                SifreHash = BCrypt.Net.BCrypt.HashPassword("Admin2026!"),
                 Rol = Rol.SuperAdmin,
                 EmailDogrulandiMi = true,
                 AktifMi = true,
@@ -78,10 +66,10 @@ public static class TohumVerisi
         if (!vt.SistemAyarlari.Any())
         {
             vt.SistemAyarlari.AddRange(
-                new SistemAyari { Anahtar = "site.baslik", Deger = "ORPAY Orman Urunleri" },
-                new SistemAyari { Anahtar = "site.aciklama", Deger = "ORPAY - Kaliteli orman urunleri ve yapi malzemeleri" },
-                new SistemAyari { Anahtar = "site.telefon", Deger = "+90 312 000 00 00" },
-                new SistemAyari { Anahtar = "site.eposta", Deger = "info@orpay.com.tr" }
+                new SistemAyari { Anahtar = "site.baslik", Deger = "VizitLink3D" },
+                new SistemAyari { Anahtar = "site.aciklama", Deger = "VizitLink3D - 3D Dijital Showroom Platformu" },
+                new SistemAyari { Anahtar = "site.telefon", Deger = "+90 000 000 00 00" },
+                new SistemAyari { Anahtar = "site.eposta", Deger = "bilgi@3dvizitlink.com.tr" }
             );
             await vt.SaveChangesAsync();
         }
@@ -109,7 +97,7 @@ public static class TohumVerisi
             var ayarlar = await vt.MenuOgeleri.FirstAsync(m => m.Baslik == "Ayarlar" && m.Konum == "AdminMenu");
 
             var altMenuler = await vt.MenuOgeleri
-                .Where(m => m.Konum == "AdminMenu" && m.Baslik != "Gosterge Panosu" && m.Baslik != "Icerik Yonetimi" 
+                .Where(m => m.Konum == "AdminMenu" && m.Baslik != "Gosterge Panosu" && m.Baslik != "Icerik Yonetimi"
                     && m.Baslik != "Medya Havuzu" && m.Baslik != "Menu Yonetimi" && m.Baslik != "Ayarlar")
                 .ToListAsync();
 
@@ -134,21 +122,8 @@ public static class TohumVerisi
             );
             await vt.SaveChangesAsync();
         }
-    }
 
-    public static async Task OrpayKatalogMedyaUzantilariniDuzeltAsync(VizitLink3DDbContext vt)
-    {
-        await Task.CompletedTask;
-    }
-
-    public static async Task OrpayIletisimBilgileriniDuzeltAsync(VizitLink3DDbContext vt)
-    {
-        await Task.CompletedTask;
-    }
-
-    public static async Task TemizleSlaytResimlerAsync(VizitLink3DDbContext vt, string webRootPath)
-    {
-        await Task.CompletedTask;
+        // === 7. KATALOG VERISI ===
+        await KatalogVerisiniTohumlaAsync(vt);
     }
 }
-

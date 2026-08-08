@@ -1,0 +1,29 @@
+﻿/*
+ * ORPAY Public Light Override
+ * BosDuzen sayfalari icin acik tema degiskenleri
+ */
+:root, [data-tema-id] {
+    --tema-arkaplan: #fafaf8 !important;
+    --tema-arkaplan-2: #f5f3ef !important;
+    --tema-yuzey: #ffffff !important;
+    --tema-yuzey-hover: #f0eee9 !important;
+    --tema-metin: #1a1a1a !important;
+    --tema-metin-ikincil: #4a4a4a !important;
+    --tema-metin-soluk: #8a8a8a !important;
+    --tema-metin-ters: #ffffff !important;
+    --tema-cizgi: rgba(0,0,0,0.08) !important;
+    --tema-cizgi-acik: rgba(0,0,0,0.04) !important;
+    --tema-vurgu: #27ae60 !important;
+    --tema-vurgu-acik: #34d07b !important;
+    --tema-vurgu-koyu: #1a8a4a !important;
+    --tema-birincil: #1a1a1a !important;
+    --tema-ikincil: #2c2c2c !important;
+    --tema-cam-bg: rgba(255,255,255,0.85) !important;
+    --tema-cam-blur: blur(20px) saturate(180%) !important;
+    --tema-cam-cizgi: rgba(0,0,0,0.06) !important;
+    --tema-golge-sm: 0 2px 8px rgba(0,0,0,0.06) !important;
+    --tema-golge-md: 0 4px 20px rgba(0,0,0,0.08) !important;
+    --tema-golge-lg: 0 10px 40px rgba(0,0,0,0.10) !important;
+    --tema-golge-xl: 0 20px 60px rgba(0,0,0,0.12) !important;
+    --tema-golge-vurgu: 0 0 20px rgba(39,174,96,0.15) !important;
+}

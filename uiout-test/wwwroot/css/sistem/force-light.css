@@ -1,0 +1,15 @@
+﻿/* ORPAY Force Light - body arka planini zorla acik yap */
+html, body, #app, .gb-shell, .gb-main {
+    background: #f4fbf1 !important;
+    color: #191c19 !important;
+}
+
+/* Tum sayfalarda acik arka plan */
+.orpay-urunler-yeni,
+.orpay-page,
+.orpay-panel,
+.orpay-katalog-sayfasi,
+.orpay-detail-page,
+.orpay-iletisim {
+    background: transparent !important;
+}

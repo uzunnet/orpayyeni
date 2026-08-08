@@ -1,6 +1,5 @@
 @page "/yonetim/vitrin"
 @layout VizitLink3D.UI.Layout.AdminDuzen
-@using MudExRichTextEditor
 
 @* 
  * Eklenti Vitrini (Showcase)
@@ -13,7 +12,7 @@
     <MudText Typo="Typo.h4" Class="mb-2 font-weight-bold" Style="font-family: 'Noto Serif', serif; color: #000000;">
         Eklenti Vitrini (Showcase)
     </MudText>
-    <MudText Typo="Typo.body1" Class="mb-8 gb-color-muted">
+    <MudText Typo="Typo.body1" Class="mb-8 orpay-color-muted">
         Admin panelini zenginleştiren topluluk eklentilerinin (RichTextEditor, CodeBeam, vs.) test alanı.
     </MudText>
 
@@ -25,13 +24,13 @@
                 <MudCardHeader Style="background-color: #F8F8F8; border-bottom: 1px solid #EEEEEE;">
                     <CardHeaderContent>
                         <MudText Typo="Typo.h6" Style="font-weight: 600; color: #1A1C1C;">İçerik Editörü (MudExRichTextEdit)</MudText>
-                        <MudText Typo="Typo.body2" class="gb-color-muted">
+                        <MudText Typo="Typo.body2" class="orpay-color-muted">
                             MudExRichTextEdit bileşeni, sayfa içerikleri ve haber yazıları için gelişmiş bir WYSIWYG deneyimi sunar.
                         </MudText>
                     </CardHeaderContent>
                 </MudCardHeader>
                 <MudCardContent>
-                    <MudExRichTextEdit @bind-Value="_icerik" Placeholder="Haber veya sayfa içeriğini buraya yazın..." />
+                    <MudTextField @bind-Value="_icerik" Lines="8" Variant="Variant.Outlined" Label="İçerik" />
                 </MudCardContent>
             </MudCard>
         </MudItem>

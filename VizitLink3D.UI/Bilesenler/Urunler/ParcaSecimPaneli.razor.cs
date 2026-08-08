@@ -11,7 +11,7 @@ public partial class ParcaSecimPaneli : ComponentBase
 
     private string ParcaSinifi(UrunUcBoyutParcasi parca)
     {
-        var temel = "gb-parca-kalem";
+        var temel = "orpay-parca-kalem";
         if (parca.Id == SeciliParcaId)
             temel += " gb-parca-secili";
         return temel;

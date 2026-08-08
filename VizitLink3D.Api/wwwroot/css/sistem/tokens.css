@@ -1,0 +1,34 @@
+/*
+ * ===========================================================================
+ * VIZITLINK3D TOKENS.CSS — ANA GİRİŞ NOKTASI (anayasa §46.1)
+ * ===========================================================================
+ * Bu dosya sadece @import komutlari icerir. Dogrudan CSS kurali YASAKTIR.
+ * Tum stil sistemi moduler olarak alt klasorlerden yuklenir.
+ * ===========================================================================
+ */
+
+/* Temeller — Renk paleti, font, CSS degiskenleri */
+@import './temeller/degiskenler.css';
+@import './temeller/reset.css';
+@import './temeller/tipografi.css';
+@import './temeller/breakpoint.css';
+
+/* Bilesenler — Buton, kart, tablo, efekt */
+@import './bilesenler/butonlar.css';
+@import './bilesenler/kartlar.css';
+@import './bilesenler/tablolar.css';
+@import './bilesenler/modal.css';
+@import './bilesenler/form.css';
+@import './bilesenler/efektler.css';
+@import './bilesenler/hero-slider.css';
+@import './bilesenler/animasyon.css';
+@import './bilesenler/medya.css';
+@import './bilesenler/urun.css';
+@import './bilesenler/ai.css';
+@import './bilesenler/yardimci.css';
+@import './bilesenler/admin-tema.css';
+
+/* Moduller — Sayfa ozgu stiller */
+@import './moduller/vizitlink3d.css';
+@import './moduller/yonetim.css';
+@import './moduller/admin-banner.css';

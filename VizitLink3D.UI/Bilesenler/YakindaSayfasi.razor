@@ -1,17 +1,17 @@
-@namespace VizitLink3D.UI.Bilesenler
+﻿@namespace VizitLink3D.UI.Bilesenler
 
 <PageTitle>@SayfaBasligiEtiketi</PageTitle>
 
-<section class="gb-page gb-yakinda-sayfa">
-    <div class="gb-panel gb-yakinda-sayfa__panel">
-        <span class="gb-yakinda-sayfa__ikon">
+<section class="orpay-page orpay-yakinda-sayfa">
+    <div class="orpay-panel orpay-yakinda-sayfa__panel">
+        <span class="orpay-yakinda-sayfa__ikon">
             <MudIcon Icon="@Ikon" Size="Size.Large" />
         </span>
-        <span class="gb-kicker">@Ustbaslik</span>
+        <span class="orpay-kicker">@Ustbaslik</span>
         @if (!_dinamikIcerikVar)
         {
-            <h1 class="gb-yakinda-sayfa__baslik">@Baslik</h1>
+            <h1 class="orpay-yakinda-sayfa__baslik">@Baslik</h1>
         }
-        <div class="gb-detail-aciklama">@((MarkupString)Aciklama)</div>
+        <div class="orpay-detail-aciklama">@((MarkupString)Aciklama)</div>
     </div>
 </section>

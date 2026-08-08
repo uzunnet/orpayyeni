@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using VizitLink3D.Ortak.Modeller.Renkler;
 using VizitLink3D.Ortak.Modeller.Urunler;
@@ -14,6 +14,7 @@ public partial class UrunDetay : ComponentBase, IDisposable
 
     [Inject] private ApiIstemcisi Api { get; set; } = default!;
     [Inject] private IJSRuntime JS { get; set; } = default!;
+    [Inject] private FirmaBilgisiServisi FirmaBilgisi { get; set; } = default!;
 
     protected override void OnInitialized()
     {
@@ -41,6 +42,23 @@ public partial class UrunDetay : ComponentBase, IDisposable
     private string? HataMesaji { get; set; }
     private bool _yukleniyor = true;
     private OrpayKatalogUrunu? _katalogVerisi;
+
+    private string NormalizeUrl(string url, string firmaSlug)
+    {
+        if (firmaSlug == "localhost" || firmaSlug == "127.0.0.1" || firmaSlug == "platform") firmaSlug = "orpay";
+        if (string.IsNullOrWhiteSpace(url)) return url;
+        string tmp = url;
+        if (tmp.StartsWith(Api.ApiBaseUrl, StringComparison.OrdinalIgnoreCase))
+            tmp = tmp.Substring(Api.ApiBaseUrl.Length);
+            
+        if (tmp.StartsWith("/medya/", StringComparison.OrdinalIgnoreCase))
+            return $"{Api.ApiBaseUrl}/firmalar/{firmaSlug}{tmp}";
+            
+        if (tmp.StartsWith("medya/", StringComparison.OrdinalIgnoreCase))
+            return $"{Api.ApiBaseUrl}/firmalar/{firmaSlug}/{tmp}";
+            
+        return url;
+    }
 
     private List<string> KatalogOzellikleri => _katalogVerisi?.Ozellikler.ToList() ?? [];
     private List<OrpayKatalogOlcusu> KatalogOlculer => _katalogVerisi?.Olculer.ToList() ?? [];
@@ -142,6 +160,8 @@ public partial class UrunDetay : ComponentBase, IDisposable
             if (string.IsNullOrWhiteSpace(Slug))
                 return;
 
+            var firmaSlug = await FirmaBilgisi.GetSlugAsync();
+
             var urun = await Api.GetAsync<Urun>($"api/urunler/slug/{Uri.EscapeDataString(Slug)}?dil=tr");
             if (urun is null)
                 return;
@@ -182,11 +202,12 @@ public partial class UrunDetay : ComponentBase, IDisposable
                     ? kategori.Aciklama!
                     : UrunGorunumYardimcisi.OzetMetniBul(urun);
 
-            HeroGorselUrl = UrunGorunumYardimcisi.AnaGorselUrl(urun, Api.ApiBaseUrl);
+            HeroGorselUrl = NormalizeUrl(UrunGorunumYardimcisi.AnaGorselUrl(urun, Api.ApiBaseUrl), firmaSlug);
 
             // Yönetilen ürün görsellerinin tek kaynağı medya havuzudur. Eski statik
             // katalog ve harici WordPress yolları galeriyi artık geçersiz kılamaz.
-            GaleriGorselleri = MedyaHavuzuYolu.UrunGalerisiOlustur(urun, Medyalar, Api.ApiBaseUrl);
+            var hamGaleri = MedyaHavuzuYolu.UrunGalerisiOlustur(urun, Medyalar, Api.ApiBaseUrl);
+            GaleriGorselleri = hamGaleri.Select(x => NormalizeUrl(x, firmaSlug)).ToList();
 
             if (GaleriGorselleri.Count == 0)
                 GaleriGorselleri = [HeroGorselUrl];

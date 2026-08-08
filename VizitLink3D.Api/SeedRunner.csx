@@ -1,6 +1,6 @@
-using Microsoft.Data.Sqlite;
+﻿using Microsoft.Data.Sqlite;
 
-var dbPath = args.Length > 0 ? args[0] : "desadoor.db";
+var dbPath = args.Length > 0 ? args[0] : "orpay.db";
 var sqlPath = args.Length > 1 ? args[1] : "tohum_verisi_ek.sql";
 
 if (!File.Exists(dbPath)) { Console.WriteLine($"DB bulunamadı: {dbPath}"); return 1; }
@@ -24,3 +24,4 @@ catch (Exception ex)
     Console.WriteLine($"HATA: {ex.Message}");
     return 1;
 }
+

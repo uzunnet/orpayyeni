@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using VizitLink3D.UI.Models;
 using VizitLink3D.Ortak.Modeller;
 using System.Net.Http.Json;
@@ -25,7 +25,7 @@ public class ApiIstemcisi(HttpClient http, IJSRuntime js)
             }
 
             var firma = await js.InvokeAsync<string?>("localStorage.getItem", "aktif_firma");
-            if (string.IsNullOrWhiteSpace(firma))
+            if (string.IsNullOrWhiteSpace(firma) || firma == "platform")
             {
                 firma = VarsayilanFirmaSlug;
                 await js.InvokeVoidAsync("localStorage.setItem", "aktif_firma", firma);

@@ -369,7 +369,7 @@ public partial class KonfiguratorStudio : ComponentBase, IAsyncDisposable
 
     private string GetParcaItemClass(UrunUcBoyutParcasi parca)
     {
-        var baseClass = "gb-ks-parca-oge";
+        var baseClass = "orpay-ks-parca-oge";
         if (_seciliParca != null && _seciliParca.Id == parca.Id)
             return $"{baseClass} secilen";
         return baseClass;

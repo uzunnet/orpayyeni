@@ -35,7 +35,30 @@ public class YoutubeMetadataServisi : IYoutubeMetadataServisi
         var videoId = VideoIdCozumle(url);
         if (videoId == null) return null;
 
-        // TODO: oEmbed API cagrisi
+        try
+        {
+            // YouTube oEmbed API (API key gerektirmez)
+            var oembedUrl = $"https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v={videoId}&format=json";
+            var yanit = await _http.GetAsync(oembedUrl);
+
+            if (yanit.IsSuccessStatusCode)
+            {
+                var json = await yanit.Content.ReadAsStringAsync();
+                var oembed = System.Text.Json.JsonSerializer.Deserialize<YoutubeOembedYanit>(json,
+                    new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                return new YoutubeVideoBilgisi
+                {
+                    VideoId = videoId,
+                    Baslik = oembed?.Title ?? $"YouTube Video ({videoId})",
+                    KapakResmiUrl = $"https://img.youtube.com/vi/{videoId}/maxresdefault.jpg",
+                    EmbedUrl = $"https://www.youtube.com/embed/{videoId}"
+                };
+            }
+        }
+        catch { }
+
+        // Fallback
         return new YoutubeVideoBilgisi
         {
             VideoId = videoId,
@@ -43,5 +66,13 @@ public class YoutubeMetadataServisi : IYoutubeMetadataServisi
             KapakResmiUrl = $"https://img.youtube.com/vi/{videoId}/maxresdefault.jpg",
             EmbedUrl = $"https://www.youtube.com/embed/{videoId}"
         };
+    }
+
+    // YouTube oEmbed yanit modeli (private)
+    private class YoutubeOembedYanit
+    {
+        public string Title { get; set; } = "";
+        public string AuthorName { get; set; } = "";
+        public string ThumbnailUrl { get; set; } = "";
     }
 }

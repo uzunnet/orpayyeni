@@ -1,4 +1,4 @@
-@page "/admin/kullanici-yonetimi"
+﻿@page "/admin/kullanici-yonetimi"
 @layout VizitLink3D.UI.Layout.AdminDuzen
 @using VizitLink3D.Ortak.Modeller
 @using Microsoft.AspNetCore.Authorization
@@ -34,7 +34,7 @@
     <MudCard Elevation="2" Class="mb-4 admin-form-panel">
         <MudCardHeader>
             <CardHeaderContent>
-                <MudText Typo="Typo.h6" class="gb-font-700">@(_duzenlemeModu ? dil.T("admin.kullanici.duzenle", "Kullanıcı Düzenle") : dil.T("admin.kullanici.yeniEkle", "Yeni Kullanıcı Ekle"))</MudText>
+                <MudText Typo="Typo.h6" class="orpay-font-700">@(_duzenlemeModu ? dil.T("admin.kullanici.duzenle", "Kullanıcı Düzenle") : dil.T("admin.kullanici.yeniEkle", "Yeni Kullanıcı Ekle"))</MudText>
             </CardHeaderContent>
         </MudCardHeader>
         <MudCardContent>
@@ -54,7 +54,7 @@
                 <MudItem xs="12" md="4">
                     <MudSelect @bind-Value="_form.Rol" Label="@dil.T("admin.kullanici.rol", "Rol")" Variant="Variant.Outlined" Required="true">
                         <MudSelectItem Value="@(Rol.SuperAdmin)">Super Admin</MudSelectItem>
-                        <MudSelectItem Value="@(Rol.Admin)">Admin</MudSelectItem>
+                        <MudSelectItem Value="@(Rol.FirmaAdmin)">Firma Admin</MudSelectItem>
                         <MudSelectItem Value="@(Rol.Editor)">Editör</MudSelectItem>
                         <MudSelectItem Value="@(Rol.Kullanici)">Kullanıcı</MudSelectItem>
                     </MudSelect>

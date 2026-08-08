@@ -1,4 +1,4 @@
-@page "/admin/yorum-yonetimi"
+﻿@page "/admin/yorum-yonetimi"
 @layout VizitLink3D.UI.Layout.AdminDuzen
 @using VizitLink3D.Ortak.Modeller
 @using Microsoft.AspNetCore.Authorization
@@ -43,7 +43,7 @@ else
             </TemplateColumn>
             <TemplateColumn Title="@dil.T("admin.yorum.yorum", "Yorum")">
                 <CellTemplate>
-                    <MudText Typo="Typo.body2" Class="gb-maxw-300">
+                    <MudText Typo="Typo.body2" Class="orpay-maxw-300">
                         @((context.Item.Yorum?.Length > 80 ? context.Item.Yorum[..80] + "..." : context.Item.Yorum))
                     </MudText>
                 </CellTemplate>

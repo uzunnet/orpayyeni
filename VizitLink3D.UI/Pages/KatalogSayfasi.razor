@@ -1,77 +1,56 @@
-﻿@page "/katalog"
+@page "/katalog"
 @layout VizitLink3DDuzen
 
 <PageTitle>@DilServisi.T("katalog.sayfaBasligi", "Kataloglar")</PageTitle>
 
-<main class="gb-page gb-katalog-sayfasi">
-    <section class="gb-panel gb-katalog-hero">
-        <MudText Typo="Typo.overline" Class="gb-katalog-etiket">@DilServisi.T("katalog.etiket", "DİJİTAL YAYINLAR")</MudText>
-        <MudText Typo="Typo.h2" Class="gb-katalog-baslik">@DilServisi.T("katalog.baslik", "ORPAY Katalogları")</MudText>
-        <MudText Typo="Typo.body1" Class="gb-katalog-aciklama">@DilServisi.T("katalog.aciklama", "Güncel koleksiyonları inceleyin, kataloğu sayfa sayfa görüntüleyin veya cihazınıza indirin.")</MudText>
-    </section>
+<section class="orpay-urunler-yeni">
+    <!-- Hero -->
+    <div class="orpay-urunler-yeni__hero">
+        <div class="orpay-urunler-yeni__hero-ic">
+            <span class="orpay-kicker">Dijital Yayınlar</span>
+            <h1 class="orpay-urunler-yeni__baslik">ORPAY Katalogları</h1>
+            <p class="orpay-urunler-yeni__aciklama">Güncel koleksiyonları inceleyin, kataloğu sayfa sayfa görüntüleyin veya cihazınıza indirin.</p>
+        </div>
+    </div>
 
-    @if (_yukleniyor)
-    {
-        <section class="gb-katalog-grid" aria-label="@DilServisi.T("katalog.yukleniyor", "Kataloglar yükleniyor")">
-            @for (var i = 0; i < 2; i++)
-            {
-                <MudSkeleton Class="gb-katalog-kart gb-katalog-kart--iskelet" />
-            }
-        </section>
-    }
-    else if (_kataloglar.Count == 0)
-    {
-        <section class="gb-panel gb-katalog-bos">
-            <MudIcon Icon="@Icons.Material.Outlined.FolderOpen" Size="Size.Large" />
-            <MudText Typo="Typo.h5">@DilServisi.T("katalog.bulunamadi", "Aktif katalog bulunamadı.")</MudText>
-        </section>
-    }
-    else
-    {
-        <section class="gb-katalog-grid">
-            @foreach (var katalog in _kataloglar)
-            {
-                <article class="gb-panel gb-katalog-kart">
-                    <div class="gb-katalog-kart__onizleme">
-                        <img src="@OnizlemeUrl(katalog)" alt="@katalog.Baslik" loading="lazy" />
-                        <span class="gb-katalog-kart__yil">@(katalog.Yil?.ToString() ?? DateTime.UtcNow.Year.ToString())</span>
-                    </div>
-
-                    <div class="gb-katalog-kart__govde">
-                        <MudText Typo="Typo.h4" Class="gb-katalog-kart__baslik">@katalog.Baslik</MudText>
-                        @if (!string.IsNullOrWhiteSpace(katalog.Aciklama))
-                        {
-                            <MudText Typo="Typo.body1" Class="gb-katalog-kart__aciklama">@katalog.Aciklama</MudText>
-                        }
-
-                        <div class="gb-katalog-kart__meta">
-                            @if (katalog.SayfaSayisi is > 0)
-                            {
-                                <span><MudIcon Icon="@Icons.Material.Outlined.MenuBook" Size="Size.Small" /> @katalog.SayfaSayisi @DilServisi.T("katalog.sayfa", "sayfa")</span>
-                            }
-                            @if (katalog.DosyaBoyutuMb is > 0)
-                            {
-                                <span><MudIcon Icon="@Icons.Material.Outlined.Save" Size="Size.Small" /> @katalog.DosyaBoyutuMb.Value.ToString("N1") MB</span>
-                            }
+    <div style="max-width:var(--tema-icerik-genislik);margin:0 auto;padding:3rem 2rem;text-align:center">
+        @if (_yukleniyor)
+        {
+            <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
+        }
+        else if (_kataloglar.Count == 0)
+        {
+            <!-- PDF fallback - API bos olsa bile goster -->
+            <div style="max-width:600px;margin:0 auto">
+                <div style="width:100%;max-width:300px;margin:0 auto 2.5rem;border-radius:12px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.3)">
+                    <img src="@($"{Api.ApiBaseUrl}/firmalar/{_firmaSlug}/medya/katalog/kapak.png")" alt="Orpay 2026 Katalog" style="width:100%;height:auto;display:block;object-fit:cover;" />
+                </div>
+                <h3 style="font-family:var(--tema-font-baslik);font-size:2.5rem;font-weight:700;color:var(--tema-metin);margin-bottom:1rem">ORPAY 2026 Ürün Kataloğu</h3>
+                <p style="color:var(--tema-metin-ikincil);margin-bottom:2.5rem;font-size:1.25rem;line-height:1.6">91 sayfa, tüm koleksiyonlar ve teknik detaylar.</p>
+                <a href="/pdf-gosterici?dosya=/medya/katalog/ORPAY-Katalog-2026.pdf&baslik=ORPAY%202026%20Ürün%20Kataloğu" class="orpay-btn orpay-btn--birincil" style="font-size:1.2rem;padding:0.75rem 2rem;">Kataloğu İncele →</a>
+            </div>
+        }
+        else
+        {
+            <div class="orpay-urunler-yeni__grid" style="grid-template-columns:repeat(auto-fill, minmax(300px, 1fr))">
+                @foreach (var katalog in _kataloglar)
+                {
+                    <div class="orpay-urunler-yeni__kart">
+                        <div class="orpay-urunler-yeni__kart-gorsel" style="height:220px;width:100%;background:var(--tema-arkaplan-2);overflow:hidden">
+                            <img src="@OnizlemeUrl(katalog)" alt="@katalog.Baslik" style="width:100%;height:100%;object-fit:cover;" />
                         </div>
-
-                        <div class="gb-katalog-kart__aksiyonlar">
-                            <MudButton Href="@PdfGostericiUrl(katalog)"
-                                       Variant="Variant.Filled"
-                                       Color="Color.Primary"
-                                       StartIcon="@Icons.Material.Filled.RemoveRedEye">
-                                @DilServisi.T("katalog.incele", "Kataloğu İncele")
-                            </MudButton>
-                            <MudIconButton Href="@IndirUrl(katalog)"
-                                           Target="_blank"
-                                           Icon="@Icons.Material.Filled.Download"
-                                           Color="Color.Primary"
-                                           Variant="Variant.Outlined"
-                                           aria-label="@DilServisi.T("katalog.indir", "Kataloğu indir")" />
+                        <div class="orpay-urunler-yeni__kart-icerik">
+                            <span class="orpay-urunler-yeni__kart-kod" style="font-size:1rem;font-weight:600;">@(katalog.Yil?.ToString() ?? DateTime.UtcNow.Year.ToString())</span>
+                            <h3 class="orpay-urunler-yeni__kart-ad" style="font-size:2rem;font-weight:700;margin:1rem 0;">@katalog.Baslik</h3>
+                            @if (!string.IsNullOrWhiteSpace(katalog.Aciklama))
+                            {
+                                <p class="orpay-urunler-yeni__kart-aciklama" style="font-size:1.15rem;margin-bottom:1.5rem;line-height:1.6">@katalog.Aciklama</p>
+                            }
+                            <a href="@PdfGostericiUrl(katalog)" class="orpay-urunler-yeni__kart-aksiyon" style="font-size:1.1rem;font-weight:600;">İncele →</a>
                         </div>
                     </div>
-                </article>
-            }
-        </section>
-    }
-</main>
+                }
+            </div>
+        }
+    </div>
+</section>

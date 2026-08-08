@@ -4,7 +4,11 @@
 # ║  Diğer kural dosyaları bu değerlere REFERANS verir.              ║
 # ╚══════════════════════════════════════════════════════════════════╝
 
-# === PROJE KİMLİĞİ ===
+# === PLATFORM KİMLİĞİ ===
+platform_adi: "VizitLink3D"
+platform_aciklama: "Çoklu firma SaaS — 3D ürün konfigüratörü ve kurumsal site platformu"
+
+# === VARSAYILAN FİRMA (ilk tenant — diğer firmalar kendi bilgileriyle gelir) ===
 proje_adi: "Orpay Orman Ürünleri"
 firma_adi: "Orpay Orman Ürünleri Ltd. Şti."
 firma_unvan: "Orpay Orman Ürünleri Limited Şirketi"
@@ -19,9 +23,9 @@ admin_url: "/admin"
 api_base_url: "/api"
 
 # === PORTLAR ===
-port_api: 5215
-port_ui: 5213
-port_signalr: 5215
+port_api: 5015
+port_ui: 5013
+port_signalr: 5015
 
 # === İLETİŞİM ===
 iletisim:
@@ -86,7 +90,7 @@ stitch:
 diller:
   varsayilan: "tr"
   destekli: ["tr", "en"]
-  ceviri_kaynak: "db"
+  ceviri_kaynak: "json"
 
 # === MODÜL AKTİVASYONU ===
 moduller:
@@ -136,6 +140,12 @@ ai:
 multi_tenant:
   aktif: true
   tenant_tespit: "domain"
+  db_stratejisi: "database_per_tenant"
+  superadmin_port: 5200
+  superadmin_db: "superadmin.db"
+  firma_db_yolu: "firmalar/{slug}/{slug}.db"
+  firma_medya_yolu: "firmalar/{slug}/medya"
+  firma_i18n_yolu: "firmalar/{slug}/i18n"
 
 # === YEDEK / TEST ===
 yedek:
@@ -163,7 +173,7 @@ Bu dosya `AGENTS.md` standardına göre doldurulmuştur. Tüm kural dosyaları b
 ## Bağlantılar
 
 - **Domain:** 3dvizitlink.com.tr
-- **API:** http://localhost:5215
-- **UI:** http://localhost:5213
-- **Admin:** http://localhost:5213/admin/giris
-- **Admin Kullanıcı:** admin / vizitlink3d2024
+- **API:** http://localhost:5015
+- **UI:** http://localhost:5013
+- **Admin:** http://localhost:5013/admin/giris
+- **Admin Kullanıcı:** admin (şifre için .NET user-secrets veya ilgili firma DB'sine bakın)

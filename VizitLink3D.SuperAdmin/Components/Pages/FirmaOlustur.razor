@@ -1,0 +1,74 @@
+@page "/firma-olustur"
+@rendermode InteractiveServer
+@using Microsoft.EntityFrameworkCore
+@using VizitLink3D.SuperAdmin.VeriTabani
+
+<PageTitle>Firma Oluştur — SuperAdmin</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">Yeni Firma Oluştur</MudText>
+
+<MudCard Elevation="2" Class="pa-4">
+    <MudCardContent>
+        <EditForm Model="@_model" OnValidSubmit="Olustur">
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_model.Ad" Label="Firma Adı" Required="true" RequiredError="Firma adı zorunludur." />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_model.Unvan" Label="Ünvan" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudTextField @bind-Value="_model.Slug" Label="Slug" Required="true" RequiredError="Slug zorunludur."
+                                  HelperText="Küçük harf, tireli, benzersiz (örn: orpay-orman)" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudTextField @bind-Value="_model.Domain" Label="Domain" HelperText="örn: orpayormanurunleri.com.tr" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudTextField @bind-Value="_model.Eposta" Label="E-posta" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudTextField @bind-Value="_model.Telefon1" Label="Telefon" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudTextField @bind-Value="_model.Sektor" Label="Sektör" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudTextField @bind-Value="_model.PaketTipi" Label="Paket Tipi" HelperText="Standart, Profesyonel, Kurumsal" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudTextField @bind-Value="_model.Adres" Label="Adres" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudTextField @bind-Value="_model.Sehir" Label="Şehir" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudSwitch @bind-Value="_model.AktifMi" Label="Aktif" Color="Color.Primary" />
+                    <MudSwitch @bind-Value="_model.DemoMu" Label="Demo" Color="Color.Warning" Class="ml-4" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudDivider Class="my-4" />
+                    <MudText Typo="Typo.h6" GutterBottom="true">Modül Seçimi</MudText>
+                    @foreach (var grup in _moduller.GroupBy(m => m.Kategori))
+                    {
+                        <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mt-2 mb-1">@grup.Key</MudText>
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            @foreach (var modul in grup)
+                            {
+                                <MudSwitch T="bool" Label="@modul.Ad" @bind-Value="_seciliModulIdleri[modul.Id]"
+                                           Color="Color.Primary" Disabled="@modul.SistemModuluMu" />
+                            }
+                        </div>
+                    }
+                </MudItem>
+                <MudItem xs="12">
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary"
+                               FullWidth="true" Disabled="@_olusuyor" Size="Size.Large">
+                        @if (_olusuyor) { <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" /> }
+                        Firma Oluştur
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
+        </EditForm>
+    </MudCardContent>
+</MudCard>

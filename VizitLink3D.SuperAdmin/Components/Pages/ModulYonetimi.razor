@@ -1,0 +1,196 @@
+@page "/moduller"
+@rendermode InteractiveServer
+
+<PageTitle>Modül Yönetimi — SuperAdmin</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">Modül Yönetimi</MudText>
+
+@if (_yukleniyor)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+}
+else
+{
+    @* ── ÖZET KARTLARI ── *@
+    <MudGrid Class="mb-4">
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="pa-3 text-center" Elevation="1">
+                <MudText Typo="Typo.caption" Color="Color.Secondary">TOPLAM MODÜL</MudText>
+                <MudText Typo="Typo.h4" Color="Color.Primary">@_tumModuller.Count</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="pa-3 text-center" Elevation="1">
+                <MudText Typo="Typo.caption" Color="Color.Secondary">KATEGORİ</MudText>
+                <MudText Typo="Typo.h4" Color="Color.Secondary">@_tumModuller.Select(m => m.Kategori).Distinct().Count()</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="pa-3 text-center" Elevation="1">
+                <MudText Typo="Typo.caption" Color="Color.Secondary">AKTİF FİRMA</MudText>
+                <MudText Typo="Typo.h4" Color="Color.Success">@_firmalar.Count</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="pa-3 text-center" Elevation="1">
+                <MudText Typo="Typo.caption" Color="Color.Secondary">ORT. MODÜL/FİRMA</MudText>
+                <MudText Typo="Typo.h4" Color="Color.Tertiary">@(_firmalar.Count > 0 ? (_toplamModulAtamasi / (double)_firmalar.Count).ToString("F1") : "0")</MudText>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+    <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-4">
+        @* ═══ TAB 1: PLATFORM MODÜLLERİ ═══ *@
+        <MudTabPanel Text="Platform Modülleri" Icon="@Icons.Material.Filled.ViewModule">
+            <MudGrid Class="mb-3">
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_aramaMetni" 
+                                  Placeholder="Modül ara..." 
+                                  Adornment="Adornment.Start"
+                                  AdornmentIcon="@Icons.Material.Filled.Search"
+                                  Immediate="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudSelect T="string" @bind-Value="_kategoriFiltresi" Label="Kategori" Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="true">
+                        @foreach (var kategori in _tumModuller.Select(m => m.Kategori).Distinct().OrderBy(k => k))
+                        {
+                            <MudSelectItem Value="@kategori">@kategori</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+            </MudGrid>
+
+            @foreach (var grup in _filtreliModuller.GroupBy(m => m.Kategori).OrderBy(g => g.Key))
+            {
+                <MudPaper Class="pa-3 mb-3" Elevation="0" Outlined="true">
+                    <div class="d-flex align-center mb-2">
+                        <MudIcon Icon="@Icons.Material.Filled.Category" Color="Color.Primary" Class="mr-2" />
+                        <MudText Typo="Typo.subtitle1" Class="font-weight-bold">@grup.Key</MudText>
+                        <MudChip T="string" Size="Size.Small" Color="Color.Default" Class="ml-2">@grup.Count() modül</MudChip>
+                    </div>
+
+                    <MudDataGrid Items="@grup.ToList()" Dense="true" Elevation="0" Hover="true"
+                                 Filterable="false" SortMode="SortMode.Single">
+                        <Columns>
+                            <PropertyColumn Property="x => x.Kod" Title="Kod" />
+                            <PropertyColumn Property="x => x.Ad" Title="Modül Adı" />
+                            <TemplateColumn Title="Durum">
+                                <CellTemplate>
+                                    @if (context.Item.SistemModuluMu)
+                                    {
+                                        <MudChip T="string" Size="Size.Small" Color="Color.Warning">Sistem</MudChip>
+                                    }
+                                    else if (context.Item.VarsayilanMi)
+                                    {
+                                        <MudChip T="string" Size="Size.Small" Color="Color.Info">Varsayılan</MudChip>
+                                    }
+                                    else
+                                    {
+                                        <MudChip T="string" Size="Size.Small" Color="Color.Default">İsteğe Bağlı</MudChip>
+                                    }
+                                </CellTemplate>
+                            </TemplateColumn>
+                            <TemplateColumn Title="Firma Sayısı">
+                                <CellTemplate>
+                                    @{
+                                        var firmaSayisi = _modulFirmaSayisi.ContainsKey(context.Item.Id) ? _modulFirmaSayisi[context.Item.Id] : 0;
+                                    }
+                                    <MudText Typo="Typo.body2" Color="@(firmaSayisi > 0 ? Color.Primary : Color.Secondary)">
+                                        @firmaSayisi / @_firmalar.Count
+                                    </MudText>
+                                </CellTemplate>
+                            </TemplateColumn>
+                            <TemplateColumn Title="Kullanım">
+                                <CellTemplate>
+                                    @{
+                                        var firmaSayisi = _modulFirmaSayisi.ContainsKey(context.Item.Id) ? _modulFirmaSayisi[context.Item.Id] : 0;
+                                        var oran = _firmalar.Count > 0 ? (double)firmaSayisi / _firmalar.Count * 100 : 0;
+                                    }
+                                    <MudProgressLinear Value="@oran" Max="100" Color="@(oran > 50 ? Color.Primary : Color.Secondary)" Size="Size.Small" Class="mt-1" />
+                                </CellTemplate>
+                            </TemplateColumn>
+                        </Columns>
+                    </MudDataGrid>
+                </MudPaper>
+            }
+        </MudTabPanel>
+
+        @* ═══ TAB 2: FİRMA MODÜLLERİ ═══ *@
+        <MudTabPanel Text="Firma Modülleri" Icon="@Icons.Material.Filled.Business">
+            <MudGrid Class="mb-4">
+                <MudItem xs="12" md="6">
+                    <MudSelect T="Firma" @bind-Value="_seciliFirma"
+                               Label="Firma Seçin"
+                               ToStringFunc="f => f?.Ad ?? string.Empty"
+                               Variant="Variant.Outlined"
+                               Clearable="true"
+                               SelectedValuesChanged="@(_ => FirmaSecildi())">
+                        @foreach (var firma in _firmalar)
+                        {
+                            <MudSelectItem Value="@firma">
+                                @firma.Ad — @(firma.Sektor ?? "Belirsiz")
+                            </MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+                @if (_seciliFirma is not null)
+                {
+                    <MudItem xs="12" md="6">
+                        <div class="d-flex align-center gap-2">
+                            <MudText Typo="Typo.body2">
+                                @(_firmaModulDurumu.Values.Count(v => v)) / @_tumModuller.Count modül aktif
+                            </MudText>
+                            <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small"
+                                       OnClick="@(async () => await ModullerinTamaminiAc())">
+                                Tümünü Aç
+                            </MudButton>
+                            <MudButton Variant="Variant.Outlined" Color="Color.Default" Size="Size.Small"
+                                       OnClick="@(async () => await ModullerinTamaminiKapat())">
+                                Tümünü Kapat
+                            </MudButton>
+                        </div>
+                    </MudItem>
+                }
+            </MudGrid>
+
+            @if (_seciliFirma is not null)
+            {
+                <MudDivider Class="my-4" />
+
+                @if (_atamaYapiliyor)
+                {
+                    <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="my-2" />
+                }
+                else
+                {
+                    @foreach (var grup in _tumModuller.GroupBy(m => m.Kategori).OrderBy(g => g.Key))
+                    {
+                        <MudPaper Class="pa-3 mb-3" Elevation="0" Outlined="true">
+                            <MudText Typo="Typo.subtitle2" Class="mb-2 font-weight-bold">@grup.Key</MudText>
+                            <MudGrid>
+                                @foreach (var modul in grup.OrderBy(m => m.Ad))
+                                {
+                                    var aktifMi = _firmaModulDurumu.ContainsKey(modul.Id) && _firmaModulDurumu[modul.Id];
+                                    <MudItem xs="12" sm="6" md="4">
+                                        <MudCheckBox T="bool"
+                                                     Value="aktifMi"
+                                                     ValueChanged="@((bool d) => ModulDurumunuDegistir(modul.Id, d))"
+                                                     Label="@modul.Ad"
+                                                     Color="@(modul.SistemModuluMu ? Color.Warning : Color.Primary)"
+                                                     Disabled="@(_atamaYapiliyor || modul.SistemModuluMu)" />
+                                    </MudItem>
+                                }
+                            </MudGrid>
+                        </MudPaper>
+                    }
+                }
+            }
+            else
+            {
+                <MudAlert Severity="Severity.Info" Class="mt-4">
+                    Modül yönetimi için sol taraftan bir firma seçin.
+                </MudAlert>
+            }
+        </MudTabPanel>
+    </MudTabs>
+}

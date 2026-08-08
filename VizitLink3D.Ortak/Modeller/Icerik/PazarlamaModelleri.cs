@@ -1,4 +1,4 @@
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace VizitLink3D.Ortak.Modeller;
 
@@ -17,7 +17,7 @@ public class ProjeKategorisi
 }
 
 /// <summary>
-/// Tamamlanmis projeleri temsil eder. Musteriye ait mutfak/banyo/ofis projeleri.
+/// Tamamlanmis projeleri temsil eder. Musteriye ait kapi ve ahsap cozum projeleri.
 /// </summary>
 public class Proje
 {
@@ -142,3 +142,4 @@ public class HizmetAdimi
     public bool SilindiMi { get; set; }
     public DateTime? SilinmeTarihi { get; set; }
 }
+

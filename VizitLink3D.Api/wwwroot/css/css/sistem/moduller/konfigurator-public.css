@@ -1,0 +1,299 @@
+/*
+ * Paket-3: Public Konfigüratör CSS
+ * Tema: Gold Luxury Modern — tokens.css değişkenleri kullanılır.
+ * Responsive: masaüstü 3D viewer + panel; mobil stack.
+ * Hiçbir static renk/font/boşluk hardcoded değil — tamamen token tabanlı.
+ */
+
+/* ================================================================
+   KAPSAYICI
+   ================================================================ */
+.gb-public-konfigurator {
+    min-height: 100vh;
+    background: var(--vizit-surface, #f8f8f8);
+    font-family: var(--vizit-font-body, 'Manrope', sans-serif);
+}
+
+/* ================================================================
+   YÜKLENİYOR / HATA
+   ================================================================ */
+.gb-pk-yukleniyor,
+.gb-pk-hata {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    padding: var(--vizit-space-8, 2rem);
+    text-align: center;
+}
+
+/* ================================================================
+   GRID
+   ================================================================ */
+.gb-pk-grid {
+    margin: 0;
+    min-height: calc(100vh - 64px); /* header yüksekliği kadar */
+}
+
+.gb-pk-viewer-col {
+    padding: 0;
+    min-height: 500px;
+    background: var(--vizit-surface-dark, #1a1a1a);
+}
+
+.gb-pk-panel-col {
+    padding: 0;
+    max-height: calc(100vh - 64px);
+    overflow-y: auto;
+}
+
+/* ================================================================
+   3D VIEWER SARICI
+   ================================================================ */
+.gb-pk-viewer-sarici {
+    width: 100%;
+    height: 100%;
+    min-height: 500px;
+    position: relative;
+}
+
+.gb-pk-model-yok {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 500px;
+    color: var(--vizit-text-secondary, #9a9a9a);
+}
+
+/* ================================================================
+   SEÇİM PANELİ
+   ================================================================ */
+.gb-pk-panel {
+    padding: var(--vizit-space-4, 1rem);
+    background: var(--vizit-surface, #ffffff);
+}
+
+.gb-pk-urun-baslik {
+    margin-bottom: var(--vizit-space-2, 0.5rem);
+}
+
+.gb-pk-urun-ad {
+    font-family: var(--vizit-font-heading, 'Noto Serif', serif);
+    font-weight: 700;
+    word-break: break-word;
+}
+
+/* ================================================================
+   SEÇİLİ PARÇA DETAYI
+   ================================================================ */
+.gb-pk-secili-parca {
+    background: var(--vizit-surface-variant, #f5f5f5);
+    border: 2px solid var(--vizit-primary, #C8952A);
+    border-radius: 8px;
+    padding: var(--vizit-space-3, 0.75rem);
+}
+
+.gb-pk-secili-baslik {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+/* ================================================================
+   RENK SEÇİCİ
+   ================================================================ */
+.gb-pk-renk-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.gb-pk-renk-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--vizit-border, #e0e0e0);
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+    outline: none;
+}
+
+.gb-pk-renk-btn:hover {
+    transform: scale(1.15);
+}
+
+.gb-pk-renk-secili {
+    border-color: var(--vizit-primary, #C8952A);
+    box-shadow: 0 0 0 2px var(--vizit-primary, #C8952A);
+    transform: scale(1.1);
+}
+
+/* ================================================================
+   MALZEME SEÇİCİ
+   ================================================================ */
+.gb-pk-malzeme-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.gb-pk-malzeme-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border: 1px solid var(--vizit-border, #e0e0e0);
+    border-radius: 6px;
+    background: var(--vizit-surface, #fff);
+    cursor: pointer;
+    font-size: 12px;
+    font-family: inherit;
+    transition: border-color 0.15s ease, background 0.15s ease;
+    outline: none;
+}
+
+.gb-pk-malzeme-btn:hover {
+    border-color: var(--vizit-primary, #C8952A);
+    background: var(--vizit-surface-variant, #f5f5f5);
+}
+
+.gb-pk-malzeme-secili {
+    border-color: var(--vizit-primary, #C8952A);
+    background: var(--vizit-primary-container, #fdf3e0);
+    font-weight: 600;
+}
+
+.gb-pk-malzeme-resim {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    object-fit: cover;
+    border: 1px solid var(--vizit-border, #e0e0e0);
+}
+
+/* ================================================================
+   PARÇA LİSTESİ
+   ================================================================ */
+.gb-pk-parca-liste {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.gb-pk-parca-oge {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--vizit-space-2, 0.5rem) var(--vizit-space-3, 0.75rem);
+    border: 1px solid var(--vizit-border, #e0e0e0);
+    border-radius: 6px;
+    background: var(--vizit-surface, #fff);
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    font-family: inherit;
+    transition: border-color 0.15s ease, background 0.15s ease;
+    outline: none;
+}
+
+.gb-pk-parca-oge:hover {
+    border-color: var(--vizit-primary, #C8952A);
+    background: var(--vizit-surface-variant, #f5f5f5);
+}
+
+.gb-pk-parca-secili {
+    border-color: var(--vizit-primary, #C8952A);
+    background: var(--vizit-primary-container, #fdf3e0);
+}
+
+.gb-pk-parca-bilgi {
+    flex: 1;
+    min-width: 0;
+}
+
+.gb-pk-parca-durum {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+/* ================================================================
+   SEÇİM ÖZETİ
+   ================================================================ */
+.gb-pk-ozet {
+    padding-bottom: var(--vizit-space-4, 1rem);
+}
+
+.gb-pk-ozet-liste {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.gb-pk-ozet-satir {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--vizit-space-2, 0.5rem);
+    padding: 4px 0;
+    border-bottom: 1px solid var(--vizit-border, #f0f0f0);
+}
+
+.gb-pk-ozet-satir:last-child {
+    border-bottom: none;
+}
+
+/* ================================================================
+   RESPONSIVE — MOBİL
+   ================================================================ */
+@media (max-width: 960px) {
+    .gb-pk-grid {
+        flex-direction: column;
+    }
+
+    .gb-pk-viewer-col {
+        min-height: 350px;
+        max-height: 50vh;
+    }
+
+    .gb-pk-viewer-sarici {
+        min-height: 350px;
+    }
+
+    .gb-pk-panel-col {
+        max-height: none;
+        overflow-y: visible;
+    }
+
+    .gb-pk-panel {
+        padding: var(--vizit-space-3, 0.75rem);
+    }
+
+    .gb-pk-renk-btn {
+        width: 28px;
+        height: 28px;
+    }
+
+    .gb-pk-malzeme-btn {
+        font-size: 11px;
+        padding: 4px 8px;
+    }
+}
+
+/* ================================================================
+   GENEL YARDIMCI SINIFLAR
+   ================================================================ */
+.gb-font-600 {
+    font-weight: 600;
+}
+
+.gb-font-700 {
+    font-weight: 700;
+}

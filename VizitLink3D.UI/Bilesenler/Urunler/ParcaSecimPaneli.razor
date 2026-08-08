@@ -1,6 +1,6 @@
-@using VizitLink3D.Ortak.Modeller.Urunler
+﻿@using VizitLink3D.Ortak.Modeller.Urunler
 
-<div class="gb-parca-panel">
+<div class="orpay-parca-panel">
     <MudText Typo="Typo.subtitle1" Class="mb-4">
         @dil.T("konfigurator.parcaSecimi", "Parça Seçimi")
     </MudText>
@@ -25,7 +25,7 @@
                                      Color="@(parca.Id == SeciliParcaId ? Color.Primary : Color.Dark)" />
                         </MudItem>
                         <MudItem xs="8">
-                            <MudText Typo="Typo.body2" Class="@(parca.Id == SeciliParcaId ? "gb-parca-ad-secili" : "gb-parca-ad")">
+                            <MudText Typo="Typo.body2" Class="@(parca.Id == SeciliParcaId ? "orpay-parca-ad-secili" : "orpay-parca-ad")">
                                 @parca.GorunenAd
                             </MudText>
                             @if (!string.IsNullOrEmpty(parca.MeshAdi))

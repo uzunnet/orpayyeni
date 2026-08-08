@@ -1,176 +1,333 @@
-﻿@page "/"
+@page "/"
 @layout VizitLink3DDuzen
+@inject IConfiguration Config
 
-<PageTitle>@DilServisi.T("anasayfa.title", "ORPAY | Orman Ürünleri")</PageTitle>
+<PageTitle>@DilServisi.T("site.baslik", "Orpay Orman Ürünleri | Yüksek Kalite Kapı Yüzeyleri")</PageTitle>
 
-<!-- ═══ HERO SLIDER ═══ -->
-<HeroSlider SayfaKodu="anasayfa" />
+@{
+    var apiMedyaUrl = (Config["ApiTemelUrl"] ?? "http://localhost:5015") + $"/firmalar/{_firmaSlug}/medya";
+    
+    // Varsayılan Veriler
+    var heroBaslik1 = _sayfaIcerikleri.GetValueOrDefault("HeroBaslik1", DilServisi.T("anasayfa.hero.baslik", "Ahşabın Zarafeti, Orpay'ın Kalitesi"));
+    var heroAciklama = _sayfaIcerikleri.GetValueOrDefault("HeroAciklama", DilServisi.T("anasayfa.hero.aciklama", "Modern mekanlar için kusursuz yüzeyler. Kaliteden ödün vermeden, projelerinizi yüksek teknoloji ürünü tasarımlarla şekillendirin."));
+    var heroGorselUrl = _sayfaIcerikleri.GetValueOrDefault("HeroGorselUrl", "/slider/slide1.jpg");
+    
+    var kat1Baslik = _sayfaIcerikleri.GetValueOrDefault("Kat1Baslik", DilServisi.T("anasayfa.kurumsalOzet.baslik1", "Mimari Hassasiyet, Endüstriyel Güç"));
+    var kat1Aciklama = _sayfaIcerikleri.GetValueOrDefault("Kat1Aciklama", DilServisi.T("anasayfa.kurumsalOzet.aciklama1", "ORPAY ORMAN ÜRÜNLERİ LTD. ŞTİ., ticaret ahlakına verdiği önem ve yaptığı sağlam işlerle orman ürünlerinde bir çok firmaya çözüm ortağı olmuştur."));
+    var kat1Gorsel = _sayfaIcerikleri.GetValueOrDefault("Kat1Gorsel", "/kurumsal/fabrika.jpg");
+    
+    var ist1Deger = _sayfaIcerikleri.GetValueOrDefault("Ist1Deger", "10+");
+    var ist1Etiket = _sayfaIcerikleri.GetValueOrDefault("Ist1Etiket", "Yıllık Tecrübe");
 
-<!-- ═══ METRİK BAR ═══ -->
-<section class="gb-metrik">
-    <div class="gb-metrik__grid">
-        <div class="gb-reveal">
-            <div class="gb-metrik__sayi">@DilServisi.T("anasayfa.metrik.yilTecrubeSayi", "35+")</div>
-            <div class="gb-metrik__etiket">@DilServisi.T("anasayfa.metrik.yilTecrubeEtiket", "Yıl Tecrübe")</div>
-        </div>
-        <div class="gb-reveal">
-            <div class="gb-metrik__sayi">@DilServisi.T("anasayfa.metrik.projeSayi", "10K+")</div>
-            <div class="gb-metrik__etiket">@DilServisi.T("anasayfa.metrik.projeEtiket", "Proje")</div>
-        </div>
-        <div class="gb-reveal">
-            <div class="gb-metrik__sayi">@DilServisi.T("anasayfa.metrik.ozelKoleksiyonSayi", "20+")</div>
-            <div class="gb-metrik__etiket">@DilServisi.T("anasayfa.metrik.ozelKoleksiyonEtiket", "Özel Koleksiyon")</div>
-        </div>
-        <div class="gb-reveal">
-            <div class="gb-metrik__sayi">@DilServisi.T("anasayfa.metrik.ihracatAgiSayi", "Global")</div>
-            <div class="gb-metrik__etiket">@DilServisi.T("anasayfa.metrik.ihracatAgiEtiket", "İhracat Ağı")</div>
-        </div>
+    // Kategori temsili görselleri
+    var kategoriGorselleri = new Dictionary<string, string>
+    {
+        ["gobekli-melamin"] = "/medya/urunler/gobekli-melamin/YILDIZ/YILDIZ_01.jpg",
+        ["duz-melamin"] = "/medya/urunler/duz-melamin/BEYAZ/BEYAZ_01.jpg",
+        ["membran-om"] = "/medya/urunler/membran-om/OM_01/OM_01_01.jpg",
+        ["lake-ol"] = "/medya/urunler/lake-ol/OL_501/OL_501_01.jpg",
+        ["laminant"] = "/medya/urunler/laminant/Laminant_Yuzey/Laminant_Yuzey_01.jpg",
+        ["panel-kapi"] = "/medya/urunler/panel-kapi/ANATOLIA/ANATOLIA_01.jpg",
+        ["bilesenler"] = "/medya/urunler/bilesenler/Kasa/Kasa_18-18_MDF_Kasa_A.jpg",
+        ["diger"] = "/medya/urunler/diger/PVC_Lake_Yuzey/PVC_Lake_Yuzey_01.jpg"
+    };
+}
+
+@if(_yukleniyor) {
+    <div class="h-screen w-full flex items-center justify-center bg-background">
+        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
     </div>
-</section>
+    return;
+}
 
-<!-- ═══ KOLEKSİYON BENTO ═══ -->
-<section class="gb-bolum--koyu" style="padding: 80px 0;">
-    <div class="gb-bolum__ic">
-        <h2 class="gb-bolum__baslik gb-reveal">@DilServisi.T("anasayfa.koleksiyon.baslik", "Koleksiyonlar")</h2>
-        <div class="gb-bento">
-            <!-- Gold Exclusive (Geniş) -->
-            <a class="gb-bento__kart gb-bento__kart--genis gb-glint-hover gb-reveal" href="/banyo-dolaplari#exclusive">
-                <div class="gb-bento__gorsel">
-                    <img src="/medya/placeholder.svg" alt="Gold Exclusive koleksiyonu" />
-                </div>
-                <div class="gb-bento__kaplama"></div>
-                <div class="gb-bento__yazi">
-                    <span class="gb-bento__yazi-etiket">@DilServisi.T("anasayfa.koleksiyon.exclusiveEtiket", "Premium Seri")</span>
-                    <h3 class="gb-bento__yazi-baslik">@DilServisi.T("anasayfa.koleksiyon.exclusiveBaslik", "Gold Exclusive")</h3>
-                    <p class="gb-bento__yazi-aciklama">@DilServisi.T("anasayfa.koleksiyon.exclusiveAciklama", "Sınırları zorlayan mimari çizgiler.")</p>
-                </div>
-            </a>
+<!-- Ambient Particles Container -->
+<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden" id="particles-container"></div>
 
-            <!-- Premium (Dar) -->
-            <a class="gb-bento__kart gb-bento__kart--dar gb-glint-hover gb-reveal" href="/banyo-dolaplari#premium">
-                <div class="gb-bento__gorsel">
-                    <img src="/medya/placeholder.svg" alt="Gold Premium koleksiyonu" />
+<!-- Hero Slider -->
+<header class="relative w-full h-screen min-h-[600px] overflow-hidden bg-surface-container-lowest dark:bg-deep-anthracite">
+    <div class="absolute inset-0" id="hero-slider">
+        @if (_slaytlar != null && _slaytlar.Any())
+        {
+            var i = 0;
+            foreach (var s in _slaytlar)
+            {
+                var activeClass = i == 0 ? "active" : "hidden";
+                var gorsel = s.ArkaplanResim?.StartsWith("/") == true ? (Config["ApiTemelUrl"] ?? "http://localhost:5015") + s.ArkaplanResim : s.ArkaplanResim;
+                <img alt="@s.Baslik" class="slider-img @activeClass absolute inset-0 w-full h-full object-cover object-center opacity-80" src="@gorsel" />
+                i++;
+            }
+        }
+        else
+        {
+            <img alt="Orpay Hero Slide" class="slider-img active absolute inset-0 w-full h-full object-cover object-center opacity-80" src="@(heroGorselUrl.StartsWith("/") ? apiMedyaUrl + heroGorselUrl.Replace("/medya","") : heroGorselUrl)" onerror="this.src='https://lh3.googleusercontent.com/aida/AP1WRLvXn_gOsBVbker0rMW4oflxfdGSrO-VNdkViNIt3SpUhrqQBZW5KFLF8ongNEv-Wewm1B-SzNfmxgUC7rqSUMbEM9mpgiewidHpQXVh5LTUupEA-OlCaMhc7e5XNv9cuQcWyLZnGFXYVRNVvwyIw8uuxEtB17nJtqkgnLS5-zYr5Qpp_D_SIOgbmOQqr9aN2_lldxO3zCstXbljgbpwACO-zGOEk23zy19wHNAyxJdhhkMaLBkmQzbVKH4'" />
+        }
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-b from-white/60 via-white/30 to-background dark:from-background/40 dark:to-background/90"></div>
+    
+    <!-- Hero İçerik (Dinamik Slider İçerik veya Sabit Sayfaİçeriği) -->
+    @if (_slaytlar != null && _slaytlar.Any())
+    {
+        var j = 0;
+        foreach (var s in _slaytlar)
+        {
+            var activeClass = j == 0 ? "active" : "hidden";
+            <div class="slider-content @activeClass absolute inset-0 z-10 h-full flex flex-col justify-center items-center text-center px-6 pt-20">
+                <h1 class="font-display-lg text-display-lg text-on-surface dark:text-white mb-6 text-glow reveal drop-shadow-lg max-w-4xl tracking-tight">@(string.IsNullOrEmpty(s.Baslik) ? heroBaslik1 : s.Baslik)</h1>
+                <p class="font-body-lg text-body-lg text-on-surface-variant dark:text-white/90 max-w-2xl mb-10 reveal delay-100 font-medium">@(string.IsNullOrEmpty(s.Aciklama) ? heroAciklama : s.Aciklama)</p>
+                <div class="flex gap-4 reveal delay-200">
+                    <a class="px-8 py-4 bg-primary text-white font-label-sm text-label-sm tracking-widest uppercase rounded shadow-lg shadow-primary/30 hover:bg-inverse-primary hover:-translate-y-1 transition-all duration-300" href="@(s.ButonLink1 ?? "/urunler")">@(string.IsNullOrEmpty(s.ButonMetni1) ? DilServisi.T("anasayfa.hero.buton1", "Ürünleri Keşfet") : s.ButonMetni1)</a>
+                    <a class="px-8 py-4 bg-white/80 backdrop-blur-sm border border-outline text-on-surface font-label-sm text-label-sm tracking-widest uppercase rounded hover:bg-white hover:shadow-md hover:-translate-y-1 transition-all duration-300 dark:bg-transparent dark:border-secondary dark:text-secondary dark:hover:bg-secondary/10" href="@(s.ButonLink2 ?? "/kurumsal")">@(string.IsNullOrEmpty(s.ButonMetni2) ? DilServisi.T("anasayfa.hero.buton2", "Kurumsal") : s.ButonMetni2)</a>
                 </div>
-                <div class="gb-bento__kaplama"></div>
-                <div class="gb-bento__yazi">
-                    <h3 class="gb-bento__yazi-baslik">@DilServisi.T("anasayfa.koleksiyon.premiumBaslik", "Premium Serisi")</h3>
-                    <p class="gb-bento__yazi-aciklama">@DilServisi.T("anasayfa.koleksiyon.premiumAciklama", "Zarafet ve fonksiyonellik.")</p>
-                </div>
-            </a>
-
-            <!-- Trend (Orta) -->
-            <a class="gb-bento__kart gb-bento__kart--orta gb-glint-hover gb-reveal" href="/banyo-dolaplari#trend">
-                <div class="gb-bento__gorsel">
-                    <img src="/medya/placeholder.svg" alt="Gold Trend koleksiyonu" />
-                </div>
-                <div class="gb-bento__kaplama"></div>
-                <div class="gb-bento__yazi">
-                    <h3 class="gb-bento__yazi-baslik">@DilServisi.T("anasayfa.koleksiyon.trendBaslik", "Trend Serisi")</h3>
-                    <p class="gb-bento__yazi-aciklama">@DilServisi.T("anasayfa.koleksiyon.trendAciklama", "Modern yaşam alanları için.")</p>
-                </div>
-            </a>
-
-            <!-- Standard (Orta) -->
-            <a class="gb-bento__kart gb-bento__kart--orta gb-glint-hover gb-reveal" href="/banyo-dolaplari#standart">
-                <div class="gb-bento__gorsel">
-                    <img src="/medya/placeholder.svg" alt="Gold Standart koleksiyonu" />
-                </div>
-                <div class="gb-bento__kaplama"></div>
-                <div class="gb-bento__yazi">
-                    <h3 class="gb-bento__yazi-baslik">@DilServisi.T("anasayfa.koleksiyon.standartBaslik", "Standart Seri")</h3>
-                    <p class="gb-bento__yazi-aciklama">@DilServisi.T("anasayfa.koleksiyon.standartAciklama", "Zamansız klasikler.")</p>
-                </div>
-            </a>
+            </div>
+            j++;
+        }
+    }
+    else
+    {
+        <div class="relative z-10 h-full flex flex-col justify-center items-center text-center px-6 pt-20">
+            <h1 class="font-display-lg text-display-lg text-on-surface dark:text-white mb-6 text-glow reveal drop-shadow-lg max-w-4xl tracking-tight">@heroBaslik1</h1>
+            <p class="font-body-lg text-body-lg text-on-surface-variant dark:text-white/90 max-w-2xl mb-10 reveal delay-100 font-medium">@heroAciklama</p>
+            <div class="flex gap-4 reveal delay-200">
+                <a class="px-8 py-4 bg-primary text-white font-label-sm text-label-sm tracking-widest uppercase rounded shadow-lg shadow-primary/30 hover:bg-inverse-primary hover:-translate-y-1 transition-all duration-300" href="/urunler">@DilServisi.T("anasayfa.hero.buton1", "Ürünleri Keşfet")</a>
+                <a class="px-8 py-4 bg-white/80 backdrop-blur-sm border border-outline text-on-surface font-label-sm text-label-sm tracking-widest uppercase rounded hover:bg-white hover:shadow-md hover:-translate-y-1 transition-all duration-300 dark:bg-transparent dark:border-secondary dark:text-secondary dark:hover:bg-secondary/10" href="/kurumsal">@DilServisi.T("anasayfa.hero.buton2", "Kurumsal")</a>
+            </div>
         </div>
-    </div>
-</section>
+    }
+</header>
 
-<!-- ═══ HAREKETLİ KOLEKSİYON SAHNESİ ═══ -->
-<section class="gb-koleksiyon-sahne">
-    <div class="gb-koleksiyon-sahne__arka">
-        <img src="/medya/anasayfa/uretim.jpg" alt="ORPAY üretim sahnesi" />
-    </div>
-    <div class="gb-koleksiyon-sahne__icerik">
-        <div class="gb-koleksiyon-sahne__metin gb-reveal">
-            <span class="gb-hero__etiket" style="animation: none; opacity: 1; transform: none;">@DilServisi.T("anasayfa.uretim.etiket", "Üretim & İşçilik")</span>
-            <h2>@DilServisi.T("anasayfa.uretim.baslik1", "Endüstriyel Lüksün")<br />@DilServisi.T("anasayfa.uretim.baslik2", "Adresi")</h2>
-            <p>
-                @DilServisi.T("anasayfa.uretim.aciklama", "10.000 m² kapalı alanda, son teknoloji CNC tezgahları ve ustalık geleneğinin buluştuğu nokta. Her banyo dolabı, titiz bir kalite kontrol sürecinden geçer.")
+<!-- Kurumsal Özet -->
+<section class="py-section-gap px-margin-x max-w-container-max mx-auto reveal relative z-10">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter items-center">
+        <div>
+            @{
+                var hBaslik = kat1Baslik.Split(',');
+                var baslikIlk = hBaslik.Length > 0 ? hBaslik[0] + (hBaslik.Length > 1 ? "," : "") : kat1Baslik;
+                var baslikSon = hBaslik.Length > 1 ? string.Join(",", hBaslik.Skip(1)) : "";
+            }
+            <h2 class="font-headline-lg text-headline-lg text-on-surface dark:text-secondary mb-6 leading-tight">@baslikIlk<br /><span class="text-primary">@baslikSon</span></h2>
+            <div class="h-1 w-20 bg-primary mb-8 rounded-full"></div>
+            <p class="font-body-lg text-body-lg text-on-surface-variant dark:text-on-surface-variant leading-relaxed mb-6">
+                @kat1Aciklama
             </p>
-            <a class="gb-btn gb-btn--birincil" href="/fabrikamiz">@DilServisi.T("anasayfa.uretim.buton", "Fabrikamızı Keşfedin")</a>
+            <p class="font-body-md text-body-md text-tertiary dark:text-tertiary leading-relaxed">
+                @DilServisi.T("anasayfa.kurumsalOzet.aciklama2", "Kapıya dair akla gelebilecek bütün ham maddeler için kapısı açık alan ORPAY ORMAN ÜRÜNLERİ hizmet sektöründe markalaşmanın haklı gururunu yaşamaktadır. Modern tesislerimizde, en son teknolojiyle üretilen ürünlerimiz, yaşam alanlarınıza değer katar.")
+            </p>
         </div>
-        <div class="gb-koleksiyon-sahne__gorsel gb-reveal">
-            <img src="/medya/placeholder.svg" alt="ORPAY işçilik detayı" style="width:100%; border-radius: 8px;" />
+        <div class="relative h-[500px] rounded-xl overflow-hidden glass-panel group shadow-2xl shadow-primary/10 border-white/50">
+            <img alt="Kurumsal Görsel" class="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700" src="@(kat1Gorsel.StartsWith("/") ? apiMedyaUrl + kat1Gorsel.Replace("/medya","") : kat1Gorsel)" onerror="this.src='https://lh3.googleusercontent.com/aida/AP1WRLvB1Cf7oF9ctVhgz7GhxlirwLrwu2FJe4ACGtL6lHGDqTv0XqpWo5O1TSqDzkNNj5GZmIEEKziEULPplizuaNFNGzAdNmlPGFR1B4Q1MyxrE5X9rclmkYLH7u4GNnEDwrINnZKgQJ5xRjQuKjZymbAhqjjsegBMwl8Wy0_FzOjPj4pziVWuPxiICnQjsEygDVbkah6-9b8KT5WZ6U4Uqlkh4c_W-pV8NNxwgDyRAevtxlcG4KuZ8fC7WJ0'" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+            <div class="absolute bottom-8 left-8 border-l-4 border-primary pl-4 backdrop-blur-md bg-white/10 p-4 rounded-r-lg">
+                <p class="font-headline-md text-headline-md text-white font-bold drop-shadow-md">@ist1Deger</p>
+                <p class="font-label-sm text-label-sm text-primary-container uppercase tracking-wider font-bold">@ist1Etiket</p>
+            </div>
         </div>
     </div>
 </section>
 
-<!-- ═══ ÖNE ÇIKAN ÜRÜNLER ═══ -->
-<section class="gb-bolum">
-    <h2 class="gb-bolum__baslik gb-reveal">@DilServisi.T("anasayfa.onecikanModeller.baslik", "Öne Çıkan Modeller")</h2>
-    <div class="gb-urun-grid">
-        <a class="gb-urun-kart gb-reveal" href="/banyo-dolabi/diago-100">
-            <div class="gb-urun-kart__gorsel">
-                <img src="/medya/placeholder.svg" alt="Diago 100 banyo dolabı" />
-            </div>
-            <div class="gb-urun-kart__bilgi">
-                <span class="gb-urun-kart__kod">@DilServisi.T("anasayfa.onecikanModeller.diago100Kod", "Diago 100")</span>
-                <h3 class="gb-urun-kart__ad">@DilServisi.T("anasayfa.onecikanModeller.diago100Ad", "Diago 100 Canlı Detay")</h3>
-                <p class="gb-urun-kart__aciklama">@DilServisi.T("anasayfa.onecikanModeller.diago100Aciklama", "Çarpıcı geometrik çizgiler ve lüks yüzeyler.")</p>
-            </div>
-        </a>
-
-        <a class="gb-urun-kart gb-reveal" href="/banyo-dolabi/giorgio-100">
-            <div class="gb-urun-kart__gorsel">
-                <img src="/medya/placeholder.svg" alt="Giorgio 100 banyo dolabı" />
-            </div>
-            <div class="gb-urun-kart__bilgi">
-                <span class="gb-urun-kart__kod">@DilServisi.T("anasayfa.onecikanModeller.giorgio100Kod", "Giorgio 100")</span>
-                <h3 class="gb-urun-kart__ad">@DilServisi.T("anasayfa.onecikanModeller.giorgio100Ad", "Giorgio 100 Hareketli Detay")</h3>
-                <p class="gb-urun-kart__aciklama">@DilServisi.T("anasayfa.onecikanModeller.giorgio100Aciklama", "Zarif form ve işlevsellik bir arada.")</p>
-            </div>
-        </a>
-
-        <a class="gb-urun-kart gb-reveal" href="/banyo-dolabi/hermes-120">
-            <div class="gb-urun-kart__gorsel">
-                <img src="/medya/placeholder.svg" alt="Hermes 120 banyo dolabı" />
-            </div>
-            <div class="gb-urun-kart__bilgi">
-                <span class="gb-urun-kart__kod">@DilServisi.T("anasayfa.onecikanModeller.hermes120Kod", "Hermes 120")</span>
-                <h3 class="gb-urun-kart__ad">@DilServisi.T("anasayfa.onecikanModeller.hermes120Ad", "Hermes 120 Exclusive")</h3>
-                <p class="gb-urun-kart__aciklama">@DilServisi.T("anasayfa.onecikanModeller.hermes120Aciklama", "Stone lavabo ve dokunmatik ledli ayna ile üstün zarafet.")</p>
-            </div>
-        </a>
+<!-- Nasıl Çalışırız -->
+<section class="py-section-gap px-margin-x bg-surface-container-low dark:bg-transparent dark:bg-black/20 border-y border-glass-stroke reveal relative z-10">
+    <div class="max-w-container-max mx-auto text-center">
+        <h2 class="font-headline-lg text-headline-lg text-on-surface dark:text-secondary mb-16">@DilServisi.T("anasayfa.surec.baslik", "Nasıl Çalışırız?")</h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative">
+            <div class="hidden md:block absolute top-12 left-[12.5%] right-[12.5%] h-px bg-outline-variant z-0 dark:bg-glass-stroke"></div>
+            
+            @if (_hizmetAdimlari != null && _hizmetAdimlari.Any())
+            {
+                var h = 0;
+                var delays = new[] { "", "delay-100", "delay-200", "delay-300" };
+                foreach (var adim in _hizmetAdimlari.OrderBy(a => a.AdimNo))
+                {
+                    <div class="relative z-10 flex flex-col items-center group @delays[h % 4]">
+                        <div class="w-24 h-24 rounded-full glass-panel flex items-center justify-center mb-6 text-primary border border-primary/20 bg-white shadow-lg group-hover:scale-110 group-hover:shadow-primary/20 transition-all duration-300 dark:bg-black/40 dark:border-secondary/30 dark:text-secondary">
+                            <span class="material-symbols-outlined text-4xl @(h % 4 == 0 ? "group-hover:animate-bounce" : (h % 4 == 1 ? "group-hover:rotate-12 transition-transform" : (h % 4 == 2 ? "group-hover:rotate-90 transition-transform duration-500" : "group-hover:translate-x-2 transition-transform")))">@(string.IsNullOrEmpty(adim.Ikon) ? "contact_support" : adim.Ikon)</span>
+                        </div>
+                        <h3 class="font-title-lg text-title-lg text-on-surface dark:text-white mb-2">@adim.Baslik</h3>
+                        <p class="font-body-md text-body-md text-tertiary text-center">@adim.Aciklama</p>
+                    </div>
+                    h++;
+                }
+            }
+            else
+            {
+                <div class="relative z-10 flex flex-col items-center group">
+                    <div class="w-24 h-24 rounded-full glass-panel flex items-center justify-center mb-6 text-primary border border-primary/20 bg-white shadow-lg group-hover:scale-110 group-hover:shadow-primary/20 transition-all duration-300 dark:bg-black/40 dark:border-secondary/30 dark:text-secondary">
+                        <span class="material-symbols-outlined text-4xl group-hover:animate-bounce">contact_support</span>
+                    </div>
+                    <h3 class="font-title-lg text-title-lg text-on-surface dark:text-white mb-2">@DilServisi.T("anasayfa.surec.adim1Baslik", "1. İletişim")</h3>
+                    <p class="font-body-md text-body-md text-tertiary text-center">@DilServisi.T("anasayfa.surec.adim1Aciklama", "İhtiyaçlarınızı belirlemek için bizimle iletişime geçin.")</p>
+                </div>
+                <div class="relative z-10 flex flex-col items-center group delay-100">
+                    <div class="w-24 h-24 rounded-full glass-panel flex items-center justify-center mb-6 text-primary border border-primary/20 bg-white shadow-lg group-hover:scale-110 group-hover:shadow-primary/20 transition-all duration-300 dark:bg-black/40 dark:border-secondary/30 dark:text-secondary">
+                        <span class="material-symbols-outlined text-4xl group-hover:rotate-12 transition-transform">design_services</span>
+                    </div>
+                    <h3 class="font-title-lg text-title-lg text-on-surface dark:text-white mb-2">@DilServisi.T("anasayfa.surec.adim2Baslik", "2. Projelendirme")</h3>
+                    <p class="font-body-md text-body-md text-tertiary text-center">@DilServisi.T("anasayfa.surec.adim2Aciklama", "Size özel çözümler ve tasarımlar hazırlayalım.")</p>
+                </div>
+                <div class="relative z-10 flex flex-col items-center group delay-200">
+                    <div class="w-24 h-24 rounded-full glass-panel flex items-center justify-center mb-6 text-primary border border-primary/20 bg-white shadow-lg group-hover:scale-110 group-hover:shadow-primary/20 transition-all duration-300 dark:bg-black/40 dark:border-secondary/30 dark:text-secondary">
+                        <span class="material-symbols-outlined text-4xl group-hover:rotate-90 transition-transform duration-500">precision_manufacturing</span>
+                    </div>
+                    <h3 class="font-title-lg text-title-lg text-on-surface dark:text-white mb-2">@DilServisi.T("anasayfa.surec.adim3Baslik", "3. Üretim")</h3>
+                    <p class="font-body-md text-body-md text-tertiary text-center">@DilServisi.T("anasayfa.surec.adim3Aciklama", "Modern tesislerimizde yüksek kalitede üretim.")</p>
+                </div>
+                <div class="relative z-10 flex flex-col items-center group delay-300">
+                    <div class="w-24 h-24 rounded-full glass-panel flex items-center justify-center mb-6 text-primary border border-primary/20 bg-white shadow-lg group-hover:scale-110 group-hover:shadow-primary/20 transition-all duration-300 dark:bg-black/40 dark:border-secondary/30 dark:text-secondary">
+                        <span class="material-symbols-outlined text-4xl group-hover:translate-x-2 transition-transform">local_shipping</span>
+                    </div>
+                    <h3 class="font-title-lg text-title-lg text-on-surface dark:text-white mb-2">@DilServisi.T("anasayfa.surec.adim4Baslik", "4. Teslimat")</h3>
+                    <p class="font-body-md text-body-md text-tertiary text-center">@DilServisi.T("anasayfa.surec.adim4Aciklama", "Zamanında ve güvenli teslimat garantisi.")</p>
+                </div>
+            }
+        </div>
     </div>
 </section>
 
-<!-- ═══ KATALOG ═══ -->
-<section class="gb-katalog">
-    <h2 class="gb-katalog__baslik gb-reveal">@DilServisi.T("anasayfa.katalog.baslik", "2026 Kataloğumuz")</h2>
-    <p class="gb-katalog__aciklama gb-reveal">
-        @DilServisi.T("anasayfa.katalog.aciklama", "Tüm koleksiyonlarımızı ve teknik detayları dijital kataloğumuzda inceleyin.")
+<!-- Ürün Grupları (Koleksiyonlar) -->
+<section class="py-section-gap px-margin-x bg-surface dark:bg-surface reveal relative z-10">
+    <div class="max-w-container-max mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="font-headline-lg text-headline-lg text-on-surface dark:text-white mb-4">@_sayfaIcerikleri.GetValueOrDefault("Kat2Baslik", DilServisi.T("anasayfa.koleksiyonlar.baslik", "Kapı Yüzeyleri & Koleksiyonlar"))</h2>
+            <p class="font-body-lg text-body-lg text-on-surface-variant dark:text-on-surface-variant">@_sayfaIcerikleri.GetValueOrDefault("Kat2Aciklama", DilServisi.T("anasayfa.koleksiyonlar.aciklama", "Estetik ve dayanıklılığın buluştuğu yüksek standartlı çözümler."))</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            @if (_koleksiyonlar.Count > 0)
+            {
+                var gecikmeler = new[] { "", "delay-100", "delay-200", "delay-300" };
+                var i = 0;
+                @foreach (var kategori in _koleksiyonlar.Take(4))
+                {
+                    var delayClass = gecikmeler[i % 4];
+                    i++;
+                    <a class="group relative rounded-xl overflow-hidden glass-panel cursor-pointer shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-500 @delayClass" style="height:400px;background:var(--tema-kart-bg);" href="/urunler?kategori=@kategori.Slug">
+                        <img alt="@kategori.Ad" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" src="@(kategoriGorselleri.GetValueOrDefault(kategori.Slug ?? "", "/medya/urunler/gobekli-melamin/YILDIZ/YILDIZ_01.jpg"))" onerror="this.src='/medya/urunler/gobekli-melamin/YILDIZ/YILDIZ_01.jpg'" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+                        <div class="absolute bottom-0 left-0 w-full p-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                            @if(i == 1) {
+                                <span class="inline-block px-3 py-1 bg-primary/90 text-white font-label-sm text-label-sm rounded mb-3 border border-primary-container shadow-sm backdrop-blur-sm">PREMIUM</span>
+                            }
+                            <h3 class="font-title-lg text-title-lg text-white mb-2 group-hover:text-primary-container transition-colors">@kategori.Ad</h3>
+                            @if (!string.IsNullOrEmpty(kategori.Aciklama))
+                            {
+                                <p class="font-body-md text-body-md text-white/90 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">@kategori.Aciklama</p>
+                            }
+                        </div>
+                    </a>
+                }
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Tamamlayıcı Çözümler (Öne Çıkan Ürünler) -->
+<section class="py-section-gap px-margin-x max-w-container-max mx-auto reveal relative z-10">
+    <h2 class="font-headline-lg text-headline-lg text-on-surface dark:text-secondary mb-12 text-center">@DilServisi.T("anasayfa.tamamlayici.baslik", "Tamamlayıcı Çözümler")</h2>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        @if (_oneCikanUrunler.Count > 0)
+        {
+            @foreach (var urun in _oneCikanUrunler.Take(5))
+            {
+                <a class="glass-panel p-4 rounded-lg flex flex-col items-center hover:bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group cursor-pointer dark:hover:bg-white/5" href="/urun/@(urun.Slug ?? urun.Id.ToString())">
+                    <div class="w-full mb-4 overflow-hidden rounded relative" style="height:160px;background:var(--tema-arkaplan-2);">
+                        <img alt="@urun.Ad" class="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal group-hover:scale-105 transition-transform duration-500" src="@(urun.KapakResim?.StartsWith("/") == true ? apiMedyaUrl + urun.KapakResim.Replace("/medya", "").Replace("+", "%2B") : urun.KapakResim ?? "/medya/urunler/bilesenler/Kasa/Kasa_18-18_MDF_Kasa_A.jpg")" onerror="this.src='/medya/urunler/bilesenler/Kasa/Kasa_18-18_MDF_Kasa_A.jpg'" />
+                    </div>
+                    <h4 class="font-title-lg text-title-lg text-on-surface dark:text-white text-center group-hover:text-primary transition-colors">@urun.Ad</h4>
+                </a>
+            }
+        }
+        else
+        {
+            <div class="glass-panel p-4 rounded-lg flex flex-col items-center hover:bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group cursor-pointer dark:hover:bg-white/5">
+                <div class="w-full h-32 mb-4 overflow-hidden rounded relative bg-surface-container-low">
+                    <img alt="Kapı Kasaları" class="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal group-hover:scale-105 transition-transform duration-500" src="/medya/urunler/bilesenler/Kasa/Kasa_18-18_MDF_Kasa_A.jpg" />
+                </div>
+                <h4 class="font-title-lg text-title-lg text-on-surface dark:text-white text-center group-hover:text-primary transition-colors">Kapı Kasaları</h4>
+            </div>
+            <div class="glass-panel p-4 rounded-lg flex flex-col items-center hover:bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group cursor-pointer dark:hover:bg-white/5">
+                <div class="w-full h-32 mb-4 overflow-hidden rounded relative bg-surface-container-low">
+                    <img alt="Pervaz Modelleri" class="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal group-hover:scale-105 transition-transform duration-500" src="/medya/urunler/bilesenler/Pervaz/Pervaz_Yeni_Oval_Pervaz.jpg" />
+                </div>
+                <h4 class="font-title-lg text-title-lg text-on-surface dark:text-white text-center group-hover:text-primary transition-colors">Pervaz Modelleri</h4>
+            </div>
+            <div class="glass-panel p-4 rounded-lg flex flex-col items-center hover:bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group cursor-pointer dark:hover:bg-white/5">
+                <div class="w-full h-32 mb-4 overflow-hidden rounded relative bg-surface-container-low">
+                    <img alt="Kapı Peteği" class="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal group-hover:scale-105 transition-transform duration-500" src="/medya/urunler/bilesenler/Pervaz/Pervaz_Rustik_Kapi_Citasi.jpg" />
+                </div>
+                <h4 class="font-title-lg text-title-lg text-on-surface dark:text-white text-center group-hover:text-primary transition-colors">Kapı Peteği</h4>
+            </div>
+            <div class="glass-panel p-4 rounded-lg flex flex-col items-center hover:bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group cursor-pointer dark:hover:bg-white/5">
+                <div class="w-full h-32 mb-4 overflow-hidden rounded relative bg-surface-container-low">
+                    <img alt="Tutkal Çeşitleri" class="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal group-hover:scale-105 transition-transform duration-500" src="/medya/urunler/diger/PVC_Lake_Yuzey/PVC_Lake_Yuzey_01.jpg" />
+                </div>
+                <h4 class="font-title-lg text-title-lg text-on-surface dark:text-white text-center group-hover:text-primary transition-colors">Tutkal Çeşitleri</h4>
+            </div>
+            <div class="glass-panel p-4 rounded-lg flex flex-col items-center hover:bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group cursor-pointer dark:hover:bg-white/5">
+                <div class="w-full h-32 mb-4 overflow-hidden rounded relative bg-surface-container-low">
+                    <img alt="Pelet" class="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal group-hover:scale-105 transition-transform duration-500" src="/medya/urunler/bilesenler/Kasa/Kasa_12-17-12_Sandwich_Kasa.jpg" />
+                </div>
+                <h4 class="font-title-lg text-title-lg text-on-surface dark:text-white text-center group-hover:text-primary transition-colors">Pelet</h4>
+            </div>
+        }
+    </div>
+</section>
+
+<!-- Markalarımız -->
+<section class="py-section-gap px-margin-x bg-surface-container-low dark:bg-surface-container-low border-t border-outline-variant/30 reveal relative z-10">
+    <div class="max-w-container-max mx-auto text-center">
+        <h2 class="font-headline-md text-headline-md text-on-surface dark:text-secondary mb-12">@DilServisi.T("anasayfa.markalar.baslik", "Markalarımız")</h2>
+        <div class="flex flex-wrap justify-center items-center gap-16 opacity-70 hover:opacity-100 transition-opacity">
+            <img src="/logo.png" alt="ORPAN" class="h-20 w-auto object-contain hover:scale-105 transition-transform cursor-pointer" />
+            <img src="/medya/brand/orlam-logo.png" alt="ORLAM" class="h-20 w-auto object-contain hover:scale-105 transition-transform cursor-pointer" />
+        </div>
+    </div>
+</section>
+
+<!-- Müşteri Yorumları -->
+<section class="py-section-gap px-margin-x bg-surface-container-low dark:bg-surface-container-low border-y border-glass-stroke reveal relative z-10">
+    <div class="max-w-container-max mx-auto">
+        <h2 class="font-headline-lg text-headline-lg text-on-surface dark:text-secondary mb-12 text-center">@DilServisi.T("anasayfa.yorumlar.baslik", "Müşteri Yorumları")</h2>
+        <div class="relative w-full max-w-3xl mx-auto flex items-center justify-center p-10 rounded-2xl shadow-xl border border-outline-variant/30" style="min-height:250px;background:var(--tema-kart-bg);">
+            @if (_yorumlar != null && _yorumlar.Any())
+            {
+                var y = 0;
+                foreach (var yorum in _yorumlar.Take(5))
+                {
+                    <div class="testimonial-slide absolute inset-0 flex flex-col items-center justify-center text-center @(y==0 ? "opacity-100 z-10" : "opacity-0 z-0 hidden") p-8">
+                        <span class="material-symbols-outlined text-5xl text-primary mb-6 opacity-30">format_quote</span>
+                        <p class="font-body-lg text-body-lg text-on-surface-variant dark:text-on-surface-variant mb-8 italic font-medium">"@yorum.Yorum"</p>
+                        <h4 class="font-title-lg text-title-lg text-on-surface dark:text-white">@yorum.MusteriAdi</h4>
+                        <span class="font-label-sm text-label-sm text-primary uppercase tracking-wider mt-1">@(yorum.MusteriUnvan ?? "Müşteri")</span>
+                    </div>
+                    y++;
+                }
+                <!-- Navigation Dots -->
+                <div class="absolute -bottom-12 left-0 right-0 flex justify-center gap-3">
+                    @for (int i = 0; i < Math.Min(_yorumlar.Count, 5); i++)
+                    {
+                        var ii = i;
+                        <button class="w-3 h-3 rounded-full @(i==0 ? "bg-primary" : "bg-outline-variant dark:bg-glass-stroke") transition-all duration-300 dot-btn hover:scale-150" onclick="if(window.showTestimonial) window.showTestimonial(@ii)"></button>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="testimonial-slide absolute inset-0 flex flex-col items-center justify-center text-center opacity-100 z-10 p-8">
+                    <span class="material-symbols-outlined text-5xl text-primary mb-6 opacity-30">format_quote</span>
+                    <p class="font-body-lg text-body-lg text-on-surface-variant dark:text-on-surface-variant mb-8 italic font-medium">"Projelerimizde sürekli Orpay'ın melamin kapı yüzeylerini tercih ediyoruz. Kalite ve zamanında teslimat konusunda çok başarılılar."</p>
+                    <h4 class="font-title-lg text-title-lg text-on-surface dark:text-white">Ahmet Yılmaz</h4>
+                    <span class="font-label-sm text-label-sm text-primary uppercase tracking-wider mt-1">İç Mimar</span>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- CTA BANDI -->
+<section class="py-section-gap px-margin-x max-w-container-max mx-auto text-center reveal relative z-10">
+    <h2 class="font-headline-lg text-headline-lg text-on-surface dark:text-white mb-6 text-glow">@DilServisi.T("anasayfa.cta.baslik", "Sizin İçin En İyisi")</h2>
+    <p class="font-body-lg text-body-lg text-on-surface-variant dark:text-white/90 max-w-2xl mx-auto mb-10 font-medium">
+        @DilServisi.T("anasayfa.cta.aciklama", "Uzman ekibimiz, projenize en uygun ürünü önermek için sizinle iletişime geçsin.")
     </p>
-    <div class="gb-reveal">
-        <a class="gb-btn gb-btn--birincil" href="/katalog">@DilServisi.T("anasayfa.katalog.buton", "Kataloğu İncele")</a>
-    </div>
+    <a class="px-8 py-4 bg-primary text-white font-label-sm text-label-sm tracking-widest uppercase rounded shadow-lg shadow-primary/30 hover:bg-inverse-primary hover:-translate-y-1 transition-all duration-300" href="/iletisim">
+        @DilServisi.T("anasayfa.cta.buton", "İletişime Geçin")
+    </a>
 </section>
-
-<!-- ═══ NASIL ÇALIŞIYORUZ? — 3 ADIM ═══ -->
-<HizmetSureciBolumu />
-
-<!-- ═══ BİZİ TERCİH EDENLER / MÜŞTERİ YORUMLARI ═══ -->
-<MusteriYorumlariCarousel />
-
-<!-- ═══ CTA BANDI ═══ -->
-<section class="gb-cta-bandi">
-    <h2 class="gb-cta-bandi__baslik gb-reveal">@DilServisi.T("anasayfa.cta.baslik", "Banyonuz İçin Teklif Alın")</h2>
-    <p class="gb-cta-bandi__aciklama gb-reveal">
-        @DilServisi.T("anasayfa.cta.aciklama", "Uzman ekibimiz, mekanınıza en uygun koleksiyonu önermek için sizinle iletişime geçsin.")
-    </p>
-    <div class="gb-reveal">
-        <a class="gb-btn gb-btn--birincil" href="/iletisim">@DilServisi.T("anasayfa.cta.buton", "İletişime Geçin")</a>
-    </div>
-</section>
-
-<!-- ═══ SSS — SIKÇA SORULAN SORULAR ═══ -->
-<SSSBolumu />

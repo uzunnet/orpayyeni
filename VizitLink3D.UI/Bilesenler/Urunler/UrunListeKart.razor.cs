@@ -49,8 +49,8 @@ public partial class UrunListeKart : ComponentBase
 
             _temaClass = tema switch
             {
-                "aurelian-onyx" => "gb-urun-kart--glass",
-                _ => "gb-urun-kart--solid"
+                "aurelian-onyx" => "orpay-urun-kart--glass",
+                _ => "orpay-urun-kart--solid"
             };
 
             StateHasChanged();

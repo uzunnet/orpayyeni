@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Net;
 using System.Text;
+using Microsoft.Extensions.FileProviders;
 using VizitLink3D.Api.Hubs;
 
 // Serilog yapilandirmasi (anayasa §15)
@@ -25,13 +26,24 @@ var yapici = WebApplication.CreateBuilder(args);
 yapici.Host.UseSerilog();
 
 // Veritabani
-var vtYolu = yapici.Configuration["VeriTabani:Yol"] ?? "vizitlink3d.db";
 yapici.Services.AddHttpContextAccessor();
 yapici.Services.AddDbContext<VizitLink3DDbContext>((sp, sec) =>
 {
     var httpErisimi = sp.GetService<IHttpContextAccessor>();
-    sec.UseSqlite($"Data Source={vtYolu}")
+    sec.ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning))
        .AddInterceptors(new AuditInterceptor(httpErisimi));
+    // DB yolu OnConfiguring icinde KiraciServisi ile dinamik olarak belirlenir
+});
+
+// LisansDogrulama icin her zaman ana VT'ye baglanan ayri context.
+// Not: Temel sinif DbContextOptions<VizitLink3DDbContext> bekledigi icin
+// AddDbContext<AnaVizitLink3DDbContext> derlenmez; options acikca uretilir.
+yapici.Services.AddScoped(sp =>
+{
+    var secenekler = new DbContextOptionsBuilder<VizitLink3DDbContext>()
+        .UseSqlite("Data Source=vizitlink3d.db")
+        .Options;
+    return new AnaVizitLink3DDbContext(secenekler);
 });
 
 // JWT Kimlik Dogrulama — anahtar yoksa public siteyi çökertmeden çalıştır
@@ -69,8 +81,11 @@ yapici.Services.RateLimitingEkle();
 
             // CORS - Bu kurulum tek domain Orpay odaklidir, ama liste konfigden geldigi icin
 // SaaS tarafina tekrar acilabilir.
-var izinliDomainler = yapici.Configuration.GetSection("Cors:IzinliDomainler").Get<string[]>()
-    ?? ["http://localhost:3113", "https://localhost:3113", "http://localhost:5113", "https://localhost:5113"];
+var izinliDomainler = (yapici.Configuration.GetSection("Cors:IzinliDomainler").Get<string[]>()
+    ?? ["http://localhost:3113", "https://localhost:3113", "http://localhost:5113", "https://localhost:5113", "http://localhost:5000", "https://localhost:5000"])
+    .Concat(new[] { "http://localhost:5000", "https://localhost:5000" })
+    .Distinct(StringComparer.OrdinalIgnoreCase)
+    .ToArray();
 yapici.Services.AddCors(sec => sec.AddDefaultPolicy(politika =>
 {
     if (yapici.Environment.IsDevelopment())
@@ -293,6 +308,10 @@ uygulama.UseStaticFiles(new StaticFileOptions
     ServeUnknownFileTypes = true,
     DefaultContentType = "application/octet-stream"
 });
+
+// FAZ 4.4: Dinamik Medya Havuzu - Resimler ve PDF'ler tenant'a ait wwwroot/firmalar/{slug}/medya klasorunden sunulur.
+// Varsayilan UseStaticFiles zaten wwwroot erisimini actigi icin ek middleware gerekmez.
+
 
 uygulama.ResimOptimizasyonKullan();
 

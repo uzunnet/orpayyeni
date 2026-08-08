@@ -1,0 +1,19 @@
+﻿/* architect-grid — tokens.css (placeholder) */
+
+:root[data-tema-id="architect-grid"] {
+    /* Boş blok — CokluTemaServisi runtime'da doldurur */
+}
+
+/* Legacy uyumluluk */
+:root[data-tema-id="architect-grid"] {
+    --vizit-primary: var(--tema-birincil, #0a0a0a);
+    --vizit-accent: var(--tema-vurgu, #C5A059);
+    --vizit-bg-base: var(--tema-arkaplan, #ffffff);
+    --vizit-text: var(--tema-metin, #1A1A1A);
+    --vizit-text-inverse: var(--tema-metin-ters, #ffffff);
+    --vizit-font-serif: var(--tema-font-baslik, 'Noto Serif', serif);
+    --vizit-font-sans: var(--tema-font-govde, 'Manrope', system-ui, sans-serif);
+    --vizit-radius-md: var(--tema-kose-md, 4px);
+    --vizit-transition: var(--tema-gecis-normal, 0.4s cubic-bezier(0.4,0,0.2,1));
+    --vizit-shadow-md: var(--tema-golge-md, 0 4px 20px rgba(0,0,0,0.06));
+}

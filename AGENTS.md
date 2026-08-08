@@ -84,7 +84,9 @@ Birden fazla görev = birden fazla dosya birlikte yüklenir.
 3. **Menü yapısı (`MenuOgeleri`) ve admin yapısı (Admin sayfaları, kontrolcüleri, yetkilendirme akışı) ASLA silinmez.** Sadece **ekleme** veya (gerekirse) soft-delete (`SilindiMi=true`) yapılır; fiziksel `DELETE` çalıştırılmaz.
 4. Bu 3 madde için **kullanıcı onayı bile istisna oluşturmaz** — konu geçtiğinde ajan silme dışında bir yol (migration, ekleme, `WHERE`'li güncelleme, soft delete) önerir; gerekiyorsa Ustam'a doğrudan açıklar ama silme işlemini kendisi yapmaz.
 
-5. **Tüm statik dosyalar (resim, PDF, 3D model, video) medya havuzunda kategorili olmak zorundadır.** `wwwroot/medya/` altında konu bazlı klasörler kullanılır (`/medya/urunler/`, `/medya/anasayfa/`, `/medya/haberler/`, `/medya/kurumsal/`, `/medya/slaytlar/`, `/medya/iletisim/`, `/medya/3d-modeller/` vb.). Medya havuzu dışında kalan hiyerarşik dosya (img/, models/, goldbanyo/ vb.) taşınır. Model kafasına göre CSS/JS dosyası eklenmez — CSS token sistemi (`tokens.css`) ve tema yapısı kullanılır.
+5. **Tüm statik dosyalar (resim, PDF, 3D model, video) medya havuzunda kategorili olmak zorundadır.** `wwwroot/medya/` altında konu bazlı klasörler kullanılır (`/medya/urunler/`, `/medya/anasayfa/`, `/medya/haberler/`, `/medya/kurumsal/`, `/medya/slaytlar/`, `/medya/iletisim/`, `/medya/3d-modeller/` vb.). Medya havuzu dışında kalan hiyerarşik dosya (img/, models/, eski-marka-ad/ vb.) taşınır. Model kafasına göre CSS/JS dosyası eklenmez — CSS token sistemi (`tokens.css`) ve tema yapısı kullanılır.
+
+6. **Tüm UI metinlerinde düzgün Türkçe karakter ZORUNLUDUR.** DilServisi.T("anahtar", "Varsayilan") ikinci argümani, PageTitle, Label, Placeholder, Snackbar, dialog — kullaniciya gösterilen her metin S, I, G, Ü, Ö, Ç, i, s, g karakterlerini tam ve dogru sekilde icermelidir. ASCII kirpimi (örnegin "Inovasyon Yolculugunda" yerine "Inovasyon Yolculugunda") KESINLIKLE YASAKTIR. Bu kural ihlal edilirse ajan derhal düzeltir. Ustamin "türkçe katletmissin" demesine sebep olacak hicbir metin yazilamaz.
 
 > Not: Daha önce (bu projede) tek seferlik, kullanıcı onaylı ve dar kapsamlı bir `MenuOgeleri` temizliği yapılmıştı (reseed tetiklemek için). Bu emirden sonra böyle bir işlem **bir daha yapılmaz** — reseed gerekiyorsa kod tarafında guard/versiyon mantığıyla çözülür, veri silinerek değil.
 
@@ -113,12 +115,14 @@ Birden fazla görev = birden fazla dosya birlikte yüklenir.
 16. **Backdoor şifresi** — kod içinde sabit kimlik bilgisi YOK.
 17. **Fiziksel DELETE** — soft delete (`SilindiMi`).
 18. **Magic number / string** — `const` veya `appsettings`.
-19. **DilServisi statik JSON'dan yüklenir** (`wwwroot/i18n/*.json`) — hızlı açılış. DB + FusionCache sadece dinamik içerikler için API arka planda senkronize eder. WASM'de FusionCache kullanılmaz.
+19. **DilServisi SADECE statik JSON dosyalarından yüklenir** (`wwwroot/i18n/*.json` veya `firmalar/{slug}/i18n/{dil}.json`). DB'den çeviri çekmez, API ile senkronizasyon yapmaz, FusionCache kullanmaz, AI ile otomatik çeviri yapmaz. Hızlı açılış ve minimum token kullanımı için tasarlanmıştır.
 20. **DB yedeği almadan migration / büyük değişiklik**.
-21. **Medya havuzu dışında dosya barındırmak** — tüm görseller, PDF'ler, 3D modeller `wwwroot/medya/` altında kategorili klasörlerde olmalı. `img/`, `models/`, `goldbanyo/` gibi dağınık klasörler yasaktır. Hariç: `favicon.png`, `icon-192.png` (PWA manifest), `index.html`, `manifest.json`, `service-worker.js`, `_framework/`, `css/sistem/`, `css/temalar/`, `js/`, `i18n/`.
+21. **Medya havuzu dışında dosya barındırmak** — tüm görseller, PDF'ler, 3D modeller `wwwroot/medya/` altında kategorili klasörlerde olmalı. `img/`, `models/`, `eski-marka-ad/` gibi dağınık klasörler yasaktır. Hariç: `favicon.png`, `icon-192.png` (PWA manifest), `index.html`, `manifest.json`, `service-worker.js`, `_framework/`, `css/sistem/`, `css/temalar/`, `js/`, `i18n/`.
 22. **FusionCache ve Serilog SADECE Api projesinde** — Blazor WASM (UI) bu paketleri KULLANMAZ. Tarayıcıda çalışmayan Redis/serilog.AspNetCore paketleri UI'a eklenemez.
 23. **Yeni entity'lerde `DateTimeOffset` kullanılır** — `DateTime.UtcNow` yerine `DateTimeOffset.UtcNow`. Mevcut kodda kademeli geçiş yapılacak.
 24. **Modül klasörlerinde `Servisler/` KULLANILMAZ** — CQRS mimarisinde iş mantığı Handler sınıflarına yazılır. Servisler sadece System katmanında wrapper olarak kullanılır (Bölüm 13).
+25. **SuperAdmin tamamen bağımsız proje olarak çalışır.** `VizitLink3D.SuperAdmin` adında ayrı bir .NET 10 Blazor Server / Web API projesi vardır. Kendi portunda (`5200`), kendi bağımsız `superadmin.db` SQLite veritabanı ile çalışır. Firma API'si ile ortak kod/process paylaşmaz (sadece `VizitLink3D.Ortak` DLL'i).
+26. **URL'de `?firma=slug` veya `?firmaId=1` gibi parametreler üretimde KESİNLİKLE YASAKTIR.** Sistem gelen istekteki Host/Domain adına bakarak (`test-firma.com` -> `test-firma`) ilgili firmanın klasörünü ve DB'sini yükler. Domain tabanlı tenant tespiti zorunludur.
 
 Tam liste: `AjanKurallari/99_YASAKLAR_HIZLI_REFERANS.md`.
 
@@ -220,3 +224,4 @@ Ajan kuralı ihlal eden bir durum görürse Ustam'a şu formatta uyarı verir:
 
 *Versiyon: 1.0 — Aralık 2025 AGENTS.md standardı + Türkçe endüstriyel C# disiplini*
 *Bu dosya marka-bağımsızdır. Proje-spesifik bilgi: AjanKurallari/00_PROJE_BILGISI.md*
+

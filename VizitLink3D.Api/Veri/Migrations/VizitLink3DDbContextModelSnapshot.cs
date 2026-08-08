@@ -650,6 +650,9 @@ namespace VizitLink3D.Api.Veri.Migrations
                     b.Property<bool>("AktifMi")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("AktifModulKodlariJson")
+                        .HasColumnType("TEXT");
+
                     b.Property<int?>("AktifSablonId")
                         .HasColumnType("INTEGER");
 
@@ -698,6 +701,12 @@ namespace VizitLink3D.Api.Veri.Migrations
                     b.Property<int>("LogoMaxYukseklik")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("MaxKullaniciSayisi")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("MedyaKlasoru")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("MenuDikeyPadding")
                         .HasColumnType("INTEGER");
 
@@ -707,6 +716,9 @@ namespace VizitLink3D.Api.Veri.Migrations
                     b.Property<DateTime>("OlusturulmaTarihi")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("PaketTipi")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Pinterest")
                         .HasColumnType("TEXT");
 
@@ -714,6 +726,9 @@ namespace VizitLink3D.Api.Veri.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Sehir")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Sektor")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SiteTema")
@@ -3388,6 +3403,8 @@ namespace VizitLink3D.Api.Veri.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UrunId");
+
                     b.ToTable("UrunMedyalari");
                 });
 
@@ -4189,6 +4206,15 @@ namespace VizitLink3D.Api.Veri.Migrations
                     b.Navigation("UrunAilesi");
                 });
 
+            modelBuilder.Entity("VizitLink3D.Ortak.Modeller.Urunler.UrunMedya", b =>
+                {
+                    b.HasOne("VizitLink3D.Ortak.Modeller.Urunler.Urun", null)
+                        .WithMany("Medyalar")
+                        .HasForeignKey("UrunId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("VizitLink3D.Ortak.Modeller.Urunler.UrunParcaEslemesi", b =>
                 {
                     b.HasOne("VizitLink3D.Ortak.Modeller.Urunler.UrunUcBoyutModeli", "UrunUcBoyutModeli")
@@ -4254,6 +4280,11 @@ namespace VizitLink3D.Api.Veri.Migrations
             modelBuilder.Entity("VizitLink3D.Ortak.Modeller.Urunler.MusteriKonfigurasyonu", b =>
                 {
                     b.Navigation("Parcalar");
+                });
+
+            modelBuilder.Entity("VizitLink3D.Ortak.Modeller.Urunler.Urun", b =>
+                {
+                    b.Navigation("Medyalar");
                 });
 #pragma warning restore 612, 618
         }

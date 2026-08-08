@@ -24,6 +24,7 @@ public class UrunlerKontrolcu(VizitLink3DDbContext vt, IOtomatikCeviriServisi ot
     {
         var query = vt.Urunler
             .AsNoTracking()
+            .Include(u => u.Medyalar)
             .Where(u => !u.SilindiMi);
 
         if (urunAilesiId.HasValue)
@@ -139,6 +140,12 @@ public class UrunlerKontrolcu(VizitLink3DDbContext vt, IOtomatikCeviriServisi ot
 
         if (urun is null)
             return Cevap<Urun>.Hata("Urun bulunamadi.");
+
+        // Medyalari manuel yukle (EF Core navigation yok)
+        urun.Medyalar = await vt.UrunMedyalari
+            .Where(m => m.UrunId == id && !m.SilindiMi)
+            .OrderBy(m => m.SiraNo)
+            .ToListAsync();
 
         if (!string.IsNullOrWhiteSpace(dil) && !dil.Equals("tr", StringComparison.OrdinalIgnoreCase))
         {

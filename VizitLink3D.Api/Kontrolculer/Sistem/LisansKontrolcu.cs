@@ -89,7 +89,7 @@ public class LisansKontrolcu(VizitLink3DDbContext vt, KiraciServisi kiraci, Lisa
         }
 
         return await vt.Firmalar
-            .OrderByDescending(f => f.Slug == "orpay")
+            .OrderByDescending(f => f.Slug == "platform")
             .ThenBy(f => f.Id)
             .FirstOrDefaultAsync(f => f.AktifMi);
     }

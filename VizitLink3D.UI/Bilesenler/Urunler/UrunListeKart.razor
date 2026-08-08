@@ -1,25 +1,25 @@
-@using VizitLink3D.Ortak.Modeller.Urunler
+﻿@using VizitLink3D.Ortak.Modeller.Urunler
 
-<div class="gb-urun-kart @_temaClass cursor-pointer" @onclick="@Tiklandi">
+<div class="orpay-urun-kart @_temaClass cursor-pointer" @onclick="@Tiklandi">
     <MudCard Elevation="2">
-        <div class="gb-urun-kart-gorsel-sarici">
+        <div class="orpay-urun-kart-gorsel-sarici">
             <img src="@_gorselUrl" alt="@Urun.Ad"
                  onerror="this.onerror=null;this.src='/medya/vizitlink3d_default.png';" />
         </div>
 
 
-        <div class="gb-urun-kart-rozetler">
+        <div class="orpay-urun-kart-rozetler">
             @if (!string.IsNullOrWhiteSpace(_koleksiyonGrubu))
             {
-                <span class="gb-rozet gb-rozet-koleksiyon">@_koleksiyonGrubu</span>
+                <span class="orpay-rozet orpay-rozet-koleksiyon">@_koleksiyonGrubu</span>
             }
             @if (Urun.VarsayilanUcBoyutModeliId != null)
             {
-                <span class="gb-rozet gb-rozet-3d">3D</span>
+                <span class="orpay-rozet orpay-rozet-3d">3D</span>
             }
             @if (Urun.YeniMi)
             {
-                <span class="gb-rozet gb-rozet-yeni">@dil.T("urun.yeni", "Yeni")</span>
+                <span class="orpay-rozet orpay-rozet-yeni">@dil.T("urun.yeni", "Yeni")</span>
             }
         </div>
 
@@ -29,7 +29,7 @@
             </MudText>
             @if (!string.IsNullOrEmpty(Urun.KisaAciklama))
             {
-                <MudText Typo="Typo.body2" Color="Color.Dark" Class="gb-urun-kart-aciklama">
+                <MudText Typo="Typo.body2" Color="Color.Dark" Class="orpay-urun-kart-aciklama">
                     @Urun.KisaAciklama
                 </MudText>
             }

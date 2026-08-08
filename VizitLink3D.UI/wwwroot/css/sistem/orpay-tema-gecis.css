@@ -1,0 +1,21 @@
+﻿/* ORPAY Tema Gecis Animasyonu */
+html {
+    transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+html * {
+    transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, opacity 0.4s ease;
+}
+
+/* Gecisi hizli yap - bazi ozel elemanlar icin */
+html .orpay-header,
+html .orpay-footer,
+html .orpay-panel,
+html .orpay-urunler-yeni__kart {
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Gorsellerde gecis olmasin - sadece background ve renk */
+html img {
+    transition: none;
+}

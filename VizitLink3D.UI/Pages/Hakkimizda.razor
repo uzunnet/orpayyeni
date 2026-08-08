@@ -1,11 +1,119 @@
 @page "/hakkimizda"
+@page "/kurumsal"
 @layout VizitLink3DDuzen
 @using VizitLink3D.UI.Bilesenler
 
-<PageTitle>Hakkımızda</PageTitle>
+<PageTitle>@dil.T("menu.kurumsal", "Kurumsal")</PageTitle>
 
-<YakindaSayfasi Bolum="hakkimizda" Ustbaslik="Kurumsal" Baslik="Banyonuza Sanat Katan 35 Yıllık Ustalık"
-    Ikon="@MudBlazor.Icons.Material.Outlined.WorkspacePremium"
-    Aciklama="@_varsayilanIcerik" />
+<!-- Hero -->
+<header class="hero" style="min-height:70vh;">
+    <div class="hero-slider-kapsayici">
+        <img class="hero-slider-img active" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZiiaZmlFF4phAw1I0GPh9fLv5lYc0TGmpDbqSE2Jwjz2CtcOD-3wLlXMhVOMN-2ej0lzQTjxRWcBaF_K8xo_RyD1P_Pr0ufvtSs0zeQXvGzihSw1JF-PzXKmaoq5W8gQfSqF_82h4CPZT9KzlRVb8wYME0t2kiTVmHIvNNfIm-BlC1fKKi00NCiCkj8EPI0yNCyMYZSNpOUcViSARsmQWVF0EXqWWQYNTf0xYxghQ-7OroNV---RO" alt="@dil.T("kurumsal.heroAlt", "Orpay Fabrika")" />
+    </div>
+    <div class="hero-overlay" style="background:linear-gradient(to bottom,color-mix(in srgb,var(--tema-arkaplan) 60%,transparent),transparent 30%,color-mix(in srgb,var(--tema-arkaplan) 95%,transparent) 100%);"></div>
+    <div class="hero-icerik">
+        <h1 class="hero-baslik reveal">@dil.T("kurumsal.heroBaslik", "Mimari Hassasiyet, Endustriyel Guc")</h1>
+        <p class="hero-aciklama reveal">@dil.T("kurumsal.heroAciklama", "ORPAY ORMAN URUNLERI LTD. STI., ticaret ahlakina verdigi onem ve yaptigi saglam islerle orman urunlerinde bir cok firmaya cozum ortagi olmustur.")</p>
+    </div>
+</header>
 
+<!-- Istatistikler -->
+<section class="bolum reveal" style="margin-top:-8rem;position:relative;z-index:2;">
+    <div class="glass-panel" style="padding:3rem;">
+        <div class="kurumsal-istatistik-grid">
+            <div class="kurumsal-istatistik-oge">
+                <span class="material-symbols-outlined kurumsal-istatistik-ikon">calendar_today</span>
+                <h3 class="kurumsal-istatistik-rakam">40+</h3>
+                <p class="kurumsal-istatistik-yazi">@dil.T("kurumsal.istatistik.yil", "Yillik Tecrube")</p>
+            </div>
+            <div class="kurumsal-istatistik-oge">
+                <span class="material-symbols-outlined kurumsal-istatistik-ikon">public</span>
+                <h3 class="kurumsal-istatistik-rakam">35</h3>
+                <p class="kurumsal-istatistik-yazi">@dil.T("kurumsal.istatistik.ihracat", "Ulkeye Ihracat")</p>
+            </div>
+            <div class="kurumsal-istatistik-oge">
+                <span class="material-symbols-outlined kurumsal-istatistik-ikon">factory</span>
+                <h3 class="kurumsal-istatistik-rakam">50K</h3>
+                <p class="kurumsal-istatistik-yazi">m² @dil.T("kurumsal.istatistik.uretim", "Uretim Alani")</p>
+            </div>
+            <div class="kurumsal-istatistik-oge">
+                <span class="material-symbols-outlined kurumsal-istatistik-ikon">groups</span>
+                <h3 class="kurumsal-istatistik-rakam">500+</h3>
+                <p class="kurumsal-istatistik-yazi">@dil.T("kurumsal.istatistik.calisan", "Uzman Calisan")</p>
+            </div>
+        </div>
+    </div>
+</section>
 
+<!-- Hikayemiz -->
+<section class="bolum reveal">
+    <div class="grid-2">
+        <div>
+            <h2 class="bolum-metin-baslik">@dil.T("kurumsal.hikayeBaslik", "Koklerimizden Gelecege")</h2>
+            <div class="bolum-cizgi" style="margin:0 0 2rem;"></div>
+            <p class="bolum-metin-aciklama">@dil.T("kurumsal.hikaye1", "1992 yilindan bu yana orman urunleri sektorunde faaliyet gosteren ORPAY, Tosya'nin kopklu ticaret gelenegini modern uretim teknolojileriyle birlestirmektedir. Kurtbeli Mevkii Tosya Organize Sanayi Bolgesi'ndeki modern tesislerimizde, en son teknoloji makinelerle yuksek kalite standartlarinda uretim yapmaktayiz.")</p>
+            <p class="bolum-metin-alt">@dil.T("kurumsal.hikaye2", "Kapi yuzeyleri, kasa pervaz, melamin, PVC, laminant ve ahsap urunler basta olmak uzere genis urun yelpazemizle Turkiye'nin dort bir yanina ve 35'ten fazla ulkeye ihracat gerceklestiriyoruz.")</p>
+        </div>
+        <div class="glass-panel kurumsal-gorsel">
+            <img src="https://lh3.googleusercontent.com/aida/AP1WRLvB1Cf7oF9ctVhgz7GhxlirwLrwu2FJe4ACGtL6lHGDqTv0XqpWo5O1TSqDzkNNj5GZmIEEKziEULPplizuaNFNGzAdNmlPGFR1B4Q1MyxrE5X9rclmkYLH7u4GNnEDwrINnZKgQJ5xRjQuKjZymbAhqjjsegBMwl8Wy0_FzOjPj4pziVWuPxiICnQjsEygDVbkah6-9b8KT5WZ6U4Uqlkh4c_W-pV8NNxwgDyRAevtxlcG4KuZ8fC7WJ0" alt="@dil.T("kurumsal.gorselAlt", "Kurumsal")" />
+            <div class="kurumsal-istatistik">
+                <p class="kurumsal-istatistik-rakam">30+</p>
+                <p class="kurumsal-istatistik-yazi">@dil.T("kurumsal.yillikTecrube", "Yillik Tecrube")</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Nasil Calisiriz -->
+<section class="bolum bolum-koyu reveal">
+    <div class="bolum-merkezi">
+        <h2 class="bolum-baslik">@dil.T("anasayfa.nasilCalisiriz.baslik", "Nasil Calisiriz?")</h2>
+        <div class="grid-4">
+            <div class="adim-kapsayici">
+                <div class="adim-daire"><span class="material-symbols-outlined adim-ikon">contact_support</span></div>
+                <h3 class="adim-baslik">1. @dil.T("anasayfa.nasilCalisiriz.adim1Baslik", "Iletisim")</h3>
+                <p class="adim-aciklama">@dil.T("anasayfa.nasilCalisiriz.adim1Aciklama", "Ihtiyacinizi belirlemek icin bizimle iletisime gecin.")</p>
+            </div>
+            <div class="adim-kapsayici">
+                <div class="adim-daire"><span class="material-symbols-outlined adim-ikon">design_services</span></div>
+                <h3 class="adim-baslik">2. @dil.T("anasayfa.nasilCalisiriz.adim2Baslik", "Projelendirme")</h3>
+                <p class="adim-aciklama">@dil.T("anasayfa.nasilCalisiriz.adim2Aciklama", "Size ozel cozumler ve tasarimlar hazirlayalim.")</p>
+            </div>
+            <div class="adim-kapsayici">
+                <div class="adim-daire"><span class="material-symbols-outlined adim-ikon">precision_manufacturing</span></div>
+                <h3 class="adim-baslik">3. @dil.T("anasayfa.nasilCalisiriz.adim3Baslik", "Uretim")</h3>
+                <p class="adim-aciklama">@dil.T("anasayfa.nasilCalisiriz.adim3Aciklama", "Modern tesislerimizde yuksek kalitede uretim.")</p>
+            </div>
+            <div class="adim-kapsayici">
+                <div class="adim-daire"><span class="material-symbols-outlined adim-ikon">local_shipping</span></div>
+                <h3 class="adim-baslik">4. @dil.T("anasayfa.nasilCalisiriz.adim4Baslik", "Teslimat")</h3>
+                <p class="adim-aciklama">@dil.T("anasayfa.nasilCalisiriz.adim4Aciklama", "Zamaninda ve guvenli teslimat garantisi.")</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Vizyon & Misyon -->
+<section class="bolum reveal">
+    <div class="grid-2">
+        <div class="glass-panel vizyon-misyon-kart">
+            <span class="material-symbols-outlined vizyon-misyon-kart-ikon">visibility</span>
+            <h3 class="vizyon-misyon-kart-baslik">@dil.T("kurumsal.vizyon", "Vizyonumuz")</h3>
+            <p class="bolum-metin-alt">@dil.T("kurumsal.vizyonAciklama", "Orman urunleri sektorunde ulusal ve uluslararasi pazarda tercih edilen, yenilikci ve surdurulebilir cozumler sunan lider bir marka olmak.")</p>
+        </div>
+        <div class="glass-panel vizyon-misyon-kart">
+            <span class="material-symbols-outlined vizyon-misyon-kart-ikon">flag</span>
+            <h3 class="vizyon-misyon-kart-baslik">@dil.T("kurumsal.misyon", "Misyonumuz")</h3>
+            <p class="bolum-metin-alt">@dil.T("kurumsal.misyonAciklama", "Modern uretim teknolojileri ve uzman kadromuzla, musteri beklentilerini asan kalitede urunler sunarak, ulke ekonomisine ve sektorun gelisimine katki saglamak.")</p>
+        </div>
+    </div>
+</section>
+
+<!-- Markalar -->
+<section class="bolum bolum-merkezi reveal" style="border-top:1px solid var(--tema-cam-cizgi);">
+    <h2 class="bolum-baslik">@dil.T("kurumsal.markalar", "Markalarimiz")</h2>
+    <div style="display:flex;justify-content:center;align-items:center;gap:4rem;flex-wrap:wrap;opacity:0.7;">
+        <img src="/logo.png" alt="ORPAN" style="height:80px;width:auto;object-fit:contain;" />
+        <img src="/medya/brand/orlam-logo.png" alt="ORLAM" style="height:80px;width:auto;object-fit:contain;" />
+    </div>
+</section>

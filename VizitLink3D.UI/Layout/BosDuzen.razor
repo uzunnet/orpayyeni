@@ -1,10 +1,26 @@
 @inherits LayoutComponentBase
+@using MudBlazor
 
-<MudThemeProvider IsDarkMode="@KoyuTemaMi" />
-<MudSnackbarProvider />
-<MudDialogProvider />
-<MudPopoverProvider />
+<MudThemeProvider Theme="@_koyuTema" IsDarkMode="true" />
 
+<div data-tema-id="orpay-gunduz" style="background:#0a0a0a;min-height:100vh;">
+    @Body
+</div>
 
-
-@Body
+@code {
+    private static readonly MudTheme _koyuTema = new()
+    {
+        PaletteDark = new PaletteDark
+        {
+            Primary = "#c5a059",
+            Secondary = "#8a8a8a",
+            Background = "#0a0a0a",
+            Surface = "#111111",
+            TextPrimary = "#ffffff",
+            TextSecondary = "rgba(255,255,255,0.60)",
+            AppbarBackground = "#0a0a0a",
+            DrawerBackground = "#0a0a0a",
+            DrawerText = "#ffffff"
+        }
+    };
+}

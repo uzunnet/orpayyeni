@@ -1,0 +1,51 @@
+﻿/*
+ * Aurelian Daylight — bilesenler.css
+ * CokluTemaServisi tarafından manifest taslağından otomatik üretilir.
+ */
+
+:root[data-tema-id="aurelian-daylight"] {
+    color: var(--tema-metin);
+    background: var(--tema-arkaplan);
+}
+
+:root[data-tema-id="aurelian-daylight"] h1,
+:root[data-tema-id="aurelian-daylight"] h2,
+:root[data-tema-id="aurelian-daylight"] h3 {
+    font-family: var(--tema-font-baslik);
+    font-weight: var(--tema-baslik-agirlik);
+    letter-spacing: var(--tema-baslik-harf-araligi);
+}
+
+:root[data-tema-id="aurelian-daylight"] .navbar {
+    background: var(--tema-yuzey);
+    border-bottom: var(--tema-border-kalinlik) var(--tema-border-stil) var(--tema-cizgi);
+    transition: var(--tema-gecis-normal);
+}
+
+:root[data-tema-id="aurelian-daylight"] .urun-kart {
+    background: var(--tema-yuzey);
+    border: var(--tema-border-kalinlik) var(--tema-border-stil) var(--tema-cizgi);
+    border-radius: var(--tema-kose-md);
+    box-shadow: var(--tema-golge-md);
+    transition: transform var(--tema-gecis-yavas), box-shadow var(--tema-gecis-yavas), border-color var(--tema-gecis-normal);
+}
+
+:root[data-tema-id="aurelian-daylight"] .urun-kart:hover {
+    transform: translateY(-4px);
+    border-color: var(--tema-vurgu);
+    box-shadow: var(--tema-golge-vurgu), var(--tema-golge-lg);
+}
+
+:root[data-tema-id="aurelian-daylight"] .btn-birincil,
+:root[data-tema-id="aurelian-daylight"] .mud-button-filled {
+    background: var(--tema-vurgu);
+    color: var(--tema-metin-ters);
+    border-radius: var(--tema-kose-md);
+    transition: var(--tema-gecis-normal);
+}
+
+:root[data-tema-id="aurelian-daylight"] .footer {
+    background: var(--tema-birincil);
+    color: var(--tema-metin);
+    border-top: var(--tema-border-kalinlik) var(--tema-border-stil) var(--tema-cizgi);
+}

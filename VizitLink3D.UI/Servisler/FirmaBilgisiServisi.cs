@@ -58,9 +58,9 @@ public class FirmaBilgisiServisi
             _cachedFirma = new Firma
             {
                 Slug = tema?.Slug ?? "varsayilan",
-                Ad = string.IsNullOrWhiteSpace(tema?.Ad) ? "ORPAY" : tema.Ad,
+                Ad = string.IsNullOrWhiteSpace(tema?.Ad) ? "VizitLink3D" : tema.Ad,
                 AdminTema = tema?.AdminTema,
-                SiteTema = string.IsNullOrWhiteSpace(tema?.SiteTema) ? "gold" : tema.SiteTema,
+                SiteTema = string.IsNullOrWhiteSpace(tema?.SiteTema) ? "varsayilan" : tema.SiteTema,
                 TasarimRengi1 = tema?.TasarimRengi1,
                 TasarimRengi2 = tema?.TasarimRengi2,
                 TasarimRengi3 = tema?.TasarimRengi3
@@ -99,12 +99,6 @@ public class FirmaBilgisiServisi
 
     private static string MarkaVarligiNormalizeEt(string deger)
     {
-        if (deger.Equals("/medya/brand/orpay-logo.svg", StringComparison.OrdinalIgnoreCase)
-            || deger.Equals("medya/brand/orpay-logo.svg", StringComparison.OrdinalIgnoreCase))
-        {
-            return "/medya/brand/orpay-logo.png";
-        }
-
         // Eski /img/ yolu → yeni /medya/brand/
         if (deger.StartsWith("/img/", StringComparison.OrdinalIgnoreCase))
             return "/medya/brand/" + deger["/img/".Length..];
@@ -130,21 +124,21 @@ public class FirmaBilgisiServisi
     public async Task<string> GetSlugAsync()
     {
         var firma = await GetFirmaAsync();
-        return string.IsNullOrWhiteSpace(firma?.Slug) ? "orpay" : firma!.Slug;
+        return string.IsNullOrWhiteSpace(firma?.Slug) ? "varsayilan" : firma!.Slug;
     }
 
     /// <summary>Firma adı.</summary>
     public async Task<string> GetAdAsync()
     {
         var firma = await GetFirmaAsync();
-        return firma?.Ad ?? "ORPAY";
+        return firma?.Ad ?? "VizitLink3D";
     }
 
-    /// <summary>Frontend teması (Gold, Desadoor, vb.).</summary>
+    /// <summary>Frontend teması.</summary>
     public async Task<string> GetSiteTemaAsync()
     {
         var firma = await GetFirmaAsync();
-        return firma?.SiteTema ?? "gold";
+        return firma?.SiteTema ?? "varsayilan";
     }
 
     /// <summary>Admin teması (firma-bazlı değil, sistem-çapı).</summary>

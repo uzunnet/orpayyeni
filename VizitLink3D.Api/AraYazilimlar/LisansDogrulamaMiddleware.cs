@@ -1,3 +1,4 @@
+using VizitLink3D.Api.VeriTabani;
 using VizitLink3D.Api.Servisler.Kimlik;
 using System.Net;
 
@@ -13,10 +14,17 @@ public class LisansDogrulamaMiddleware(RequestDelegate sonraki, ILogger<LisansDo
     {
         "/api/kapak-modelleri", "/api/menu", "/api/vizitlink3d",
         "/api/urunler", "/api/renkler", "/api/malzemeler", "/api/kaplamalar",
-        "/api/kimlik/giris", "/api/dil",
         // Urun/katalog gorselleri ve medya dosyalari herkese acik icerik —
         // lisanssiz da servis edilmeli (aksi halde production'da gorseller 402 doner).
-        "/api/medya/dosya", "/api/medya-havuzu/dosya",
+        "/api/medya/dosya", "/api/medya-havuzu/dosya"
+    };
+
+    // Login, dil ve DB yukleme gibi yollar hem GET hem POST'a aciktir —
+    // kullanici giris yapmadan lisans durumunu gorebilmeli.
+    private static readonly string[] BagimsizPublicYollar =
+    {
+        "/api/kimlik/giris",
+        "/api/dil",
         "/api/db-yukle"
     };
 
@@ -30,6 +38,14 @@ public class LisansDogrulamaMiddleware(RequestDelegate sonraki, ILogger<LisansDo
             return;
         }
 
+        // Bagimsiz yollar: Hem GET hem POST'a acik
+        if (BagimsizPublicYollar.Any(y => baglam.Request.Path.StartsWithSegments(y)))
+        {
+            await sonraki(baglam);
+            return;
+        }
+
+        // Diger public yollar: Sadece GET
         if (baglam.Request.Method == "GET" &&
             PublicGetYollari.Any(y => baglam.Request.Path.StartsWithSegments(y)))
         {
@@ -39,7 +55,13 @@ public class LisansDogrulamaMiddleware(RequestDelegate sonraki, ILogger<LisansDo
 
         // Lisans kontrolü
         using var kapsam = baglam.RequestServices.CreateScope();
-        var lisansServisi = kapsam.ServiceProvider.GetRequiredService<LisansServisi>();
+        // LisansDogrulama her zaman ana VT'ye (vizitlink3d.db) baglanmali,
+        // firmaya ait DB'ye degil. Yogunluk kaynagini dogrudan kullan.
+        var anaVt = kapsam.ServiceProvider.GetRequiredService<AnaVizitLink3DDbContext>();
+        var lisansServisi = new VizitLink3D.Api.Servisler.Kimlik.LisansServisi(
+            anaVt,
+            kapsam.ServiceProvider.GetRequiredService<ILogger<LisansServisi>>(),
+            kapsam.ServiceProvider.GetRequiredService<IConfiguration>());
         var durum = await lisansServisi.DomainKontrolAsync(host);
 
         if (!durum.GecerliMi)

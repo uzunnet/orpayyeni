@@ -21,14 +21,14 @@ public partial class CeviriYonetimi : ComponentBase
     private bool _yukleniyor = true;
     private bool _formAcik;
     private bool _kaydediliyor;
-    private bool _aiCeviriliyor;
-    private int _aiCeviriSayac;
-    private int _aiCeviriToplam;
     private Ceviri _form = new();
     private int? _duzenlenenId;
     private string _arama = string.Empty;
     private string? _filtreDil;
     private string? _filtreBolum;
+    private bool _aiCeviriliyor;
+    private int _aiCeviriSayac;
+    private int _aiCeviriToplam;
 
     protected override async Task OnInitializedAsync() => await Yukle();
 

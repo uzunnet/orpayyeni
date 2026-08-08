@@ -74,14 +74,14 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
             _isSuperAdmin = bilgi.Rol == "SuperAdmin";
         }
 
-        await VeriYukleAsync();
+        await VeriYukleAsync(ilkYukleme: true);
         await SignalRBaglanAsync();
         BildirimServisi.BildirimGeldi += CanliGuncelle;
         _yenilemeIptal = new CancellationTokenSource();
         _ = PeriyodikYenileAsync(_yenilemeIptal.Token);
     }
 
-    private async Task VeriYukleAsync(bool sessiz = false)
+    private async Task VeriYukleAsync(bool sessiz = false, bool ilkYukleme = false)
     {
         if (!sessiz)
             _yukleniyor = true;
@@ -100,7 +100,8 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
             _etkinlikler.Add(new EtkinlikOgesi { Eylem = dil.T("admin.dashboard.yuklendi", "Dashboard yüklendi"), Kullanici = dil.T("admin.dashboard.sistem", "Sistem"), Tarih = DateTime.UtcNow, Tip = dil.T("admin.dashboard.bilgi", "bilgi") });
 
         _yukleniyor = false;
-        await InvokeAsync(StateHasChanged);
+        if (!ilkYukleme)
+            await InvokeAsync(StateHasChanged);
     }
 
     private async Task PeriyodikYenileAsync(CancellationToken iptal)
@@ -132,7 +133,6 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
 
             await _hub.StartAsync();
             _canliBagli = true;
-            StateHasChanged();
         }
         catch { _canliBagli = false; }
     }

@@ -43,6 +43,10 @@ public class PdfKatalogKontrolcu(VizitLink3DDbContext vt, IServiceProvider servi
     [Authorize(Roles = "Admin,SuperAdmin")]
     public async Task<IActionResult> Yukle([FromBody] UrunPdfKaynagiDto veriDto)
     {
+        // FAZ 5.2: Cross-tenant izolasyon
+        if (!SuperAdminMi() && !KullaniciFirmaIleEslesiyor())
+            return Unauthorized(Cevap<object>.Hata("Bu firmanin verilerine erisim yetkiniz yok."));
+
         var yeni = new UrunPdfKaynagi
         {
             Ad = veriDto.Ad,
@@ -59,6 +63,10 @@ public class PdfKatalogKontrolcu(VizitLink3DDbContext vt, IServiceProvider servi
     [Authorize(Roles = "Admin,SuperAdmin")]
     public async Task<IActionResult> Guncelle(int id, [FromBody] UrunPdfKaynagiGuncelleDto veriDto)
     {
+        // FAZ 5.2: Cross-tenant izolasyon
+        if (!SuperAdminMi() && !KullaniciFirmaIleEslesiyor())
+            return Unauthorized(Cevap<object>.Hata("Bu firmanin verilerine erisim yetkiniz yok."));
+
         var mevcut = await vt.UrunPdfKaynaklari.FindAsync(id);
         if (mevcut == null) return NotFound();
 
@@ -77,6 +85,10 @@ public class PdfKatalogKontrolcu(VizitLink3DDbContext vt, IServiceProvider servi
     [Authorize(Roles = "Admin,SuperAdmin")]
     public async Task<IActionResult> Sil(int id)
     {
+        // FAZ 5.2: Cross-tenant izolasyon
+        if (!SuperAdminMi() && !KullaniciFirmaIleEslesiyor())
+            return Unauthorized(Cevap<object>.Hata("Bu firmanin verilerine erisim yetkiniz yok."));
+
         var mevcut = await vt.UrunPdfKaynaklari.FindAsync(id);
         if (mevcut == null) return NotFound();
 
@@ -111,6 +123,10 @@ public class PdfKatalogKontrolcu(VizitLink3DDbContext vt, IServiceProvider servi
     [Authorize(Roles = "Admin,SuperAdmin")]
     public async Task<IActionResult> Cozumle(int id)
     {
+        // FAZ 5.2: Cross-tenant izolasyon
+        if (!SuperAdminMi() && !KullaniciFirmaIleEslesiyor())
+            return Unauthorized(Cevap<object>.Hata("Bu firmanin verilerine erisim yetkiniz yok."));
+
         var mevcut = await vt.UrunPdfKaynaklari.FindAsync(id);
         if (mevcut == null)
             return NotFound(Cevap<object>.Hata("Kayıt bulunamadı."));
@@ -123,6 +139,24 @@ public class PdfKatalogKontrolcu(VizitLink3DDbContext vt, IServiceProvider servi
         });
 
         return Ok(Cevap<bool>.Basarili(true, "Çözümleme işlemi arka planda başlatıldı."));
+    }
+
+    private bool SuperAdminMi()
+    {
+        return User.IsInRole("SuperAdmin");
+    }
+
+    private bool KullaniciFirmaIleEslesiyor()
+    {
+        var middlewareFirmaSlug = HttpContext.Items["FirmaSlug"]?.ToString();
+        if (string.IsNullOrEmpty(middlewareFirmaSlug))
+            return false;
+
+        var jwtFirmaSlug = User.Claims.FirstOrDefault(c => c.Type == "FirmaSlug")?.Value;
+        if (string.IsNullOrEmpty(jwtFirmaSlug))
+            return false;
+
+        return string.Equals(jwtFirmaSlug, middlewareFirmaSlug, StringComparison.OrdinalIgnoreCase);
     }
 }
 

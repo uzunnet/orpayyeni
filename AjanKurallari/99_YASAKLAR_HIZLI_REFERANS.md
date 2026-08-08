@@ -1,4 +1,4 @@
----
+﻿---
 name: yasaklar-hizli-referans
 description: Tüm yasakların tek sayfada özet tablosu. Kod yazmadan önce 30 saniyede taranır. Her yasağın yanında ilgili uzman dosya §X referansı.
 status: TAMAM — tablo + referans (içerik doldurulmuş; sürekli güncellenir)
@@ -63,7 +63,7 @@ status: TAMAM — tablo + referans (içerik doldurulmuş; sürekli güncellenir)
 | 37 | Modülde `Servisler/` klasörü | `AGENTS.md` §24 — CQRS'de iş mantığı Handler'a |
 | 38 | `EnableDetailedErrors = true` (prod) | `07_Guvenlik...` §12 |
 | 39 | PDF dosyasını ham tarayıcı sekmesinde açmak | `03_Razor...` §5.7 (BlazorPdf/PdfGosterici) |
-| 40 | Medya havuzu dışında dosya barındırmak | `wwwroot/medya/` altında kategorili klasörler (`/medya/urunler/`, `/medya/anasayfa/`, `/medya/haberler/`, `/medya/kurumsal/`, `/medya/slaytlar/`, `/medya/iletisim/`, `/medya/3d-modeller/`). `img/`, `models/`, `goldbanyo/` yasak. Hariç: PWA manifest, `_framework/`, `css/sistem/`, `css/temalar/`, `js/`, `i18n/` |
+| 40 | Medya havuzu dışında dosya barındırmak | `wwwroot/medya/` altında kategorili klasörler (`/medya/urunler/`, `/medya/anasayfa/`, `/medya/haberler/`, `/medya/kurumsal/`, `/medya/slaytlar/`, `/medya/iletisim/`, `/medya/3d-modeller/`). `img/`, `models/`, `eski-marka-ad/` yasak. Hariç: PWA manifest, `_framework/`, `css/sistem/`, `css/temalar/`, `js/`, `i18n/` |
 
 ---
 
@@ -133,3 +133,6 @@ status: TAMAM — tablo + referans (içerik doldurulmuş; sürekli güncellenir)
 | 45 | Tema manifest'inde `ad`/`aciklama` çeviri anahtarı olmadan yazma | §13 §19.8 |
 | 46 | Tema-bazlı sayfada `dil.T(...)` yerine hardcoded string | §05 §13 §19.8 |
 | 47 | `:root[data-tema-id="..."]` seçicisinde dil-bağımlı içerik | §13 §19.8 |
+
+
+- **Türkçe karakter kırpımı** — UI metinlerinde S, I, G, Ü, Ö, Ç, i, s, g zorunludur. ASCII'ye indirgeme YASAK.

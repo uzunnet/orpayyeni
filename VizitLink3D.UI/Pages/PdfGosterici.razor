@@ -3,13 +3,13 @@
 
 <PageTitle>@_baslik</PageTitle>
 
-<main class="gb-page gb-pdf-gosterici-sayfasi">
-    <section class="gb-panel gb-pdf-gosterici-ust">
+<main class="orpay-page orpay-pdf-gosterici-sayfasi">
+    <section class="orpay-panel orpay-pdf-gosterici-ust">
         <div>
-            <MudText Typo="Typo.overline" Class="gb-pdf-gosterici-etiket">@DilServisi.T("pdfGosterici.etiket", "BELGE GÖSTERİCİ")</MudText>
-            <MudText Typo="Typo.h2" Class="gb-pdf-gosterici-baslik">@_baslik</MudText>
+            <MudText Typo="Typo.overline" Class="orpay-pdf-gosterici-etiket">@DilServisi.T("pdfGosterici.etiket", "BELGE GÖSTERİCİ")</MudText>
+            <MudText Typo="Typo.h2" Class="orpay-pdf-gosterici-baslik">@_baslik</MudText>
         </div>
-        <div class="gb-pdf-gosterici-aksiyonlar">
+        <div class="orpay-pdf-gosterici-aksiyonlar">
             <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Filled.ArrowBack" OnClick="GeriDon">
                 @DilServisi.T("ortak.geri", "Geri")
             </MudButton>
@@ -22,26 +22,24 @@
         </div>
     </section>
 
-    <section class="gb-panel gb-pdf-gosterici-panel">
+    <section class="orpay-panel orpay-pdf-gosterici-panel">
         @if (string.IsNullOrWhiteSpace(_belgeUrl))
         {
-            <div class="gb-pdf-gosterici-bos">
+            <div class="orpay-pdf-gosterici-bos">
                 <MudIcon Icon="@Icons.Material.Filled.PictureAsPdf" Size="Size.Large" />
                 <MudText Typo="Typo.h5">@DilServisi.T("pdfGosterici.dosyaYok", "PDF dosyası bulunamadı.")</MudText>
             </div>
         }
         else if (_gorselMi)
         {
-            <div class="gb-pdf-gosterici-gorsel">
+            <div class="orpay-pdf-gosterici-gorsel">
                 <img src="@_belgeUrl" alt="@_baslik" />
             </div>
         }
         else
         {
-            <div class="gb-pdf-gosterici-cerceve">
-                <iframe class="gb-pdf-gosterici-yerel-okuyucu"
-                        src="@_belgeUrl"
-                        title="@_baslik"></iframe>
+            <div class="orpay-pdf-gosterici-cerceve" style="width:100%; height:85vh;">
+                <MudPdfViewer Url="@_belgeUrl" />
             </div>
         }
     </section>

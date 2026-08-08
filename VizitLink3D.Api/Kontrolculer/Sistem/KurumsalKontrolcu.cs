@@ -1,4 +1,4 @@
-﻿using VizitLink3D.Api.VeriTabani;
+using VizitLink3D.Api.VeriTabani;
 using VizitLink3D.Api.Servisler;
 using VizitLink3D.Ortak.Modeller;
 using Microsoft.AspNetCore.Authorization;
@@ -70,6 +70,10 @@ public class KurumsalKontrolcu(VizitLink3DDbContext vt, PdfOnizlemeServisi pdfOn
     [HttpPost("kataloglar")]
     public async Task<IActionResult> KatalogEkle(Katalog istek)
     {
+        // FAZ 5.2: Cross-tenant izolasyon
+        if (!SuperAdminMi() && !KullaniciFirmaIleEslesiyor())
+            return Unauthorized(Cevap<object>.Hata("Bu firmanin verilerine erisim yetkiniz yok."));
+
         istek.OlusturulmaTarihi = DateTime.UtcNow;
         istek.AktifMi = true;
 
@@ -82,6 +86,10 @@ public class KurumsalKontrolcu(VizitLink3DDbContext vt, PdfOnizlemeServisi pdfOn
     [HttpPut("kataloglar/{id:int}")]
     public async Task<IActionResult> KatalogGuncelle(int id, Katalog istek)
     {
+        // FAZ 5.2: Cross-tenant izolasyon
+        if (!SuperAdminMi() && !KullaniciFirmaIleEslesiyor())
+            return Unauthorized(Cevap<object>.Hata("Bu firmanin verilerine erisim yetkiniz yok."));
+
         var katalog = await vt.Kataloglar.FindAsync(id);
         if (katalog is null)
         {
@@ -106,6 +114,10 @@ public class KurumsalKontrolcu(VizitLink3DDbContext vt, PdfOnizlemeServisi pdfOn
     [HttpDelete("kataloglar/{id:int}")]
     public async Task<IActionResult> KatalogSil(int id)
     {
+        // FAZ 5.2: Cross-tenant izolasyon
+        if (!SuperAdminMi() && !KullaniciFirmaIleEslesiyor())
+            return Unauthorized(Cevap<object>.Hata("Bu firmanin verilerine erisim yetkiniz yok."));
+
         var katalog = await vt.Kataloglar.FindAsync(id);
         if (katalog is null)
         {
@@ -123,6 +135,10 @@ public class KurumsalKontrolcu(VizitLink3DDbContext vt, PdfOnizlemeServisi pdfOn
     [RequestSizeLimit(80_000_000)]
     public async Task<IActionResult> KatalogDosyaYukle([FromForm] IFormFile dosya, IWebHostEnvironment ortam)
     {
+        // FAZ 5.2: Cross-tenant izolasyon
+        if (!SuperAdminMi() && !KullaniciFirmaIleEslesiyor())
+            return Unauthorized(Cevap<object>.Hata("Bu firmanin verilerine erisim yetkiniz yok."));
+
         if (dosya is null || dosya.Length == 0)
         {
             return BadRequest(Cevap<string>.Hata("Dosya secilmedi."));
@@ -200,6 +216,10 @@ public class KurumsalKontrolcu(VizitLink3DDbContext vt, PdfOnizlemeServisi pdfOn
     [HttpPost("sertifikalar")]
     public async Task<IActionResult> SertifikaEkle(Sertifika istek)
     {
+        // FAZ 5.2: Cross-tenant izolasyon
+        if (!SuperAdminMi() && !KullaniciFirmaIleEslesiyor())
+            return Unauthorized(Cevap<object>.Hata("Bu firmanin verilerine erisim yetkiniz yok."));
+
         istek.OlusturulmaTarihi = DateTime.UtcNow;
         istek.AktifMi = true;
 
@@ -212,6 +232,10 @@ public class KurumsalKontrolcu(VizitLink3DDbContext vt, PdfOnizlemeServisi pdfOn
     [HttpPut("sertifikalar/{id:int}")]
     public async Task<IActionResult> SertifikaGuncelle(int id, Sertifika istek)
     {
+        // FAZ 5.2: Cross-tenant izolasyon
+        if (!SuperAdminMi() && !KullaniciFirmaIleEslesiyor())
+            return Unauthorized(Cevap<object>.Hata("Bu firmanin verilerine erisim yetkiniz yok."));
+
         var sertifika = await vt.Sertifikalar.FindAsync(id);
         if (sertifika is null)
         {
@@ -236,6 +260,10 @@ public class KurumsalKontrolcu(VizitLink3DDbContext vt, PdfOnizlemeServisi pdfOn
     [HttpDelete("sertifikalar/{id:int}")]
     public async Task<IActionResult> SertifikaSil(int id)
     {
+        // FAZ 5.2: Cross-tenant izolasyon
+        if (!SuperAdminMi() && !KullaniciFirmaIleEslesiyor())
+            return Unauthorized(Cevap<object>.Hata("Bu firmanin verilerine erisim yetkiniz yok."));
+
         var sertifika = await vt.Sertifikalar.FindAsync(id);
         if (sertifika is null)
         {
@@ -253,6 +281,10 @@ public class KurumsalKontrolcu(VizitLink3DDbContext vt, PdfOnizlemeServisi pdfOn
     [RequestSizeLimit(50_000_000)]
     public async Task<IActionResult> SertifikaDosyaYukle([FromForm] IFormFile dosya, IWebHostEnvironment ortam)
     {
+        // FAZ 5.2: Cross-tenant izolasyon
+        if (!SuperAdminMi() && !KullaniciFirmaIleEslesiyor())
+            return Unauthorized(Cevap<object>.Hata("Bu firmanin verilerine erisim yetkiniz yok."));
+
         if (dosya is null || dosya.Length == 0)
         {
             return BadRequest(Cevap<string>.Hata("Dosya secilmedi."));
@@ -343,7 +375,13 @@ public class KurumsalKontrolcu(VizitLink3DDbContext vt, PdfOnizlemeServisi pdfOn
             return NotFound();
         }
 
-        return PhysicalFile(fizikselYol, MimeTipi(fizikselYol), Path.GetFileName(fizikselYol));
+        // Iframe icinde (UI projesi farkli port/domain olabilir) gosterilebilmesi icin 
+        // GuvenlikHeaderlariMiddleware tarafindan eklenen DENY/self kurallarini kaldiriyoruz.
+        Response.Headers.Remove("X-Frame-Options");
+        Response.Headers.Remove("Content-Security-Policy");
+
+        // inline göstermek için 3. parametreyi (dosya adı) kaldırıyoruz
+        return PhysicalFile(fizikselYol, MimeTipi(fizikselYol));
     }
 
     [HttpGet("subeler")]
@@ -363,6 +401,10 @@ public class KurumsalKontrolcu(VizitLink3DDbContext vt, PdfOnizlemeServisi pdfOn
     [HttpPost("subeler")]
     public async Task<IActionResult> SubeEkle(Sube istek)
     {
+        // FAZ 5.2: Cross-tenant izolasyon
+        if (!SuperAdminMi() && !KullaniciFirmaIleEslesiyor())
+            return Unauthorized(Cevap<object>.Hata("Bu firmanin verilerine erisim yetkiniz yok."));
+
         istek.OlusturulmaTarihi = DateTime.UtcNow;
         istek.AktifMi = true;
 
@@ -375,6 +417,10 @@ public class KurumsalKontrolcu(VizitLink3DDbContext vt, PdfOnizlemeServisi pdfOn
     [HttpPut("subeler/{id:int}")]
     public async Task<IActionResult> SubeGuncelle(int id, Sube istek)
     {
+        // FAZ 5.2: Cross-tenant izolasyon
+        if (!SuperAdminMi() && !KullaniciFirmaIleEslesiyor())
+            return Unauthorized(Cevap<object>.Hata("Bu firmanin verilerine erisim yetkiniz yok."));
+
         var sube = await vt.Subeler.FindAsync(id);
         if (sube is null)
         {
@@ -404,6 +450,10 @@ public class KurumsalKontrolcu(VizitLink3DDbContext vt, PdfOnizlemeServisi pdfOn
     [HttpDelete("subeler/{id:int}")]
     public async Task<IActionResult> SubeSil(int id)
     {
+        // FAZ 5.2: Cross-tenant izolasyon
+        if (!SuperAdminMi() && !KullaniciFirmaIleEslesiyor())
+            return Unauthorized(Cevap<object>.Hata("Bu firmanin verilerine erisim yetkiniz yok."));
+
         var sube = await vt.Subeler.FindAsync(id);
         if (sube is null)
         {
@@ -434,6 +484,10 @@ public class KurumsalKontrolcu(VizitLink3DDbContext vt, PdfOnizlemeServisi pdfOn
     [HttpPost("ekip")]
     public async Task<IActionResult> EkipEkle(EkipUyesi istek)
     {
+        // FAZ 5.2: Cross-tenant izolasyon
+        if (!SuperAdminMi() && !KullaniciFirmaIleEslesiyor())
+            return Unauthorized(Cevap<object>.Hata("Bu firmanin verilerine erisim yetkiniz yok."));
+
         istek.OlusturulmaTarihi = DateTime.UtcNow;
         istek.AktifMi = true;
 
@@ -446,6 +500,10 @@ public class KurumsalKontrolcu(VizitLink3DDbContext vt, PdfOnizlemeServisi pdfOn
     [HttpPut("ekip/{id:int}")]
     public async Task<IActionResult> EkipGuncelle(int id, EkipUyesi istek)
     {
+        // FAZ 5.2: Cross-tenant izolasyon
+        if (!SuperAdminMi() && !KullaniciFirmaIleEslesiyor())
+            return Unauthorized(Cevap<object>.Hata("Bu firmanin verilerine erisim yetkiniz yok."));
+
         var uye = await vt.EkipUyeleri.FindAsync(id);
         if (uye is null)
         {
@@ -468,6 +526,10 @@ public class KurumsalKontrolcu(VizitLink3DDbContext vt, PdfOnizlemeServisi pdfOn
     [HttpDelete("ekip/{id:int}")]
     public async Task<IActionResult> EkipSil(int id)
     {
+        // FAZ 5.2: Cross-tenant izolasyon
+        if (!SuperAdminMi() && !KullaniciFirmaIleEslesiyor())
+            return Unauthorized(Cevap<object>.Hata("Bu firmanin verilerine erisim yetkiniz yok."));
+
         var uye = await vt.EkipUyeleri.FindAsync(id);
         if (uye is null)
         {
@@ -506,6 +568,10 @@ public class KurumsalKontrolcu(VizitLink3DDbContext vt, PdfOnizlemeServisi pdfOn
     [HttpPut("kullanicilar/{id:int}")]
     public async Task<IActionResult> KullaniciGuncelle(int id, Kullanici istek)
     {
+        // FAZ 5.2: Cross-tenant izolasyon
+        if (!SuperAdminMi() && !KullaniciFirmaIleEslesiyor())
+            return Unauthorized(Cevap<object>.Hata("Bu firmanin verilerine erisim yetkiniz yok."));
+
         var kullanici = await vt.Kullanicilar.FindAsync(id);
         if (kullanici is null)
         {
@@ -556,6 +622,24 @@ public class KurumsalKontrolcu(VizitLink3DDbContext vt, PdfOnizlemeServisi pdfOn
 
         return !string.IsNullOrWhiteSpace(sertifika.Resim)
             && pdfOnizlemeServisi.FizikselGorselYolu(sertifika.Resim) is not null;
+    }
+
+    private bool SuperAdminMi()
+    {
+        return User.IsInRole("SuperAdmin");
+    }
+
+    private bool KullaniciFirmaIleEslesiyor()
+    {
+        var middlewareFirmaSlug = HttpContext.Items["FirmaSlug"]?.ToString();
+        if (string.IsNullOrEmpty(middlewareFirmaSlug))
+            return false;
+
+        var jwtFirmaSlug = User.Claims.FirstOrDefault(c => c.Type == "FirmaSlug")?.Value;
+        if (string.IsNullOrEmpty(jwtFirmaSlug))
+            return false;
+
+        return string.Equals(jwtFirmaSlug, middlewareFirmaSlug, StringComparison.OrdinalIgnoreCase);
     }
 
     public sealed record KatalogDosyaYuklemeSonucu(string Yol, string? OnizlemeYolu, double BoyutMb, long BoyutByte);

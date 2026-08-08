@@ -1,0 +1,55 @@
+﻿{
+  "id": "gold-luxury-dark",
+  "kod": "GOLD_LUXURY_DARK",
+  "ad": "Gold Luxury Dark",
+  "slug": "gold-luxury-dark",
+  "aciklama": "Endüstriyel premium tema — koyu zemin, altın vurgu, yeşil aksan. Orpay varsayılan teması.",
+  "kaynak": "elle",
+  "stitchProjeId": null,
+  "aktif": true,
+  "varsayilanMi": false,
+  "premium": false,
+  "fiyat": 0,
+  "paraBirimi": "TRY",
+  "thumbnailUrl": "/css/temalar/gold-luxury-dark/ekran-goruntusu.jpg",
+  "olusturulmaTarihi": "2026-07-23T00:00:00Z",
+  "versiyon": 1,
+  "kapsam": "Her_ikisi",
+  "renkler": {
+    "birincil": "#0d0d0d", "ikincil": "#1a1a1a", "vurgu": "#e8c84a", "vurguAcik": "#f0d86a", "vurguKoyu": "#c4a035",
+    "arkaPlan": "#ffffff", "arkaPlan2": "#f8f6f2", "yuzey": "#1a1a1a", "yuzeyHover": "#2a2a2a",
+    "cizgi": "rgba(0, 0, 0, 0.10)", "metin": "#2c2c2c", "metinIkincil": "#555555", "metinSoluk": "#8a8a8a",
+    "metinTers": "#ffffff", "basari": "#27ae60", "uyari": "#e8c84a", "hata": "#9b3d3d", "bilgi": "#4a6c8c"
+  },
+  "tipografi": {
+    "baslikAilesi": "Manrope", "baslikFallback": "system-ui, sans-serif", "baslikAgirlik": 700, "baslikHarfAraligi": "-0.02em",
+    "govdeAilesi": "Roboto", "govdeFallback": "system-ui, sans-serif", "govdeAgirlik": 400,
+    "vurguAilesi": "Manrope", "monoAilesi": "JetBrains Mono", "boyutSkalaRatio": 1.250, "baslikBuyuklukClamp": "clamp(2rem, 5vw, 4rem)"
+  },
+  "geometri": {
+    "koseSm": 2, "koseMd": 4, "koseLg": 8, "koseXl": 16, "koseTam": 9999, "borderKalinlik": 1, "borderStil": "solid"
+  },
+  "golgeler": {
+    "sm": "0 2px 8px rgba(0, 0, 0, 0.04)", "md": "0 4px 20px rgba(0, 0, 0, 0.06)",
+    "lg": "0 10px 40px rgba(0, 0, 0, 0.10)", "xl": "0 20px 60px rgba(0, 0, 0, 0.12)",
+    "vurgu": "0 0 15px rgba(232, 200, 74, 0.20)", "glowStil": "altin"
+  },
+  "glassmorphism": {
+    "aktif": false, "blur": "12px", "blurSaturate": 1.5, "bgOpacity": 0.7, "borderOpacity": 0.3, "yariSaydam": true
+  },
+  "animasyon": {
+    "hizi": "normal", "gecisHizli": "0.15s ease", "gecisNormal": "0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    "gecisYavas": "0.5s cubic-bezier(0.22, 1, 0.36, 1)", "cubicBezier": "cubic-bezier(0.4, 0, 0.2, 1)",
+    "hoverYukseklik": 4, "hoverOlcek": 1.03, "scrollReveal": true, "magneticCursor": false,
+    "pariltiEfekti": false, "shimmerEfekti": true, "tip": "hizli-enerjik"
+  },
+  "layout": {
+    "header": "solid-with-border", "footer": "cok-sutunlu", "heroTipi": "slider", "kartStili": "solid-elevation",
+    "icerikGenislik": 1320, "kenarBosluk": 64, "sutunSayisi": 4, "bolumAyirici": "cizgi"
+  },
+  "ikonSeti": "Material Icons", "glassmorphismAktif": false,
+  "etiketler": ["varsayilan", "endustriyel", "altin", "premium"],
+  "adVarsayilanTr": "Gold Luxury Dark", "adVarsayilanEn": "Gold Luxury Dark",
+  "aciklamaVarsayilanTr": "Endüstriyel premium tema — koyu zemin, altın vurgu, yeşil aksan.",
+  "aciklamaVarsayilanEn": "Industrial premium theme — dark background, gold accent, green highlight."
+}

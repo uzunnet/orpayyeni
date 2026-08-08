@@ -1,0 +1,112 @@
+/*
+ * Luxe Industrial Light — animasyonlar.css
+ * Tema-özgü keyframe ve motion preset'leri.
+ * Yumuşak, sakin, normal hız animasyonlar.
+ * Intersection Observer ile reveal efekti.
+ */
+
+:root[data-tema-id="luxe-industrial-light"] {
+
+    /* Reveal — scroll ile görünür olma */
+    @keyframes tema-reveal-slide-up {
+        from { opacity: 0; transform: translateY(30px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes tema-reveal-scale-in {
+        from { opacity: 0; transform: scale(0.95); }
+        to   { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes tema-reveal-fade {
+        from { opacity: 0; }
+        to   { opacity: 1; }
+    }
+
+    /* Yeşil glow — sade */
+    @keyframes tema-orman-glow {
+        0%, 100% { box-shadow: 0 0 8px rgba(0, 109, 55, 0.10); }
+        50%      { box-shadow: 0 0 20px rgba(0, 109, 55, 0.20); }
+    }
+
+    /* Float — yumuşak yüzme */
+    @keyframes tema-float {
+        0%, 100% { transform: translateY(0); }
+        50%      { transform: translateY(-6px); }
+    }
+
+    /* Slider geçişi */
+    @keyframes tema-slider-fade {
+        from { opacity: 0; }
+        to   { opacity: 1; }
+    }
+
+    /* Endüstriyel nabız — hafif yeşil */
+    @keyframes tema-industrial-pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50%      { opacity: 0.90; transform: scale(1.01); }
+    }
+
+    /* UYGULAMA SINIFLARI */
+    .anim-reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity var(--tema-anim-suresi) var(--tema-bezier),
+                    transform var(--tema-anim-suresi) var(--tema-bezier);
+    }
+
+    .anim-reveal.anim-aktif {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .anim-reveal-gecikme-100 { transition-delay: 0.1s; }
+    .anim-reveal-gecikme-200 { transition-delay: 0.2s; }
+    .anim-reveal-gecikme-300 { transition-delay: 0.3s; }
+
+    .anim-scale-in {
+        opacity: 0;
+        transform: scale(0.95);
+        transition: opacity var(--tema-anim-suresi) var(--tema-bezier),
+                    transform var(--tema-anim-suresi) var(--tema-bezier);
+    }
+
+    .anim-scale-in.anim-aktif {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    .anim-fade-in {
+        opacity: 0;
+        transition: opacity var(--tema-anim-suresi) var(--tema-bezier);
+    }
+
+    .anim-fade-in.anim-aktif {
+        opacity: 1;
+    }
+
+    .anim-orman-glow {
+        animation: tema-orman-glow 4s ease-in-out infinite;
+    }
+
+    .anim-float {
+        animation: tema-float 6s ease-in-out infinite;
+    }
+
+    .anim-industrial-pulse {
+        animation: tema-industrial-pulse 5s ease-in-out infinite;
+    }
+
+    /* Slider görsel geçişi */
+    .slider-img {
+        transition: opacity 1s ease-in-out;
+    }
+
+    .slider-img.gizli {
+        opacity: 0;
+    }
+
+    .slider-img.gorunur {
+        opacity: 1;
+    }
+}

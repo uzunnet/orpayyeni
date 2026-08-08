@@ -1,4 +1,6 @@
-﻿@page "/yonetim/giris"
+@page "/admin/giris"
+@page "/admin"
+@page "/yonetim/giris"
 @page "/yonetim"
 @layout BosDuzen
 @inject NavigationManager NavManager
@@ -10,8 +12,8 @@
             <div class="dl-login-card-header">
                 <div class="dl-login-mark">
                     <svg width="36" height="36" viewBox="0 0 48 48" fill="none">
-                        <rect width="48" height="48" rx="4" fill="var(--gb-gold)" opacity=".9"/>
-                        <path d="M14 16h4v16h-4zm8 0h4v16h-4zm8 0h4v16h-4z" fill="var(--gb-primary)"/>
+                        <rect width="48" height="48" rx="4" fill="var(--tema-vurgu)" opacity=".9"/>
+                        <path d="M14 16h4v16h-4zm8 0h4v16h-4zm8 0h4v16h-4z" fill="var(--tema-vurgu)"/>
                     </svg>
                 </div>
                 <div class="dl-login-card-titles">
@@ -95,14 +97,14 @@
         <div class="dl-login-visual-bg"></div>
         <div class="dl-login-visual-layer">
             <div class="dl-login-visual-top">
-                <span class="dl-login-visual-eyebrow">@dil.T("admin.giris.markaYil","ORPAY 1989")</span>
+                <span class="dl-login-visual-eyebrow">@dil.T("admin.giris.markaYil",_firmaAdi + " ©")</span>
             </div>
             <div class="dl-login-visual-core">
                 <h2 class="dl-login-visual-headline">
                     <span class="dl-login-visual-line1">@dil.T("admin.giris.slogan1","Her Mekana")</span>
-                    <span class="dl-login-visual-line2">@dil.T("admin.giris.slogan2","Özel Banyolar")</span>
+                    <span class="dl-login-visual-line2">@dil.T("admin.giris.slogan2","Özel Çözümler")</span>
                 </h2>
-                <p class="dl-login-visual-desc">@dil.T("admin.giris.mirasAciklama","Premium banyo mobilyalarında köklü üretim deneyimini modern koleksiyonlarla buluşturuyoruz.")</p>
+                <p class="dl-login-visual-desc">@dil.T("admin.giris.mirasAciklama","(firma açıklaması)")</p>
             </div>
             <div class="dl-login-visual-metrics">
                 <div class="dl-login-metric">
@@ -123,3 +125,4 @@
         </div>
     </div>
 </div>
+

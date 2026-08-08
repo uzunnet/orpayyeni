@@ -1,0 +1,78 @@
+/* ORPAY Public Image Fixes - Resimlerin orijinal boyutlarini korur */
+
+/* Hero arka plan - cover yerine contain, merkezden */
+.orpay-hero__arka img {
+    object-fit: contain !important;
+    object-position: center;
+    background: var(--tema-arkaplan, #f4fbf1);
+}
+
+/* Urun kart gorselleri - contain ile kirpma yok */
+.orpay-urun-kart__gorsel {
+    aspect-ratio: auto !important;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--tema-arkaplan-2, #eff6ec);
+}
+
+.orpay-urun-kart__gorsel img {
+    object-fit: contain !important;
+    max-height: 280px;
+    width: auto;
+    max-width: 100%;
+}
+
+/* Product card gorselleri */
+.orpay-product-card__gorsel {
+    aspect-ratio: auto !important;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--tema-arkaplan-2, #eff6ec);
+}
+
+.orpay-product-card__gorsel img {
+    object-fit: contain !important;
+    max-height: 280px;
+    width: auto;
+    max-width: 100%;
+}
+
+/* Bento gorseller */
+.orpay-bento__gorsel img {
+    object-fit: contain !important;
+    background: var(--tema-arkaplan, #f4fbf1);
+}
+
+/* Vitrin kart gorselleri */
+.orpay-vitrin-karti img {
+    object-fit: contain !important;
+    background: var(--tema-arkaplan-2, #eff6ec);
+}
+
+/* Detail gorseller */
+.orpay-detail-foto-kolaj__ana img,
+.orpay-detail-foto-kolaj__yan-kart img,
+.orpay-detail-galeri__kart img,
+.orpay-detail-medya__ana img,
+.orpay-detail-medya__kart img {
+    object-fit: contain !important;
+    background: var(--tema-arkaplan-2, #eff6ec);
+}
+
+/* Showroom/kurumsal gorseller */
+.orpay-showcase-hero__vitrin img,
+.orpay-koleksiyon-sahne__arka img {
+    object-fit: contain !important;
+    background: var(--tema-arkaplan, #f4fbf1);
+}
+
+/* Logo - brand */
+.orpay-brand img {
+    object-fit: contain !important;
+    max-height: 40px;
+    width: auto;
+}

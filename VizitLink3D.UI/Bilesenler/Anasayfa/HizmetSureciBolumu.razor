@@ -1,43 +1,64 @@
-@* HizmetSureciBolumu — Nasıl Çalışıyoruz? 3 adım (Keşfet → Tasarla → Üret) *@
+@* HizmetSureciBolumu — Nasıl Çalışıyoruz? 4 adım (İletişim → Projelendirme → Üretim → Teslimat) *@
 
 <section class="surec-bolum">
     <div class="section-container">
         <div class="section-baslik-kutu anim-reveal-up">
             <span class="section-etiket">@dil.T("anasayfa.nasil-calisir.etiket", "Süreç")</span>
             <h2 class="section-baslik">@dil.T("anasayfa.nasil-calisir.baslik", "Nasıl Çalışıyoruz?")</h2>
-            <p class="section-aciklama">@dil.T("anasayfa.nasil-calisir.aciklama", "Hayalinizdeki banyoya giden 3 adım.")</p>
+            <p class="section-aciklama">@dil.T("anasayfa.nasil-calisir.aciklama", "Hayalinizdeki projeye giden 4 adım.")</p>
         </div>
 
         <div class="surec-grid">
-            <!-- Adım 1: Keşfet -->
-            <div class="surec-adim anim-reveal-up">
-                <div class="surec-adim__ikon">
-                    <span class="material-symbols-outlined">search_insights</span>
+            @if (_adimlar.Count > 0)
+            {
+                @foreach (var adim in _adimlar)
+                {
+                    <div class="surec-adim anim-reveal-up">
+                        <div class="surec-adim__ikon">
+                            <span class="material-symbols-outlined">@(adim.Ikon ?? "check_circle")</span>
+                        </div>
+                        <div class="surec-adim__numarali-daire">@adim.AdimNo.ToString("D2")</div>
+                        <h3 class="surec-adim__baslik">@adim.Baslik</h3>
+                        <p class="surec-adim__aciklama">@adim.Aciklama</p>
+                    </div>
+                }
+            }
+            else
+            {
+                <!-- Fallback: DilServisi sabitleri -->
+                <div class="surec-adim anim-reveal-up">
+                    <div class="surec-adim__ikon">
+                        <span class="material-symbols-outlined">chat</span>
+                    </div>
+                    <div class="surec-adim__numarali-daire">01</div>
+                    <h3 class="surec-adim__baslik">@dil.T("anasayfa.nasil-calisir.adim1.baslik", "İletişim")</h3>
+                    <p class="surec-adim__aciklama">@dil.T("anasayfa.nasil-calisir.adim1.aciklama", "İhtiyaçlarınızı dinliyor, projenizin kapsamını birlikte belirliyoruz.")</p>
                 </div>
-                <div class="surec-adim__numarali-daire">01</div>
-                <h3 class="surec-adim__baslik">@dil.T("anasayfa.nasil-calisir.adim1.baslik", "Keşfet")</h3>
-                <p class="surec-adim__aciklama">@dil.T("anasayfa.nasil-calisir.adim1.aciklama", "Mekanınızı analiz ediyor, ihtiyaçlarınızı dinliyor ve vizyonunuzu anlıyoruz.")</p>
-            </div>
-
-            <!-- Adım 2: Tasarla -->
-            <div class="surec-adim anim-reveal-up">
-                <div class="surec-adim__ikon">
-                    <span class="material-symbols-outlined">draw</span>
+                <div class="surec-adim anim-reveal-up">
+                    <div class="surec-adim__ikon">
+                        <span class="material-symbols-outlined">architecture</span>
+                    </div>
+                    <div class="surec-adim__numarali-daire">02</div>
+                    <h3 class="surec-adim__baslik">@dil.T("anasayfa.nasil-calisir.adim2.baslik", "Projelendirme")</h3>
+                    <p class="surec-adim__aciklama">@dil.T("anasayfa.nasil-calisir.adim2.aciklama", "3D modelleme ile projenizi önceden görüyor, malzeme ve renk seçimlerini birlikte yapıyoruz.")</p>
                 </div>
-                <div class="surec-adim__numarali-daire">02</div>
-                <h3 class="surec-adim__baslik">@dil.T("anasayfa.nasil-calisir.adim2.baslik", "Tasarla")</h3>
-                <p class="surec-adim__aciklama">@dil.T("anasayfa.nasil-calisir.adim2.aciklama", "3D modelleme ile banyonuzu önceden görüyor, malzeme ve renk seçimlerini birlikte yapıyoruz.")</p>
-            </div>
-
-            <!-- Adım 3: Üret -->
-            <div class="surec-adim anim-reveal-up">
-                <div class="surec-adim__ikon">
-                    <span class="material-symbols-outlined">precision_manufacturing</span>
+                <div class="surec-adim anim-reveal-up">
+                    <div class="surec-adim__ikon">
+                        <span class="material-symbols-outlined">precision_manufacturing</span>
+                    </div>
+                    <div class="surec-adim__numarali-daire">03</div>
+                    <h3 class="surec-adim__baslik">@dil.T("anasayfa.nasil-calisir.adim3.baslik", "Üretim")</h3>
+                    <p class="surec-adim__aciklama">@dil.T("anasayfa.nasil-calisir.adim3.aciklama", "CNC teknolojisi ve usta el işçiliğiyle üretip, titizlikle kontrol ediyoruz.")</p>
                 </div>
-                <div class="surec-adim__numarali-daire">03</div>
-                <h3 class="surec-adim__baslik">@dil.T("anasayfa.nasil-calisir.adim3.baslik", "Üret")</h3>
-                <p class="surec-adim__aciklama">@dil.T("anasayfa.nasil-calisir.adim3.aciklama", "CNC teknolojisi ve usta el işçiliğiyle üretip, titizlikle monte ediyoruz.")</p>
-            </div>
+                <div class="surec-adim anim-reveal-up">
+                    <div class="surec-adim__ikon">
+                        <span class="material-symbols-outlined">local_shipping</span>
+                    </div>
+                    <div class="surec-adim__numarali-daire">04</div>
+                    <h3 class="surec-adim__baslik">@dil.T("anasayfa.nasil-calisir.adim4.baslik", "Teslimat")</h3>
+                    <p class="surec-adim__aciklama">@dil.T("anasayfa.nasil-calisir.adim4.aciklama", "Projelerinizi zamanında ve eksiksiz olarak teslim ediyoruz.")</p>
+                </div>
+            }
         </div>
     </div>
 </section>

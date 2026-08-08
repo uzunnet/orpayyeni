@@ -86,10 +86,10 @@ public class ModelIliskiTestleri
     [Fact]
     public void Kullanici_RolEnum_DogruAtanmali()
     {
-        var admin = new Kullanici { KullaniciAdi = "admin", Eposta = "a@a.com", Rol = Rol.Admin };
+        var admin = new Kullanici { KullaniciAdi = "admin", Eposta = "a@a.com", Rol = Rol.FirmaAdmin };
         var editor = new Kullanici { KullaniciAdi = "editor", Eposta = "e@e.com", Rol = Rol.Editor };
 
-        Assert.Equal(Rol.Admin, admin.Rol);
+        Assert.Equal(Rol.FirmaAdmin, admin.Rol);
         Assert.Equal(Rol.Editor, editor.Rol);
         Assert.NotEqual(admin.Rol, editor.Rol);
     }

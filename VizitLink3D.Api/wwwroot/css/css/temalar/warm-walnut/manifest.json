@@ -1,0 +1,75 @@
+{
+  "id": "warm-walnut",
+  "kod": "WARM_WALNUT",
+  "ad": "Warm Walnut",
+  "slug": "warm-walnut",
+  "adAnahtar": "tema.warm-walnut.ad",
+  "adVarsayilanTr": "Warm Walnut",
+  "adVarsayilanEn": "Warm Walnut",
+  "aciklamaAnahtar": "tema.warm-walnut.aciklama",
+  "aciklamaVarsayilanTr": "Orpay Orman Ürünleri tema şablonu — warm-walnut",
+  "aciklamaVarsayilanEn": "Orpay Orman Ürünleri template — warm-walnut",
+  "kaynak": "elle",
+  "stitchProjeId": null,
+  "modlar": ["koyu"],
+  "varsayilanMod": "koyu",
+  "adminTemaDegil": true,
+  "aktif": true,
+  "varsayilanMi": false,
+  "premium": false,
+  "fiyat": 0,
+  "paraBirimi": "TRY",
+  "thumbnailUrl": "/css/temalar/warm-walnut/ekran-goruntusu.jpg",
+  "olusturulmaTarihi": "2026-07-02T08:12:44Z",
+  "guncellenmeTarihi": null,
+  "versiyon": 1,
+  "renkler": {
+    "birincil": "#0a0a0a","ikincil": "#1a1a1a","vurgu": "#C5A059",
+    "vurguAcik": "#D4B66A","vurguKoyu": "#8B6914",
+    "arkaPlan": "#ffffff","arkaPlan2": "#f8f6f2",
+    "yuzey": "#ffffff","yuzeyHover": "#f0ede6",
+    "cizgi": "rgba(0,0,0,0.12)",
+    "metin": "#1A1A1A","metinIkincil": "#5B5240","metinSoluk": "#8B826E",
+    "metinTers": "#ffffff","basari": "#4a7c59","uyari": "#c9a449","hata": "#9b3d3d","bilgi": "#4a6c8c"
+  },
+  "tipografi": {
+    "baslikAilesi": "Noto Serif","baslikFallback": "serif",
+    "baslikAgirlik": 700,"baslikHarfAraligi": "-0.02em",
+    "govdeAilesi": "Manrope","govdeFallback": "system-ui, sans-serif",
+    "govdeAgirlik": 400,"vurguAilesi": "Cormorant Garamond",
+    "monoAilesi": "JetBrains Mono","boyutSkalaRatio": 1.250,
+    "baslikBuyuklukClamp": "clamp(2.5rem, 6vw, 5rem)"
+  },
+  "geometri": {
+    "koseSm": 2,"koseMd": 4,"koseLg": 8,"koseXl": 16,"koseTam": 9999,
+    "borderKalinlik": 1,"borderStil": "solid"
+  },
+  "golgeler": {
+    "sm": "0 2px 8px rgba(0,0,0,0.04)","md": "0 4px 20px rgba(0,0,0,0.06)",
+    "lg": "0 10px 40px rgba(0,0,0,0.10)","xl": "0 20px 60px rgba(0,0,0,0.12)",
+    "vurgu": "0 0 15px rgba(197,160,89,0.20)","glowStil": "altin"
+  },
+  "glassmorphism": {
+    "aktif": false,"blur": "12px","blurSaturate": 1.2,
+    "bgOpacity": 0.7,"borderOpacity": 0.3,"yariSaydam": false
+  },
+  "animasyon": {
+    "hizi": "normal",
+    "gecisHizli": "0.2s ease","gecisNormal": "0.4s cubic-bezier(0.4,0,0.2,1)",
+    "gecisYavas": "0.7s cubic-bezier(0.22,1,0.36,1)",
+    "cubicBezier": "cubic-bezier(0.22,1,0.36,1)",
+    "hoverYukseklik": 4,"hoverOlcek": 1.02,
+    "scrollReveal": true,"magneticCursor": false,
+    "pariltiEfekti": false,"shimmerEfekti": false,"tip": "yumusak-zarif"
+  },
+  "layout": {
+    "header": "solid","footer": "solid",
+    "heroTipi": "slider","kartStili": "solid-elevation",
+    "icerikGenislik": 1440,"kenarBosluk": 80,
+    "sutunSayisi": 4,"bolumAyirici": "cizgi"
+  },
+  "ikonSeti": "Material Icons Outlined",
+  "glassmorphismAktif": false,
+  "premium": false,
+  "etiketler": ["temel", "placeholder"]
+}

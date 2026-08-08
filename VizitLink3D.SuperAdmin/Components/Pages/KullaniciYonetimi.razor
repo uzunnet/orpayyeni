@@ -1,0 +1,111 @@
+@page "/kullanicilar"
+@rendermode InteractiveServer
+
+<PageTitle>Kullanıcı Yönetimi — SuperAdmin</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">Kullanıcı Yönetimi</MudText>
+
+@if (_yukleniyor)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" Class="my-4" />
+}
+else
+{
+    @* ── Yeni Kullanıcı Ekleme Formu ── *@
+    <MudCard Elevation="2" Class="pa-4 mb-6">
+        <MudText Typo="Typo.h6" GutterBottom="true">Yeni Kullanıcı Ekle</MudText>
+        <EditForm Model="@_yeniKullanici" OnValidSubmit="YeniKullaniciEkleAsync">
+            <MudGrid>
+                <MudItem xs="12" sm="6" md="3">
+                    <MudTextField @bind-Value="_yeniKullanici.KullaniciAdi"
+                                  Label="Kullanıcı Adı"
+                                  Required="true"
+                                  RequiredError="Kullanıcı adı zorunludur."
+                                  Variant="Variant.Outlined"
+                                  Immediate="true" />
+                </MudItem>
+                <MudItem xs="12" sm="6" md="3">
+                    <MudTextField @bind-Value="_yeniKullanici.AdSoyad"
+                                  Label="Ad Soyad"
+                                  Required="true"
+                                  RequiredError="Ad Soyad zorunludur."
+                                  Variant="Variant.Outlined"
+                                  Immediate="true" />
+                </MudItem>
+                <MudItem xs="12" sm="6" md="3">
+                    <MudTextField @bind-Value="_yeniKullanici.Sifre"
+                                  Label="Şifre"
+                                  InputType="InputType.Password"
+                                  Required="true"
+                                  RequiredError="Şifre zorunludur."
+                                  Variant="Variant.Outlined"
+                                  Immediate="true" />
+                </MudItem>
+                <MudItem xs="12" sm="6" md="3" Class="d-flex align-center">
+                    <MudButton ButtonType="ButtonType.Submit"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Disabled="@_ekleniyor"
+                               StartIcon="@Icons.Material.Filled.PersonAdd"
+                               FullWidth="true">
+                        @(_ekleniyor ? "Ekleniyor..." : "Kullanıcı Ekle")
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
+        </EditForm>
+    </MudCard>
+
+    @* ── Kullanıcı Listesi ── *@
+    @if (_kullanicilar.Count == 0)
+    {
+        <MudAlert Severity="Severity.Info">Henüz hiç kullanıcı eklenmemiş.</MudAlert>
+    }
+    else
+    {
+        <MudDataGrid Items="@_kullanicilar"
+                     Hover="true"
+                     Dense="true"
+                     Striped="true"
+                     Elevation="1"
+                     Filterable="false"
+                     SortMode="SortMode.Single">
+            <Columns>
+                <PropertyColumn Property="x => x.Id" Title="ID" />
+                <PropertyColumn Property="x => x.KullaniciAdi" Title="Kullanıcı Adı" />
+                <PropertyColumn Property="x => x.AdSoyad" Title="Ad Soyad" />
+                <PropertyColumn Property="x => x.AktifMi" Title="Durum">
+                    <CellTemplate>
+                        @if (context.Item.AktifMi)
+                        {
+                            <MudChip T="string" Size="Size.Small" Color="Color.Success">Aktif</MudChip>
+                        }
+                        else
+                        {
+                            <MudChip T="string" Size="Size.Small" Color="Color.Default">Pasif</MudChip>
+                        }
+                    </CellTemplate>
+                </PropertyColumn>
+                <PropertyColumn Property="x => x.OlusturulmaTarihi" Title="Oluşturulma">
+                    <CellTemplate>
+                        @context.Item.OlusturulmaTarihi.ToString("dd.MM.yyyy HH:mm")
+                    </CellTemplate>
+                </PropertyColumn>
+                <TemplateColumn Title="">
+                    <CellTemplate>
+                        @if (context.Item.KullaniciAdi != "admin")
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                           Size="Size.Small"
+                                           Color="Color.Error"
+                                           OnClick="@(() => SilOnayAsync(context.Item))"
+                                           Title="Kullanıcıyı Sil" />
+                        }
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+            <PagerContent>
+                <MudDataGridPager PageSizeOptions="new[] { 10, 25, 50 }" />
+            </PagerContent>
+        </MudDataGrid>
+    }
+}

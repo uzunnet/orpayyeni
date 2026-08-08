@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.JSInterop;
 using VizitLink3D.UI;
 using VizitLink3D.UI.Servisler;
 using Gotho.BlazorPdf;
-using MudBlazor.Extensions;
-using MudExtensions.Services;
 using MudBlazor.Services;
 
 var yapici = WebAssemblyHostBuilder.CreateDefault(args);
@@ -31,14 +29,14 @@ static bool YerelAgAdresiMi(string hst)
 }
 
 string apiUrl;
-if (host == "localhost" || host == "127.0.0.1")
+if (host == "localhost" || host == "127.0.0.1" || host.Contains(".orca.localhost"))
 {
-    apiUrl = !string.IsNullOrEmpty(yapilandirmaAdresi) ? yapilandirmaAdresi : "http://localhost:5215";
+    apiUrl = "http://localhost:5015";
 }
 else if (YerelAgAdresiMi(host))
 {
-    // Private IP (mobil/ag) — ayni host + 5215
-    apiUrl = $"http://{host}:5215";
+    // Private IP (mobil/ag) — ayni host + 5015
+    apiUrl = $"http://{host}:5015";
 }
 else
 {
@@ -56,7 +54,6 @@ yapici.Services.AddScoped<ApiIstemcisi>(sp =>
 });
 
 yapici.Services.AddMudServices();
-yapici.Services.AddMudExtensions();
 yapici.Services.AddBlazorPdfViewer();
 yapici.Services.AddValidation();
 

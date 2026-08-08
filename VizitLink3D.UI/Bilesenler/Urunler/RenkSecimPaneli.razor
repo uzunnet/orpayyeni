@@ -1,6 +1,6 @@
-@using VizitLink3D.Ortak.Modeller.Urunler
+﻿@using VizitLink3D.Ortak.Modeller.Urunler
 
-<div class="gb-renk-panel">
+<div class="orpay-renk-panel">
     <MudText Typo="Typo.subtitle1" Class="mb-4">
         @dil.T("konfigurator.renkSecimi", "Renk Seçimi")
     </MudText>
@@ -17,10 +17,10 @@
         {
             <div class="d-flex align-center gap-3 mb-4">
                 <MudPaper Elevation="2"
-                          Class="gb-renk-onizleme-kutu"
+                          Class="orpay-renk-onizleme-kutu"
                           Style="@($"background-color: {_seciliRenk.HexKod};")" />
                 <div>
-                    <MudText Typo="Typo.body2" Class="gb-renk-secili-ad">
+                    <MudText Typo="Typo.body2" Class="orpay-renk-secili-ad">
                         @_seciliRenk.Ad
                     </MudText>
                     <MudText Typo="Typo.caption" Color="Color.Dark">
@@ -30,7 +30,7 @@
             </div>
         }
 
-        <div class="gb-renk-panel-grid">
+        <div class="orpay-renk-panel-grid">
             @foreach (var renk in Renkler)
             {
                 <MudPaper Elevation="@(renk.HexKod == _seciliRenk?.HexKod ? 3 : 1)"
@@ -41,7 +41,7 @@
                     {
                         <MudIcon Icon="@Icons.Material.Filled.Check"
                                  Color="Color.Inherit"
-                                 Size="Size.Small" Class="gb-renk-tik" />
+                                 Size="Size.Small" Class="orpay-renk-tik" />
                     }
                 </MudPaper>
             }

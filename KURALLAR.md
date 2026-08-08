@@ -487,7 +487,7 @@ Razor dosyasının içine `<style>` etiketi ile CSS yazmak **KESİNLİKLE YASAK*
 ### 9.2 Zorunlu Önlemler
 - **Kimlik:** JWT Bearer + opsiyonel 2FA (TOTP)
 - **Şifre:** BCrypt.Net-Next ile hash
-- **CORS:** Üretimde sadece `VIZITLINK3D.com.tr` + `www.VIZITLINK3D.com.tr`
+- **CORS:** Üretimde firmanın kendi domain(ler)i. Geliştirmede `http://localhost:*` (portlar: 5013, 5015, 5200).
 - **HTTPS:** Üretimde `RequireHttpsMetadata = true` + HSTS
 - **Rate Limiting:** `Microsoft.AspNetCore.RateLimiting` (IP bazlı)
 - **Input Validation:** FluentValidation (sunucu tarafı zorunlu)

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Text.Json.Serialization;
 using VizitLink3D.Ortak.Modeller;
 
@@ -38,4 +38,6 @@ public class Urun
 
     [JsonIgnore]
     public Firma? Firma { get; set; }
+
+    public List<UrunMedya>? Medyalar { get; set; }
 }

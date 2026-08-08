@@ -7,7 +7,7 @@ public enum Rol
 {
     Kullanici = 0,
     Editor = 1,
-    Admin = 2,
+    FirmaAdmin = 2,
     SuperAdmin = 3
 }
 

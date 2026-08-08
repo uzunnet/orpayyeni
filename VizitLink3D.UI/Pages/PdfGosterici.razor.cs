@@ -37,20 +37,17 @@ public partial class PdfGosterici : ComponentBase
 
     private string BelgeUrl(string? yol)
     {
-        if (string.IsNullOrWhiteSpace(yol))
+        if (string.IsNullOrWhiteSpace(yol)) return string.Empty;
+
+        if (yol.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || 
+            yol.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
         {
-            return string.Empty;
+            if (Uri.TryCreate(yol, UriKind.Absolute, out var mutlakUrl))
+                return mutlakUrl.ToString();
         }
 
-        if (Uri.TryCreate(yol, UriKind.Absolute, out var mutlakUrl))
-        {
-            return mutlakUrl.ToString();
-        }
-
-        var genelYol = KatalogYolu.GuvenliGenelKatalogYolu(yol);
-        return genelYol is not null
-            ? $"{Navigasyon.BaseUri.TrimEnd('/')}/{genelYol}"
-            : $"{Api.ApiBaseUrl}/api/belge-dosya?dosya={Uri.EscapeDataString(yol)}";
+        // Tüm statik PDF'leri Multi-Tenant'ı destekleyen güvenli API üzerinden çekiyoruz:
+        return $"{Api.ApiBaseUrl}/api/belge-dosya?dosya={Uri.EscapeDataString(yol)}";
     }
 
     private void GeriDon()

@@ -1,0 +1,150 @@
+@page "/"
+@rendermode InteractiveServer
+
+<PageTitle>Gösterge Paneli — SuperAdmin</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">Gösterge Paneli</MudText>
+
+@if (_yukleniyor)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" Class="my-4" />
+}
+else
+{
+    @* ── İstatistik Kartları ── *@
+    <MudGrid Class="mb-4">
+        <MudItem xs="12" sm="6" md="3">
+            <MudCard Elevation="2">
+                <MudCardContent>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">Toplam Firma</MudText>
+                    <MudText Typo="Typo.h3" Color="Color.Primary">@_toplamFirma</MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudCard Elevation="2">
+                <MudCardContent>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">Aktif Firma</MudText>
+                    <MudText Typo="Typo.h3" Color="Color.Success">@_aktifFirma</MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudCard Elevation="2">
+                <MudCardContent>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">Demo Firma</MudText>
+                    <MudText Typo="Typo.h3" Color="Color.Warning">@_demoFirma</MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudCard Elevation="2">
+                <MudCardContent>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">Toplam Modül</MudText>
+                    <MudText Typo="Typo.h3" Color="Color.Tertiary">@_toplamModul</MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+
+    <MudGrid Class="mb-4">
+        <MudItem xs="12" sm="6" md="3">
+            <MudCard Elevation="2">
+                <MudCardContent>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">Toplam Lisans (Aktif)</MudText>
+                    <MudText Typo="Typo.h3" Color="Color.Info">@_toplamLisans</MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudCard Elevation="2">
+                <MudCardContent>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">Yaklaşan Bitişler (&lt; 30 gün)</MudText>
+                    <MudText Typo="Typo.h3" Color="@(_yaklasanBitis > 0 ? Color.Error : Color.Success)">@_yaklasanBitis</MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+
+    <MudDivider Class="my-6" />
+
+    @* ── Son 10 Firma Tablosu ── *@
+    <MudText Typo="Typo.h6" GutterBottom="true">Son 10 Firma</MudText>
+
+    @if (_sonFirmalar.Count == 0)
+    {
+        <MudAlert Severity="Severity.Info" Class="mt-4">Henüz hiç firma eklenmemiş.</MudAlert>
+    }
+    else
+    {
+        <MudTable Items="@_sonFirmalar" Hover="true" Striped="true" Elevation="1">
+            <HeaderContent>
+                <MudTh>Ad</MudTh>
+                <MudTh>Slug</MudTh>
+                <MudTh>Durum</MudTh>
+                <MudTh>Oluşturulma</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd>
+                    <MudLink Href="@($"/firmalar/{context.Id}")" Typo="Typo.body2">@context.Ad</MudLink>
+                </MudTd>
+                <MudTd>
+                    <MudChip T="string" Size="Size.Small">@context.Slug</MudChip>
+                </MudTd>
+                <MudTd>
+                    @if (context.AktifMi)
+                    {
+                        <MudChip T="string" Color="Color.Success" Size="Size.Small">Aktif</MudChip>
+                    }
+                    else
+                    {
+                        <MudChip T="string" Color="Color.Default" Size="Size.Small">Pasif</MudChip>
+                    }
+                    @if (context.DemoMu)
+                    {
+                        <MudChip T="string" Color="Color.Warning" Size="Size.Small" Class="ml-2">Demo</MudChip>
+                    }
+                </MudTd>
+                <MudTd>@context.OlusturulmaTarihi.ToString("dd.MM.yyyy")</MudTd>
+            </RowTemplate>
+        </MudTable>
+    }
+
+    <MudDivider Class="my-6" />
+
+    @* ── Yaklaşan Lisans Bitişleri ── *@
+    <MudText Typo="Typo.h6" GutterBottom="true">Yaklaşan Lisans Bitişleri</MudText>
+
+    @if (_yaklasanLisanslar.Count == 0)
+    {
+        <MudAlert Severity="Severity.Success" Class="mt-4">Yaklaşan lisans bitişi bulunmuyor.</MudAlert>
+    }
+    else
+    {
+        <MudTable Items="@_yaklasanLisanslar" Hover="true" Striped="true" Elevation="1">
+            <HeaderContent>
+                <MudTh>Firma</MudTh>
+                <MudTh>Bitiş Tarihi</MudTh>
+                <MudTh>Kalan Gün</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd>@context.FirmaAdi</MudTd>
+                <MudTd>@context.BitisTarihi.ToString("dd.MM.yyyy")</MudTd>
+                <MudTd>
+                    @if (context.KalanGun <= 7)
+                    {
+                        <MudChip T="string" Color="Color.Error" Size="Size.Small">@context.KalanGun gün</MudChip>
+                    }
+                    else if (context.KalanGun <= 14)
+                    {
+                        <MudChip T="string" Color="Color.Warning" Size="Size.Small">@context.KalanGun gün</MudChip>
+                    }
+                    else
+                    {
+                        <MudChip T="string" Color="Color.Info" Size="Size.Small">@context.KalanGun gün</MudChip>
+                    }
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    }
+}

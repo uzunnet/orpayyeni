@@ -16,9 +16,9 @@ public partial class HeroSlider : ComponentBase, IDisposable
         {
             SayfaKodu = "anasayfa",
             Dil = "tr",
-            Baslik = "ORPAY",
-            AltBaslik = "Endüstriyel Lüks",
-            Aciklama = "Sistem şu anda yerel yedek hero ile çalışıyor. API bağlandığında gerçek slaytlar otomatik olarak devreye girer.",
+            Baslik = "VizitLink3D",
+            AltBaslik = "Platform",
+            Aciklama = "VizitLink3D platformu şu anda yerel yedek hero ile çalışıyor. API bağlandığında gerçek slaytlar otomatik olarak devreye girer.",
             ArkaplanResim = "",
             ButonMetni1 = "Koleksiyonu Keşfet",
             ButonLink1 = "/banyo-dolaplari",

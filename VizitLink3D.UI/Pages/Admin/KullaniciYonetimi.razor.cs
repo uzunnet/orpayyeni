@@ -132,7 +132,7 @@ public partial class KullaniciYonetimi : ComponentBase
     string RolAdi(Rol r) => r switch
     {
         Rol.SuperAdmin => "Super Admin",
-        Rol.Admin => "Admin",
+        Rol.FirmaAdmin => "Firma Admin",
         Rol.Editor => "Editör",
         _ => "Kullanıcı"
     };
@@ -140,7 +140,7 @@ public partial class KullaniciYonetimi : ComponentBase
     Color RolRengi(Rol r) => r switch
     {
         Rol.SuperAdmin => Color.Error,
-        Rol.Admin => Color.Warning,
+        Rol.FirmaAdmin => Color.Warning,
         Rol.Editor => Color.Info,
         _ => Color.Default
     };

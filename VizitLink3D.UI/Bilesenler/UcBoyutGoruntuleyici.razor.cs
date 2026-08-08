@@ -51,7 +51,7 @@ public partial class UcBoyutGoruntuleyici : IAsyncDisposable
     [Inject] public ApiIstemcisi Api { get; set; } = default!;
 
     // Kanvas ID'si — her bilesen ornegi benzersiz ID alir (coklu viewer destegi)
-    private string _kanvasId = $"gb-viewer-{Guid.NewGuid():N}";
+    private string _kanvasId = $"orpay-viewer-{Guid.NewGuid():N}";
     private bool _yukleniyor = true;
     private bool _sahneHazir;
     private bool _otomatikDondurmeMi;

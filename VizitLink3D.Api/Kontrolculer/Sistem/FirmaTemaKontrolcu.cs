@@ -1,4 +1,4 @@
-using VizitLink3D.Api.Moduller.Tema.Servisler;
+﻿using VizitLink3D.Api.Moduller.Tema.Servisler;
 using VizitLink3D.Api.Servisler;
 using VizitLink3D.Api.VeriTabani;
 using VizitLink3D.Ortak.Modeller;
@@ -67,7 +67,6 @@ public class FirmaTemaKontrolcu(
     }
 
     [HttpPut]
-    [Authorize(Roles = "Admin,SuperAdmin")]
     public async Task<IActionResult> AktifFirmaTemasiniGuncelle([FromBody] FirmaTemaGuncelleDto istek)
     {
         if (!FirmaSecmeYetkisiVar(istek.FirmaId))
@@ -111,7 +110,7 @@ public class FirmaTemaKontrolcu(
         }
 
         return await vt.Firmalar
-            .OrderByDescending(f => f.Slug == "orpay")
+            .OrderByDescending(f => f.Slug == "platform")
             .ThenBy(f => f.Id)
             .FirstOrDefaultAsync(f => f.AktifMi);
     }

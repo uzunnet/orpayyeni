@@ -1,0 +1,106 @@
+﻿/*
+ * Orpay Luxe Industrial — bilesenler.css
+ * CokluTemaServisi tarafından manifest taslağından otomatik üretilir.
+ */
+
+:root[data-tema-id="orpay-luxe-industrial"] {
+    color: var(--tema-metin);
+    background: var(--tema-arkaplan);
+}
+
+:root[data-tema-id="orpay-luxe-industrial"] h1,
+:root[data-tema-id="orpay-luxe-industrial"] h2,
+:root[data-tema-id="orpay-luxe-industrial"] h3 {
+    font-family: var(--tema-font-baslik);
+    font-weight: var(--tema-baslik-agirlik);
+    letter-spacing: var(--tema-baslik-harf-araligi);
+}
+
+:root[data-tema-id="orpay-luxe-industrial"] .navbar {
+    background: var(--tema-yuzey);
+    border-bottom: var(--tema-border-kalinlik) var(--tema-border-stil) var(--tema-cizgi);
+    transition: var(--tema-gecis-normal);
+}
+
+:root[data-tema-id="orpay-luxe-industrial"] .urun-kart {
+    background: var(--tema-cam-bg);
+    backdrop-filter: var(--tema-cam-blur);
+    -webkit-backdrop-filter: var(--tema-cam-blur);
+    border: var(--tema-border-kalinlik) var(--tema-border-stil) var(--tema-cizgi);
+    border-radius: var(--tema-kose-md);
+    box-shadow: var(--tema-golge-md);
+    transition: transform var(--tema-gecis-yavas), box-shadow var(--tema-gecis-yavas), border-color var(--tema-gecis-normal);
+}
+
+:root[data-tema-id="orpay-luxe-industrial"] .urun-kart:hover {
+    transform: translateY(-4px);
+    border-color: var(--tema-vurgu);
+    box-shadow: var(--tema-golge-vurgu), var(--tema-golge-lg);
+}
+
+:root[data-tema-id="orpay-luxe-industrial"] .btn-birincil,
+:root[data-tema-id="orpay-luxe-industrial"] .mud-button-filled {
+    background: var(--tema-vurgu);
+    color: var(--tema-metin-ters);
+    border-radius: var(--tema-kose-md);
+    transition: var(--tema-gecis-normal);
+}
+
+:root[data-tema-id="orpay-luxe-industrial"] .footer {
+    background: var(--tema-birincil);
+    color: var(--tema-metin);
+    border-top: var(--tema-border-kalinlik) var(--tema-border-stil) var(--tema-cizgi);
+}
+
+
+/* ============================================ */
+/* Stitch'ten import: orpay_dinamik_interaktif */
+/* ============================================ */
+
+
+        /* Custom Styles & Overrides */
+:root[data-tema-id="orpay-luxe-industrial"] { background-color: var(--tema-birincil); color: var(--tema-metin); }
+:root[data-tema-id="orpay-luxe-industrial"].dark { background-color: var(--tema-birincil); color: var(--tema-metin); }
+:root[data-tema-id="orpay-luxe-industrial"]:not(.dark) { background-color: #f5f5f5; color: #1c1b1b; }
+        
+        .glass-panel {
+            background: var(--tema-cam-bg);
+            backdrop-filter: blur(12px) saturate(150%);
+            border: 1px solid var(--tema-cam-cizgi);
+        }
+        html:not(.dark) .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .text-glow {
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        }
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .slider-img { transition: opacity 1s ease-in-out; }
+        .slider-img.hidden { opacity: 0; }
+        .slider-img.active { opacity: 1; }
+
+        /* Accordion */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-button.active .material-symbols-outlined {
+            transform: rotate(180deg);
+        }
+        
+        /* Testimonial Carousel */
+        .testimonial-slide {
+            transition: opacity 0.5s ease-in-out;
+        }
+    

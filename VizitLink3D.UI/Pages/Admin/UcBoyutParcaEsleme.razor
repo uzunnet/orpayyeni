@@ -1,4 +1,4 @@
-@page "/admin/uc-boyut-parca-esleme"
+﻿@page "/admin/uc-boyut-parca-esleme"
 @layout VizitLink3D.UI.Layout.AdminDuzen
 @using VizitLink3D.Ortak.Modeller.Urunler
 @using Microsoft.AspNetCore.Authorization
@@ -24,7 +24,7 @@
                ValueChanged="OnModelSecildi"
                Label='@DilServisi.T("admin.3d.modelSeciniz", "Model seçiniz")'
                T="int?"
-               Class="flex-grow-1 admin-select gb-maxw-400">
+               Class="flex-grow-1 admin-select orpay-maxw-400">
         @foreach (var m in _modeller)
         {
             <MudSelectItem Value="@((int?)m.Id)">@m.ModelAdi - @m.ModelTipi v@(m.Versiyon)@(m.VarsayilanMi ? " *" : "")</MudSelectItem>

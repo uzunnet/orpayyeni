@@ -2,7 +2,6 @@
 @inject VizitLink3D.UI.Servisler.DilServisi dil
 @layout VizitLink3D.UI.Layout.AdminDuzen
 @using MudBlazor
-@using MudExRichTextEditor
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize]
 
@@ -36,7 +35,7 @@ else
                                 
                                  <MudText Typo="Typo.subtitle2" Class="mb-2 ml-1 font-weight-bold">@dil.T("admin.anaSayfa.altAciklama", "Alt Açıklama Metni (Zengin Metin)")</MudText>
                                 <div class="editor-container mb-4">
-                                     <MudExRichTextEdit @bind-Value="_heroAciklama" Placeholder="@dil.T("admin.anaSayfa.aciklamaPlaceholder", "Açıklama giriniz...")" />
+                                     <MudTextField @bind-Value="_heroAciklama" Lines="5" Variant="Variant.Outlined" />
                                 </div>
                                 
                                 <MudTextField @bind-Value="_heroGorselUrl" Label="@dil.T("admin.anaSayfa.arkaPlan","Arka Plan Görsel URL")" Variant="Variant.Outlined" Class="mt-3" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Image" />
@@ -201,7 +200,7 @@ else
                                 <MudTextField @bind-Value="_kat1Baslik" Label="@dil.T("admin.anaSayfa.kategoriBaslik", "Kategori Başlığı")" Variant="Variant.Outlined" Class="mb-4" />
                                 
                                 <MudText Typo="Typo.subtitle2" Class="mb-2 ml-1">@dil.T("admin.anaSayfa.kategoriAciklama", "Kategori Açıklaması")</MudText>
-                                <MudExRichTextEdit @bind-Value="_kat1Aciklama" Placeholder="@dil.T("admin.anaSayfa.aciklamaPlaceholder2", "Açıklama giriniz...")" />
+                                <MudTextField @bind-Value="_kat1Aciklama" Lines="5" Variant="Variant.Outlined" />
                                 
                                 <MudTextField @bind-Value="_kat1Gorsel" Label="@dil.T("admin.anaSayfa.kategoriGorselUrl", "Kategori Görsel URL")" Variant="Variant.Outlined" Class="mt-4"
                                                Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Image"
@@ -246,7 +245,7 @@ else
                                 <MudTextField @bind-Value="_kat2Baslik" Label="@dil.T("admin.anaSayfa.kategoriBaslik", "Kategori Başlığı")" Variant="Variant.Outlined" Class="mb-4" />
                                 
                                 <MudText Typo="Typo.subtitle2" Class="mb-2 ml-1">@dil.T("admin.anaSayfa.kategoriAciklama", "Kategori Açıklaması")</MudText>
-                                <MudExRichTextEdit @bind-Value="_kat2Aciklama" Placeholder="@dil.T("admin.anaSayfa.aciklamaPlaceholder2", "Açıklama giriniz...")" />
+                                <MudTextField @bind-Value="_kat2Aciklama" Lines="5" Variant="Variant.Outlined" />
                                 
                                 <MudTextField @bind-Value="_kat2Gorsel" Label="@dil.T("admin.anaSayfa.kategoriGorselUrl", "Kategori Görsel URL")" Variant="Variant.Outlined" Class="mt-4"
                                                Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Image"

@@ -1,4 +1,4 @@
-@inject VizitLink3D.UI.Servisler.DilServisi dil
+﻿@inject VizitLink3D.UI.Servisler.DilServisi dil
 @page "/admin/teklif-yonetimi"
 @layout VizitLink3D.UI.Layout.AdminDuzen
 @using VizitLink3D.Ortak.Modeller.Urunler
@@ -44,7 +44,7 @@ else
 }
 
 <MudToolBar Class="mb-4">
-    <MudTextField @bind-Value="_arama" Placeholder="Ad / Eposta / Telefon ile ara..." Immediate="true" OnKeyUp="AramaYap" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" Class="flex-grow-1 gb-maxw-400" />
+    <MudTextField @bind-Value="_arama" Placeholder="Ad / Eposta / Telefon ile ara..." Immediate="true" OnKeyUp="AramaYap" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" Class="flex-grow-1 orpay-maxw-400" />
 </MudToolBar>
 
 <MudDataGrid Items="@_filtreliListe" Filterable="true" SortMode="SortMode.Multiple" Dense="true" Striped="true" Hover="true">

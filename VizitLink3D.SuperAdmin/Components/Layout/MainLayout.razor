@@ -1,0 +1,73 @@
+@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Components.Authorization
+
+<MudThemeProvider @rendermode="InteractiveServer" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="1" Color="Color.Dark">
+        <MudIconButton Icon="Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@CekmeceyiAcKapa" />
+        <MudText Typo="Typo.h6" Class="ml-2">VizitLink3D SuperAdmin</MudText>
+        <MudSpacer />
+        <MudText Typo="Typo.body2" Class="mr-4">@_kullaniciAdi</MudText>
+        <MudIconButton Icon="Icons.Material.Filled.Logout" Color="Color.Inherit" OnClick="@CikisYap" Title="Çıkış Yap" />
+    </MudAppBar>
+
+    <MudDrawer @bind-Open="_cekmecceAcikMi" Elevation="2" Variant="DrawerVariant.Responsive">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6" Color="Color.Primary">SuperAdmin</MudText>
+        </MudDrawerHeader>
+        <MudNavMenu>
+            <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="Icons.Material.Filled.Dashboard">Gösterge Paneli</MudNavLink>
+            <MudNavGroup Title="Firma Yönetimi" Icon="Icons.Material.Filled.Business">
+                <MudNavLink Href="/firmalar" Icon="Icons.Material.Filled.List">Firma Listesi</MudNavLink>
+                <MudNavLink Href="/firma-olustur" Icon="Icons.Material.Filled.AddBusiness">Yeni Firma</MudNavLink>
+            </MudNavGroup>
+            <MudNavGroup Title="Lisans & Modül" Icon="Icons.Material.Filled.Security">
+                <MudNavLink Href="/lisanslar" Icon="Icons.Material.Filled.Assignment">Lisans Yönetimi</MudNavLink>
+                <MudNavLink Href="/moduller" Icon="Icons.Material.Filled.Extension">Modül Yönetimi</MudNavLink>
+            </MudNavGroup>
+            <MudNavGroup Title="Sistem" Icon="Icons.Material.Filled.Settings">
+                <MudNavLink Href="/kullanicilar" Icon="Icons.Material.Filled.People">Kullanıcılar</MudNavLink>
+                <MudNavLink Href="/denetim-log" Icon="Icons.Material.Filled.History">Denetim Log</MudNavLink>
+            </MudNavGroup>
+        </MudNavMenu>
+    </MudDrawer>
+
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Large" Class="mt-4 mb-8">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private bool _cekmecceAcikMi = true;
+    private string _kullaniciAdi = "";
+
+    [Inject] private AuthenticationStateProvider AuthState { get; set; } = null!;
+    [Inject] private IServisler.GirisServisi GirisServisi { get; set; } = null!;
+    [Inject] private NavigationManager Nav { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var durum = await AuthState.GetAuthenticationStateAsync();
+        if (durum.User.Identity?.IsAuthenticated == true)
+        {
+            _kullaniciAdi = durum.User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value ?? "Admin";
+        }
+    }
+
+    private void CekmeceyiAcKapa()
+    {
+        _cekmecceAcikMi = !_cekmecceAcikMi;
+    }
+
+    private async Task CikisYap()
+    {
+        await GirisServisi.CikisYapAsync();
+        Nav.NavigateTo("/giris", true);
+    }
+}

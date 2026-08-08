@@ -1,0 +1,277 @@
+.wasm-uyumluluk-kabugu {
+    min-height: 100vh;
+    padding: clamp(1.25rem, 3vw, 2.5rem);
+    background:
+        radial-gradient(circle at top right, color-mix(in srgb, var(--vizit-accent) 15%, transparent) 0%, transparent 42%),
+        linear-gradient(180deg, color-mix(in srgb, var(--vizit-bg-base) 94%, white) 0%, var(--vizit-bg-base) 100%);
+}
+
+.wasm-uyumluluk-kapsayici {
+    width: min(1280px, 100%);
+    margin: 0 auto;
+}
+
+.wasm-uyumluluk-ust {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.wasm-uyumluluk-marka {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.wasm-uyumluluk-marka strong {
+    font-family: var(--vizit-font-serif);
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    color: var(--vizit-text);
+}
+
+.wasm-uyumluluk-marka span {
+    color: var(--vizit-text-secondary);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
+
+.wasm-uyumluluk-bant {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--vizit-border);
+    border-radius: var(--vizit-radius-pill, 999px);
+    background: color-mix(in srgb, var(--vizit-surface, #fff) 90%, transparent);
+    color: var(--vizit-text-secondary);
+    font-size: 0.88rem;
+}
+
+.wasm-kart-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.2rem;
+}
+
+.wasm-koleksiyon-baslik {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.wasm-koleksiyon-baslik p {
+    max-width: 60ch;
+    color: var(--vizit-text-secondary);
+    margin: 0.35rem 0 0;
+}
+
+.wasm-koleksiyon-sayisi {
+    color: var(--vizit-accent);
+    font-family: var(--vizit-font-serif);
+    white-space: nowrap;
+}
+
+.wasm-kart {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid var(--vizit-border);
+    border-radius: var(--vizit-radius-lg, 12px);
+    overflow: hidden;
+    background: color-mix(in srgb, var(--vizit-surface, #fff) 92%, transparent);
+    box-shadow: var(--vizit-shadow-md);
+    transition: transform var(--vizit-transition, 0.3s ease), box-shadow var(--vizit-transition, 0.3s ease), border-color var(--vizit-transition, 0.3s ease);
+}
+
+.wasm-kart:hover {
+    transform: translateY(-6px);
+    border-color: var(--vizit-accent);
+    box-shadow: var(--vizit-shadow-lg);
+}
+
+.wasm-kart-gorsel {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--vizit-bg-alt);
+}
+
+.wasm-kart-gorsel img,
+.wasm-detay-medya img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.wasm-kart-icerik {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    padding: 1rem;
+}
+
+.wasm-kart-ustbilgi {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    font-size: 0.82rem;
+    color: var(--vizit-text-secondary);
+}
+
+.wasm-kart-etiketler {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+}
+
+.wasm-kart-etiket {
+    padding: 0.35rem 0.6rem;
+    border-radius: var(--vizit-radius-pill, 999px);
+    background: color-mix(in srgb, var(--vizit-accent) 14%, transparent);
+    color: var(--vizit-accent);
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.wasm-kart-baslik {
+    font-family: var(--vizit-font-serif);
+    font-size: 1.35rem;
+    color: var(--vizit-text);
+}
+
+.wasm-kart-aciklama,
+.wasm-detay-spot,
+.wasm-detay-metin {
+    color: var(--vizit-text-secondary);
+    line-height: 1.7;
+}
+
+.wasm-kart-fiyat,
+.wasm-detay-fiyat {
+    color: var(--vizit-accent);
+    font-family: var(--vizit-font-serif);
+    font-size: 1.4rem;
+}
+
+.wasm-detay-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.wasm-detay-medya {
+    overflow: hidden;
+    border: 1px solid var(--vizit-border);
+    border-radius: var(--vizit-radius-lg, 12px);
+    box-shadow: var(--vizit-shadow-md);
+}
+
+.wasm-detay-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: clamp(1.2rem, 2.5vw, 2rem);
+    border: 1px solid var(--vizit-border);
+    border-radius: var(--vizit-radius-lg, 12px);
+    background: color-mix(in srgb, var(--vizit-surface, #fff) 94%, transparent);
+}
+
+.wasm-geri-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--vizit-accent);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.wasm-rozet-satiri,
+.wasm-liste {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+}
+
+.wasm-liste {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.wasm-liste li,
+.wasm-rozet-satiri span {
+    padding: 0.55rem 0.8rem;
+    border: 1px solid var(--vizit-border);
+    border-radius: var(--vizit-radius-pill, 999px);
+    background: color-mix(in srgb, var(--vizit-surface, #fff) 88%, transparent);
+    color: var(--vizit-text-secondary);
+}
+
+.wasm-olcu-tablosu {
+    display: grid;
+    gap: 0.85rem;
+}
+
+.wasm-olcu-kart {
+    padding: 1rem;
+    border: 1px solid var(--vizit-border);
+    border-radius: var(--vizit-radius-md, 8px);
+    background: color-mix(in srgb, var(--vizit-surface, #fff) 90%, transparent);
+}
+
+.wasm-olcu-kart strong {
+    display: block;
+    margin-bottom: 0.6rem;
+    color: var(--vizit-text);
+}
+
+.wasm-buton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0.9rem 1.2rem;
+    border-radius: var(--vizit-radius-md, 8px);
+    background: var(--vizit-accent);
+    color: var(--vizit-text-inverse);
+    text-decoration: none;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+.wasm-buton:hover {
+    filter: brightness(1.03);
+}
+
+.wasm-bos-durum {
+    padding: 2rem;
+    border: 1px solid var(--vizit-border);
+    border-radius: var(--vizit-radius-lg, 12px);
+    background: color-mix(in srgb, var(--vizit-surface, #fff) 92%, transparent);
+    text-align: center;
+}
+
+@media (max-width: 960px) {
+    .wasm-detay-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .wasm-uyumluluk-ust,
+    .wasm-koleksiyon-baslik {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

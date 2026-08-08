@@ -183,6 +183,39 @@
         </MudCard>
     </MudItem>
 
+    <MudItem xs="12" md="12">
+        <MudCard Elevation="2" Class="mb-4">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@dil.T("admin.ayarlar.urunListeleme", "Ürün Listeleme Ayarları")</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">@dil.T("admin.ayarlar.urunListelemeAciklama", "Ürünler sayfasında bir sayfada gösterilecek maksimum ürün sayısı ve varsayılan sıralama ölçütü.")</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudGrid>
+                    <MudItem xs="12" md="6">
+                        <MudText Typo="Typo.body2" Class="mb-2">
+                            @dil.T("admin.ayarlar.sayfaBasinaUrun", "Sayfa Başına Gösterilecek Ürün:") <strong>@_urunSayfaBoyutu</strong>
+                        </MudText>
+                        <MudSlider @bind-Value="_urunSayfaBoyutu" Min="4" Max="100" Step="4" Class="mb-4" />
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudSelect T="string" @bind-Value="_urunVarsayilanSiralama" Label="@dil.T("admin.ayarlar.varsayilanSiralama", "Varsayılan Sıralama")" Variant="Variant.Outlined" Class="mb-4">
+                            <MudSelectItem T="string" Value="@("varsayilan")">@dil.T("admin.ayarlar.siraVarsayilan", "Sıra Numarasına Göre (Varsayılan)")</MudSelectItem>
+                            <MudSelectItem T="string" Value="@("ada_gore_artan")">@dil.T("admin.ayarlar.siraA_Z", "Ada Göre (A-Z)")</MudSelectItem>
+                            <MudSelectItem T="string" Value="@("ada_gore_azalan")">@dil.T("admin.ayarlar.siraZ_A", "Ada Göre (Z-A)")</MudSelectItem>
+                        </MudSelect>
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => Kaydet(6)" Disabled="@_yukleniyor">
+                    @(_yukleniyor ? dil.T("ortak.kaydediliyor", "Kaydediliyor...") : dil.T("ortak.kaydet", "Kaydet"))
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+
     <MudItem xs="12">
         <MudCard Elevation="2" Class="mb-4">
             <MudCardHeader>

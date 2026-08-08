@@ -1,0 +1,192 @@
+@page "/firmalar"
+@rendermode InteractiveServer
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Firmalar — SuperAdmin</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">Firma Yönetimi</MudText>
+
+<MudPaper Class="pa-4 mb-4" Elevation="1">
+    <MudGrid AlignItems="Center">
+        <MudItem xs="12" sm="6" md="4">
+            <MudTextField @bind-Value="_aramaMetni" 
+                          Placeholder="Firma ara..." 
+                          Adornment="Adornment.Start" 
+                          AdornmentIcon="@Icons.Material.Filled.Search"
+                          Immediate="true"
+                          OnKeyUp="AramayiUygula" />
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudSelect T="string" @bind-Value="_durumFiltresi" Label="Durum" Variant="Variant.Outlined" Margin="Margin.Dense">
+                <MudSelectItem Value="@("tumu")">Tümü</MudSelectItem>
+                <MudSelectItem Value="@("aktif")">Aktif</MudSelectItem>
+                <MudSelectItem Value="@("pasif")">Pasif</MudSelectItem>
+                <MudSelectItem Value="@("demo")">Demo</MudSelectItem>
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudTextField @bind-Value="_sektorFiltresi" Label="Sektör" Variant="Variant.Outlined" Margin="Margin.Dense" />
+        </MudItem>
+        <MudItem xs="12" sm="6" md="2">
+            <MudButton Href="/firma-olustur" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" StartIcon="Icons.Material.Filled.Add">
+                Yeni Firma
+            </MudButton>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+@if (_yukleniyor)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+}
+else
+{
+    <MudDataGrid T="Firma" Items="@_filtreliFirmalar" Hover="true" Striped="true" Dense="true" Elevation="1">
+        <ToolBarContent>
+            <MudText Typo="Typo.body2" Color="Color.Secondary">
+                Toplam @_filtreliFirmalar.Count firmadan @_filtreliFirmalar.Count tanesi gösteriliyor
+            </MudText>
+            <MudSpacer />
+        </ToolBarContent>
+        <Columns>
+            <PropertyColumn Property="x => x.Id" Title="ID" />
+            <PropertyColumn Property="x => x.Ad" Title="Firma Adı">
+                <CellTemplate>
+                    <MudLink Href="@($"/firmalar/{context.Item.Id}")" Typo="Typo.body2" Color="Color.Primary">
+                        @context.Item.Ad
+                    </MudLink>
+                </CellTemplate>
+            </PropertyColumn>
+            <TemplateColumn Title="Slug">
+                <CellTemplate>
+                    <MudChip T="string" Size="Size.Small" Color="Color.Default">@context.Item.Slug</MudChip>
+                </CellTemplate>
+            </TemplateColumn>
+            <PropertyColumn Property="x => x.Domain" Title="Domain" />
+            <PropertyColumn Property="x => x.Sektor" Title="Sektör" />
+            <TemplateColumn Title="Paket">
+                <CellTemplate>
+                    <MudChip T="string" Size="Size.Small" Color="@(context.Item.PaketTipi == "Kurumsal" ? Color.Tertiary : Color.Secondary)">
+                        @context.Item.PaketTipi
+                    </MudChip>
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title="Durum">
+                <CellTemplate>
+                    @if (context.Item.AktifMi)
+                    {
+                        <MudIconButton Icon="Icons.Material.Filled.ToggleOn" Color="Color.Success" Size="Size.Small" OnClick="@(() => DurumDegistir(context.Item))" />
+                    }
+                    else
+                    {
+                        <MudIconButton Icon="Icons.Material.Filled.ToggleOff" Color="Color.Default" Size="Size.Small" OnClick="@(() => DurumDegistir(context.Item))" />
+                    }
+                    @if (context.Item.DemoMu)
+                    {
+                        <MudChip T="string" Color="Color.Warning" Size="Size.Small" Class="ml-1">Demo</MudChip>
+                    }
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title="Oluşturulma">
+                <CellTemplate>
+                    @context.Item.OlusturulmaTarihi.ToString("dd.MM.yyyy")
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn>
+                <CellTemplate>
+                    <MudIconButton Icon="Icons.Material.Filled.Visibility" Color="Color.Primary" Size="Size.Small" 
+                                   Href="@($"/firmalar/{context.Item.Id}")" Title="Detay" />
+                    <MudIconButton Icon="Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" 
+                                   OnClick="@(() => FirmaSil(context.Item))" Title="Devre Dışı Bırak" />
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager T="Firma" PageSizeOptions="new[] { 10, 25, 50 }" />
+        </PagerContent>
+    </MudDataGrid>
+}
+
+@code {
+    [Inject] private SuperAdminDbContext Vt { get; set; } = null!;
+    [Inject] private IDialogService DialogServisi { get; set; } = null!;
+    [Inject] private ISnackbar Snackbar { get; set; } = null!;
+
+    private bool _yukleniyor = true;
+    private List<Firma> _firmalar = new();
+    private List<Firma> _filtreliFirmalar = new();
+    private string _aramaMetni = "";
+    private string _durumFiltresi = "tumu";
+    private string _sektorFiltresi = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Yukle();
+    }
+
+    private async Task Yukle()
+    {
+        _firmalar = await Vt.Firmalar.AsNoTracking().OrderByDescending(f => f.OlusturulmaTarihi).ToListAsync();
+        Filtrele();
+        _yukleniyor = false;
+    }
+
+    private void Filtrele()
+    {
+        IEnumerable<Firma> sonuc = _firmalar;
+
+        if (!string.IsNullOrWhiteSpace(_aramaMetni))
+        {
+            var arama = _aramaMetni.ToLower();
+            sonuc = sonuc.Where(f =>
+                f.Ad.Contains(arama, StringComparison.OrdinalIgnoreCase) ||
+                f.Slug.Contains(arama, StringComparison.OrdinalIgnoreCase) ||
+                (f.Domain != null && f.Domain.Contains(arama, StringComparison.OrdinalIgnoreCase)));
+        }
+
+        sonuc = _durumFiltresi switch
+        {
+            "aktif" => sonuc.Where(f => f.AktifMi && !f.DemoMu),
+            "pasif" => sonuc.Where(f => !f.AktifMi),
+            "demo" => sonuc.Where(f => f.DemoMu),
+            _ => sonuc
+        };
+
+        if (!string.IsNullOrWhiteSpace(_sektorFiltresi))
+        {
+            var sek = _sektorFiltresi.ToLower();
+            sonuc = sonuc.Where(f =>
+                f.Sektor != null && f.Sektor.Contains(sek, StringComparison.OrdinalIgnoreCase));
+        }
+
+        _filtreliFirmalar = sonuc.ToList();
+        StateHasChanged();
+    }
+
+    private void AramayiUygula() => Filtrele();
+
+    private void DurumDegistir(Firma firma)
+    {
+        firma.AktifMi = !firma.AktifMi;
+        Vt.SaveChanges();
+        Filtrele();
+        Snackbar.Add($"{firma.Ad}: {(firma.AktifMi ? "Aktif" : "Pasif")}", Severity.Success);
+    }
+
+    private async Task FirmaSil(Firma firma)
+    {
+        var sonuc = await DialogServisi.ShowMessageBoxAsync(
+            "Onay",
+            $"\"{firma.Ad}\" firmasını devre dışı bırakmak istediğinize emin misiniz?",
+            yesText: "Evet", cancelText: "İptal");
+
+        if (sonuc == true)
+        {
+            firma.AktifMi = false;
+            await Vt.SaveChangesAsync();
+            _firmalar.Remove(firma);
+            Filtrele();
+            Snackbar.Add($"{firma.Ad} devre dışı bırakıldı.", Severity.Success);
+        }
+    }
+}

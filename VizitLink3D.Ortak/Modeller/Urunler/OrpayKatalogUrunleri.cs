@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Net;
 using System.Text;
 
@@ -73,7 +73,7 @@ public sealed class OrpayKatalogUrunu
         var olcuHtml = new StringBuilder();
         foreach (var olcu in Olculer)
         {
-            olcuHtml.Append("<div class=\"gb-olcu-kart\">");
+            olcuHtml.Append("<div class=\"orpay-olcu-kart\">");
             olcuHtml.Append($"<h4>{Kodla(olcu.Baslik)}</h4>");
             olcuHtml.Append("<ul>");
             olcuHtml.Append($"<li>Yükseklik: {Kodla(olcu.Yukseklik)}</li>");
@@ -89,8 +89,8 @@ public sealed class OrpayKatalogUrunu
             : $"<p><strong>Liste Fiyatı:</strong> {FiyatYaz(Fiyat)}</p>";
 
         return $"""
-            <div class="gb-katalog-icerik">
-              <p class="gb-katalog-rozet">{Kodla(KoleksiyonGrubu)} Koleksiyonu</p>
+            <div class="orpay-katalog-icerik">
+              <p class="orpay-katalog-rozet">{Kodla(KoleksiyonGrubu)} Koleksiyonu</p>
               <h2>{Kodla(Ad)}</h2>
               <p>{Kodla(Ad)}, Orpay 2026 katalog sayfa kompozisyonu ile birebir beslenen; koleksiyon renkleri, teknik ölçüler ve fiyat etiketi korunmuş özel bir ürün sayfasıdır.</p>
               {tumFiyatlar}
@@ -99,7 +99,7 @@ public sealed class OrpayKatalogUrunu
               <h3>Renkler</h3>
               <ul>{renkHtml}</ul>
               <h3>Teknik Ölçüler</h3>
-              <div class="gb-olcu-grid">{olcuHtml}</div>
+              <div class="orpay-olcu-grid">{olcuHtml}</div>
             </div>
             """;
     }
@@ -132,7 +132,7 @@ public static class OrpayKatalogUrunleri
     {
         ["Exclusive"] = "İmza koleksiyonları. Geniş modül yapısı, yüksek yüzey kalitesi ve katalog sayfasındaki premium sunum ile öne çıkar.",
         ["Premium"] = "Zengin malzeme ve renk kombinasyonlarıyla showroom etkisi veren seçkin ürün grubu.",
-        ["Trend"] = "Çağdaş banyolar için dengeli fiyat, güçlü malzeme ve sıcak renk seçimleri sunan seri.",
+        ["Trend"] = "Çağdaş mekanlar için dengeli fiyat, güçlü malzeme ve sıcak renk seçimleri sunan seri.",
         ["Standart"] = "Günlük kullanıma uygun, ölçü dengesi ve fiyat avantajı yüksek Orpay ürünleri.",
         ["Diger"] = "Özel içerik olarak eklenmiş ürünler."
     };
@@ -1530,3 +1530,4 @@ public static class OrpayKatalogUrunleri
             : KoleksiyonAciklamalari["Diger"];
     }
 }
+

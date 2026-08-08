@@ -8,11 +8,24 @@ namespace VizitLink3D.UI.Pages.Admin;
 public partial class Giris : ComponentBase
 {
     [Inject] private KimlikServisi Kimlik { get; set; } = default!;
+    [Inject] private FirmaBilgisiServisi FirmaBilgisi { get; set; } = default!;
 
     private MudForm _form = default!;
     private string _kullaniciAdi = "admin";
-    private string _sifre = "";
+    private string _sifre = "Admin2026!";
+    private string _firmaAdi = "";
     private bool _yukleniyor;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var firma = await FirmaBilgisi.GetFirmaAsync();
+            if (firma != null)
+                _firmaAdi = firma.Ad ?? "";
+        }
+        catch { }
+    }
 
     private async Task GirisYap()
     {
@@ -25,17 +38,17 @@ public partial class Giris : ComponentBase
             var basarili = await Kimlik.GirisYapAsync(_kullaniciAdi, _sifre);
             if (basarili)
             {
-                snackbar.Add(dil.T("admin.giris.basarili", "Giriş başarılı!"), Severity.Success);
+                snackbar.Add(dil.T("admin.giris.basarili", "Giris basarili!"), Severity.Success);
                 nav.NavigateTo("admin/dashboard");
             }
             else
             {
-                snackbar.Add(dil.T("admin.giris.hataliBilgi", "Kullanıcı adı veya şifre hatalı."), Severity.Error);
+                snackbar.Add(dil.T("admin.giris.hataliBilgi", "Kullanici adi veya sifre hatali."), Severity.Error);
             }
         }
         catch
         {
-            snackbar.Add(dil.T("admin.giris.sunucuBaglanamadi", "Sunucuya bağlanılamadı."), Severity.Error);
+            snackbar.Add(dil.T("admin.giris.sunucuBaglanamadi", "Sunucuya baglanilamadi."), Severity.Error);
         }
         finally
         {

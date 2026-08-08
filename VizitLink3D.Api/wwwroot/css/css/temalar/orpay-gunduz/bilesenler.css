@@ -1,0 +1,162 @@
+﻿/*
+ * Orpay Gündüz — bilesenler.css
+ * CokluTemaServisi tarafından manifest taslağından otomatik üretilir.
+ */
+
+:root[data-tema-id="orpay-gunduz"] {
+    color: var(--tema-metin);
+    background: var(--tema-arkaplan);
+}
+
+:root[data-tema-id="orpay-gunduz"] h1,
+:root[data-tema-id="orpay-gunduz"] h2,
+:root[data-tema-id="orpay-gunduz"] h3 {
+    font-family: var(--tema-font-baslik);
+    font-weight: var(--tema-baslik-agirlik);
+    letter-spacing: var(--tema-baslik-harf-araligi);
+}
+
+:root[data-tema-id="orpay-gunduz"] .navbar {
+    background: var(--tema-yuzey);
+    border-bottom: var(--tema-border-kalinlik) var(--tema-border-stil) var(--tema-cizgi);
+    transition: var(--tema-gecis-normal);
+}
+
+:root[data-tema-id="orpay-gunduz"] .urun-kart {
+    background: var(--tema-cam-bg);
+    backdrop-filter: var(--tema-cam-blur);
+    -webkit-backdrop-filter: var(--tema-cam-blur);
+    border: var(--tema-border-kalinlik) var(--tema-border-stil) var(--tema-cizgi);
+    border-radius: var(--tema-kose-md);
+    box-shadow: var(--tema-golge-md);
+    transition: transform var(--tema-gecis-yavas), box-shadow var(--tema-gecis-yavas), border-color var(--tema-gecis-normal);
+}
+
+:root[data-tema-id="orpay-gunduz"] .urun-kart:hover {
+    transform: translateY(-4px);
+    border-color: var(--tema-vurgu);
+    box-shadow: var(--tema-golge-vurgu), var(--tema-golge-lg);
+}
+
+:root[data-tema-id="orpay-gunduz"] .btn-birincil,
+:root[data-tema-id="orpay-gunduz"] .mud-button-filled {
+    background: var(--tema-vurgu);
+    color: var(--tema-metin-ters);
+    border-radius: var(--tema-kose-md);
+    transition: var(--tema-gecis-normal);
+}
+
+:root[data-tema-id="orpay-gunduz"] .footer {
+    background: var(--tema-birincil);
+    color: var(--tema-metin);
+    border-top: var(--tema-border-kalinlik) var(--tema-border-stil) var(--tema-cizgi);
+}
+
+/* === HERO === */
+:root[data-tema-id="orpay-gunduz"] .hero { position:relative; min-height:80vh; overflow:hidden }
+:root[data-tema-id="orpay-gunduz"] .hero-slider-kapsayici { position:absolute; inset:0 }
+:root[data-tema-id="orpay-gunduz"] .hero-slider-img { position:absolute; inset:0; width:100%; height:100%; object-fit:scale-down }
+:root[data-tema-id="orpay-gunduz"] .hero-overlay { position:absolute; inset:0; background:rgba(255,255,255,0.4); z-index:1 }
+:root[data-tema-id="orpay-gunduz"] .hero-icerik { position:relative; z-index:2; text-align:center; padding:2rem; max-width:800px; margin:0 auto; top:30vh }
+:root[data-tema-id="orpay-gunduz"] .hero-baslik { font-size:clamp(2rem,5vw,4rem); color:#1a1a1a; font-weight:700; margin-bottom:1rem }
+:root[data-tema-id="orpay-gunduz"] .hero-aciklama { color:#2c2c2c; font-size:1.1rem; margin-bottom:2rem }
+:root[data-tema-id="orpay-gunduz"] .hero-butonlar { display:flex; gap:1rem; justify-content:center }
+
+/* === BUTONLAR === */
+:root[data-tema-id="orpay-gunduz"] .btn-primary { display:inline-block; padding:12px 28px; background:#27ae60; color:#fff; border-radius:6px; text-decoration:none; font-weight:bold; font-size:14px }
+:root[data-tema-id="orpay-gunduz"] .btn-ghost { display:inline-block; padding:12px 28px; background:transparent; color:#1a1a1a; border:1px solid #1a1a1a; border-radius:6px; text-decoration:none; font-weight:bold; font-size:14px }
+
+/* === BOLUMLER === */
+:root[data-tema-id="orpay-gunduz"] .bolum { padding:4rem 2rem; max-width:1200px; margin:0 auto }
+:root[data-tema-id="orpay-gunduz"] .bolum-koyu { background:#f5f5f5 }
+:root[data-tema-id="orpay-gunduz"] .bolum-baslik { font-size:clamp(1.5rem,3vw,2.5rem); text-align:center; margin-bottom:2rem; color:#1a1a1a }
+:root[data-tema-id="orpay-gunduz"] .bolum-cizgi { height:3px; width:60px; background:#27ae60; margin:0 auto 2rem }
+
+/* === URUN KART === */
+:root[data-tema-id="orpay-gunduz"] .urun-bolum { background:#f8f6f2 }
+:root[data-tema-id="orpay-gunduz"] .urun-kart img { width:100%; height:250px; object-fit:contain }
+:root[data-tema-id="orpay-gunduz"] .urun-kart-baslik { font-size:1.1rem; color:#1a1a1a }
+:root[data-tema-id="orpay-gunduz"] .urun-kart-aciklama { font-size:0.85rem; color:#666 }
+
+/* === TAMAMLAYICI === */
+:root[data-tema-id="orpay-gunduz"] .tamamlayici-gorsel img { width:100%; height:120px; object-fit:contain }
+:root[data-tema-id="orpay-gunduz"] .tamamlayici-baslik { font-size:0.9rem; text-align:center; color:#1a1a1a }
+
+/* === FOOTER === */
+:root[data-tema-id="orpay-gunduz"] .footer { background:#1a1a1a; color:#fff; padding:3rem 2rem }
+:root[data-tema-id="orpay-gunduz"] .footer a { color:#aaa; text-decoration:none }
+
+/* ============================================ */
+/* Stitch Template Stillleri (Luxe ile tutarlı) */
+/* ============================================ */
+
+/* Glass Panel */
+.glass-panel {
+    background: var(--tema-cam-bg);
+    backdrop-filter: blur(12px) saturate(150%);
+    border: 1px solid var(--tema-cam-cizgi);
+}
+html:not(.dark) .glass-panel {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Reveal Animasyonu */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Slider */
+.slider-img { transition: opacity 1s ease-in-out; }
+.slider-img.hidden { opacity: 0; }
+.slider-img.active { opacity: 1; }
+
+/* Accordion */
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+.accordion-button.active .material-symbols-outlined {
+    transform: rotate(180deg);
+}
+
+/* Testimonial Carousel */
+.testimonial-slide {
+    transition: opacity 0.5s ease-in-out;
+}
+
+/* Text Glow */
+.text-glow {
+    text-shadow: 0 0 20px rgba(39, 174, 96, 0.3);
+}
+
+/* Particle */
+.particle {
+    position: absolute;
+    background-color: rgba(39, 174, 96, 0.1);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: float 15s infinite linear;
+}
+@keyframes float {
+    0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+}
+
+/* Industrial Pulse */
+.industrial-pulse {
+    animation: pulse-subtle 4s ease-in-out infinite;
+}
+@keyframes pulse-subtle {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.02); }
+}

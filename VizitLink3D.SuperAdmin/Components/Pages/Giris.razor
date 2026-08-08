@@ -1,0 +1,58 @@
+@page "/giris"
+@rendermode InteractiveServer
+@layout VizitLink3D.SuperAdmin.Components.Layout.BosLayout
+
+<PageTitle>SuperAdmin Giriş</PageTitle>
+
+<div class="giris-sayfasi">
+    <MudPaper Elevation="4" Class="giris-kart pa-6" Style="max-width:400px;width:100%;">
+        <div class="text-center mb-4">
+            <MudText Typo="Typo.h4" Color="Color.Primary">VizitLink3D</MudText>
+            <MudText Typo="Typo.subtitle1" Color="Color.Secondary">SuperAdmin Giriş</MudText>
+        </div>
+
+        <MudForm @ref="_form" Validation="@((object)_girisModel)">
+            <MudTextField @bind-Value="_girisModel.KullaniciAdi" 
+                          Label="Kullanıcı Adı" 
+                          Variant="Variant.Outlined"
+                          Margin="Margin.Dense"
+                          Required="true" />
+
+            <MudTextField @bind-Value="_girisModel.Sifre" 
+                          Label="Şifre" 
+                          Variant="Variant.Outlined"
+                          Margin="Margin.Dense"
+                          InputType="InputType.Password"
+                          Required="true" />
+
+            <MudButton Variant="Variant.Filled" 
+                       Color="Color.Primary" 
+                       FullWidth="true"
+                       Class="mt-4"
+                       OnClick="GirisYap"
+                       Disabled="@_yukleniyor">
+                @if (_yukleniyor) { <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" /> }
+                Giriş Yap
+            </MudButton>
+        </MudForm>
+
+        @if (!string.IsNullOrEmpty(_hata))
+        {
+            <MudAlert Severity="Severity.Error" Class="mt-3">@_hata</MudAlert>
+        }
+    </MudPaper>
+</div>
+
+<style>
+    .giris-sayfasi {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a27 100%);
+    }
+    .giris-kart {
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.08);
+    }
+</style>

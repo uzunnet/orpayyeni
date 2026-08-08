@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
 using System.Text.Json;
@@ -20,7 +20,7 @@ public class CokluTemaServisi(
     ILogger<CokluTemaServisi> log,
     VizitLink3DDbContext db)
 {
-    public const string VARSAYILAN_TEMA = "gold";
+    public const string VARSAYILAN_TEMA = "orpay-luxe-industrial";
     public const string VARSAYILAN_ADMIN_TEMA = "endustri-karanlik";
     public const string AKTIF_TEMA_AYAR = "site.aktifTema";
     private static readonly JsonSerializerOptions JsonAyar = new()

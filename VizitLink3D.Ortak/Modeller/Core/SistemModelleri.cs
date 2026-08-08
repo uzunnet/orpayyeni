@@ -63,6 +63,7 @@ public class Lisans
     public string LisansAnahtari { get; set; } = string.Empty; // HMAC-SHA256 imzali
     public bool AktifMi { get; set; } = true;
     public DateTime? SonDogrulamaTarihi { get; set; }
+    public string? Notlar { get; set; }
 
     // Audit
     public DateTime OlusturulmaTarihi { get; set; } = DateTime.UtcNow;

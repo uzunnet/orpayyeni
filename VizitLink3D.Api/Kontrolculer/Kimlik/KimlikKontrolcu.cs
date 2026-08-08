@@ -56,12 +56,16 @@ public class KimlikKontrolcu(VizitLink3DDbContext vt, IConfiguration yapilandirm
             ?? throw new InvalidOperationException("JWT anahtarı yapılandırılmamış.");
         var anahtar = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtAnahtar));
         var imzaLayici = new SigningCredentials(anahtar, SecurityAlgorithms.HmacSha256);
+        // FAZ 5.1: JWT token'a FirmaId ve FirmaSlug claim'leri ekle (coklu firma destegi)
+        var firmaSlug = HttpContext.Items["FirmaSlug"]?.ToString() ?? string.Empty;
         var talepler = new[]
         {
             new Claim(ClaimTypes.Name, kullanici.KullaniciAdi),
             new Claim(ClaimTypes.NameIdentifier, kullanici.Id.ToString()),
             new Claim(ClaimTypes.Role, kullanici.Rol.ToString()),
-            new Claim("Rol", kullanici.Rol.ToString())
+            new Claim("Rol", kullanici.Rol.ToString()),
+            new Claim("FirmaId", (kullanici.FirmaId ?? 0).ToString()),
+            new Claim("FirmaSlug", firmaSlug)
         };
         var token = new JwtSecurityToken(
             issuer: yapilandirma["Jwt:Yayinci"],
@@ -75,3 +79,4 @@ public class KimlikKontrolcu(VizitLink3DDbContext vt, IConfiguration yapilandirm
 }
 
 public record GirisYaniti(string Token, string KullaniciAdi, string AdSoyad, string Rol, string Eposta);
+

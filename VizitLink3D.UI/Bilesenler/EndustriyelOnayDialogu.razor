@@ -1,4 +1,4 @@
-?@* Endüstriyel Onay Dialogu â€” Silme, yayýnlama, iptal iþlemleri için *@
+ï»¿?@* Endï¿½striyel Onay Dialogu â€” Silme, yayï¿½nlama, iptal iï¿½lemleri iï¿½in *@
 
 <MudDialog Class="admin-dialog">
     <DialogContent>
@@ -9,13 +9,13 @@
                                Icons.Material.Filled.CheckCircle)"
                          Size="Size.Large" />
             </div>
-            <MudText Typo="Typo.h6" Class="mb-2 gb-font-700">@Baslik</MudText>
+            <MudText Typo="Typo.h6" Class="mb-2 orpay-font-700">@Baslik</MudText>
             <MudText Typo="Typo.body2" Color="Color.Secondary">@Mesaj</MudText>
         </div>
     </DialogContent>
     <DialogActions>
         <MudButton Variant="Variant.Outlined" OnClick="Iptal" Color="Color.Default">
-            @dil.T("ortak.iptal", "Ýptal")
+            @dil.T("ortak.iptal", "ï¿½ptal")
         </MudButton>
         <MudButton Variant="Variant.Filled"
                    Color="@(Tur == "sil" ? Color.Error : Tur == "uyari" ? Color.Warning : Color.Primary)"

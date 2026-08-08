@@ -1,16 +1,14 @@
 using Microsoft.JSInterop;
 using System.Net.Http.Json;
-using System.Text.Json;
 using Microsoft.AspNetCore.Components;
 
 namespace VizitLink3D.UI.Servisler;
 
 /// <summary>
 /// Coklu dil servisi — 8+ dil destekli.
-/// ONCE statik JSON dosyalarindan yuklenir (hizli acilis, tarayici icin optimize).
-/// Sonra arka planda API (DB + FusionCache) ile senkronize olur (dinamik icerikler).
-/// Eksik ceviriler AI ile tamamlanir.
-/// Desteklenen diller API'den dinamik olarak alinir.
+/// SADECE statik JSON dosyalarindan yuklenir (hizli acilis, tarayici icin optimize).
+/// API, DB, FusionCache veya AI ile senkronizasyon YAPMAZ.
+/// Statik dosya yolu: wwwroot/i18n/{dil}.json veya firmalar/{slug}/i18n/{dil}.json
 /// </summary>
 public class DilServisi
 {
@@ -20,7 +18,6 @@ public class DilServisi
     private Dictionary<string, string> _sozluk = [];
     private string _aktifDil = "tr";
     private List<DilBilgisi> _desteklenenDiller = [];
-    private HashSet<string> _aiCeviriBekleyen = [];
 
     public DilServisi(HttpClient http, IJSRuntime js, NavigationManager nav)
     {
@@ -33,11 +30,10 @@ public class DilServisi
     public IReadOnlyList<DilBilgisi> DesteklenenDiller => _desteklenenDiller.AsReadOnly();
 
     public event Action? DilDegisti;
-    public event Action? SozlukGuncellendi;
 
     public async Task BaslatAsync(string varsayilanDil = "tr", bool kayitliTercihYoksaTarayiciDiliAlgila = true)
     {
-        await DilleriYukleAsync();
+        DilleriYukle();
 
         var kayitliDil = await _js.InvokeAsync<string?>("localStorage.getItem", "vizitlink3dil");
         var secilenDil = string.IsNullOrWhiteSpace(kayitliDil)
@@ -59,7 +55,6 @@ public class DilServisi
 
         await DilDosyasiniYukleAsync(_aktifDil);
         await HtmlDiliniAyarlaAsync();
-        _ = EksikCevirileriAIileTamamlaAsync();
         DilDegisti?.Invoke();
     }
 
@@ -72,29 +67,19 @@ public class DilServisi
         catch { }
     }
 
-    private async Task DilleriYukleAsync()
+    private void DilleriYukle()
     {
-        try
+        _desteklenenDiller = new List<DilBilgisi>
         {
-            var cevap = await _http.GetFromJsonAsync<CevapListeDto<DilBilgisi>>("api/dil/desteklenen");
-            if (cevap?.BasariliMi == true && cevap.Veri?.Count > 0)
-                _desteklenenDiller = cevap.Veri;
-        }
-        catch { }
-        if (_desteklenenDiller.Count == 0)
-        {
-            _desteklenenDiller = new List<DilBilgisi>
-            {
-                new() { Kod = "tr", Ad = "Turkce", Bayrak = "fi fi-tr" },
-                new() { Kod = "en", Ad = "English", Bayrak = "fi fi-gb" },
-                new() { Kod = "de", Ad = "Deutsch", Bayrak = "fi fi-de" },
-                new() { Kod = "fr", Ad = "Français", Bayrak = "fi fi-fr" },
-                new() { Kod = "ru", Ad = "Русский", Bayrak = "fi fi-ru" },
-                new() { Kod = "ar", Ad = "العربية", Bayrak = "fi fi-sa" },
-                new() { Kod = "es", Ad = "Español", Bayrak = "fi fi-es" },
-                new() { Kod = "zh", Ad = "中文", Bayrak = "fi fi-cn" }
-            };
-        }
+            new() { Kod = "tr", Ad = "Turkce", Bayrak = "fi fi-tr" },
+            new() { Kod = "en", Ad = "English", Bayrak = "fi fi-gb" },
+            new() { Kod = "de", Ad = "Deutsch", Bayrak = "fi fi-de" },
+            new() { Kod = "fr", Ad = "Français", Bayrak = "fi fi-fr" },
+            new() { Kod = "ru", Ad = "Русский", Bayrak = "fi fi-ru" },
+            new() { Kod = "ar", Ad = "العربية", Bayrak = "fi fi-sa" },
+            new() { Kod = "es", Ad = "Español", Bayrak = "fi fi-es" },
+            new() { Kod = "zh", Ad = "中文", Bayrak = "fi fi-cn" }
+        };
     }
 
     public string T(string anahtar, string yedekMetin = "")
@@ -108,7 +93,6 @@ public class DilServisi
         await _js.InvokeVoidAsync("localStorage.setItem", "vizitlink3dil", _aktifDil);
         await DilDosyasiniYukleAsync(_aktifDil);
         await HtmlDiliniAyarlaAsync();
-        _ = EksikCevirileriAIileTamamlaAsync();
         DilDegisti?.Invoke();
     }
 
@@ -173,7 +157,26 @@ public class DilServisi
     }
 
     /// <summary>
-    /// AI ile tek anahtar cevirisi. Herhangi iki dil arasinda ceviri yapabilir.
+    /// SADECE statik JSON dosyasindan sozluk yukler.
+    /// Once wwwroot/i18n/{dil}.json denenir, bulunamazsa bos sozluk ile devam edilir.
+    /// API, DB veya AI ile senkronizasyon YAPILMAZ.
+    /// </summary>
+    private async Task DilDosyasiniYukleAsync(string dil)
+    {
+        try
+        {
+            var sozluk = await _yerelHttp.GetFromJsonAsync<Dictionary<string, string>>($"i18n/{dil}.json");
+            if (sozluk is not null && sozluk.Count > 0)
+            {
+                _sozluk = sozluk;
+            }
+        }
+        catch { _sozluk = []; }
+    }
+
+    /// <summary>
+    /// Tek anahtar AI cevirisi — admin paneli tarafindan kullanilir.
+    /// Sunucu tarafindaki api/ai/cevir endpoint'ine istek atar.
     /// </summary>
     public async Task<string?> AICeviriAlAsync(string anahtar, string varsayilanMetin, string hedefDil = "en", string? kaynakDil = null)
     {
@@ -186,106 +189,16 @@ public class DilServisi
                 HedefDil = hedefDil,
                 KaynakDil = kaynakDil
             });
-            var cevap = await yanit.Content.ReadFromJsonAsync<JsonElement>();
+            yanit.EnsureSuccessStatusCode();
+            var cevap = await yanit.Content.ReadFromJsonAsync<System.Text.Json.JsonElement>();
             if (cevap.TryGetProperty("basariliMi", out var bm) && bm.GetBoolean() &&
-                cevap.TryGetProperty("veri", out var veri) && veri.ValueKind != JsonValueKind.Null)
+                cevap.TryGetProperty("veri", out var veri) && veri.ValueKind != System.Text.Json.JsonValueKind.Null)
             {
-                var ceviriMetin = veri.GetString();
-                if (!string.IsNullOrEmpty(ceviriMetin))
-                {
-                    _sozluk[anahtar] = ceviriMetin;
-                    _ = AIAnahtariKaydetAsync(anahtar, ceviriMetin, hedefDil);
-                    SozlukGuncellendi?.Invoke();
-                    return ceviriMetin;
-                }
+                return veri.GetString();
             }
         }
         catch { }
         return null;
-    }
-
-    /// <summary>
-    /// Eksik anahtarlari AI ile otomatik cevir. Tum dil ciftleri icin calisir.
-    /// </summary>
-    public async Task EksikCevirileriAIileTamamlaAsync(string kaynakDil = "tr")
-    {
-        if (_aktifDil == kaynakDil) return;
-
-        Dictionary<string, string> kaynakSozluk;
-        try
-        {
-            var cevap = await _http.GetFromJsonAsync<CevapDto>($"api/dil/ceviriler/{kaynakDil}");
-            kaynakSozluk = cevap?.BasariliMi == true && cevap.Veri != null ? cevap.Veri : [];
-        }
-        catch { return; }
-
-        var eksikAnahtarlar = kaynakSozluk
-            .Where(kv => !_sozluk.ContainsKey(kv.Key) || string.IsNullOrEmpty(_sozluk[kv.Key]))
-            .Select(kv => kv.Key)
-            .ToList();
-
-        foreach (var anahtar in eksikAnahtarlar)
-        {
-            if (_aiCeviriBekleyen.Contains(anahtar + _aktifDil)) continue;
-            _aiCeviriBekleyen.Add(anahtar + _aktifDil);
-            await AICeviriAlAsync(anahtar, kaynakSozluk[anahtar], _aktifDil, kaynakDil);
-        }
-    }
-
-    private async Task AIAnahtariKaydetAsync(string anahtar, string deger, string dil)
-    {
-        try
-        {
-            await _http.PostAsJsonAsync("api/dil/ceviri-ekle", new { Anahtar = anahtar, Dil = dil, Deger = deger });
-        }
-        catch { }
-    }
-
-    private async Task DilDosyasiniYukleAsync(string dil)
-    {
-        // 1. ONCELIKLE: Statik JSON dosyasindan yukle (tarayicida aninda calisir)
-        try
-        {
-            var sozluk = await _yerelHttp.GetFromJsonAsync<Dictionary<string, string>>($"i18n/{dil}.json");
-            if (sozluk is not null && sozluk.Count > 0)
-            {
-                _sozluk = sozluk;
-            }
-        }
-        catch { _sozluk = []; }
-
-        // 2. ARKA PLANDA: API ile senkronize et (dinamik icerikler DB'den gelir)
-        _ = APIIleSenkronizeEtAsync(dil);
-    }
-
-    private async Task APIIleSenkronizeEtAsync(string dil)
-    {
-        try
-        {
-            var cevap = await _http.GetFromJsonAsync<CevapDto>($"api/dil/ceviriler/{dil}");
-            if (cevap?.BasariliMi == true && cevap.Veri?.Count > 0)
-            {
-                // API'den gelen dinamik ceviriler statik olanlarin uzerine yazar
-                foreach (var kv in cevap.Veri)
-                {
-                    _sozluk[kv.Key] = kv.Value;
-                }
-                SozlukGuncellendi?.Invoke();
-            }
-        }
-        catch { }
-    }
-
-    private class CevapDto
-    {
-        public bool BasariliMi { get; set; }
-        public Dictionary<string, string>? Veri { get; set; }
-    }
-
-    private class CevapListeDto<T>
-    {
-        public bool BasariliMi { get; set; }
-        public List<T>? Veri { get; set; }
     }
 
     public class DilBilgisi
