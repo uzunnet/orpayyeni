@@ -1,0 +1,33 @@
+services:
+  vizitlink3d-api:
+    image: ghcr.io/uzunnet/orpay-vizitlink3d-api:latest
+    container_name: orpay-api
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - VeriTabani__Yol=/app/Veri/vizitlink3d.db
+      - Jwt__Anahtar=VizitLink3D_Production_Gizli_Anahtari_2026
+      - Cors__IzinliDomainler__0=https://orpay.uzunreklam.com
+      - Cors__IzinliDomainler__1=http://orpay.uzunreklam.com
+      - Saas__VarsayilanFirmaSlug=orpay
+      - Saas__LocalTekFirmaZorla=true
+      - FORCE_SEED=1
+    volumes:
+      - orpay-veri:/app/Veri
+      - orpay-medya:/app/wwwroot/medya
+
+  vizitlink3d-ui:
+    image: ghcr.io/uzunnet/orpay-vizitlink3d-ui:latest
+    container_name: orpay-ui
+    restart: unless-stopped
+    network_mode: host
+    depends_on:
+      vizitlink3d-api:
+        condition: service_healthy
+
+volumes:
+  orpay-veri:
+    driver: local
+  orpay-medya:
+    driver: local
