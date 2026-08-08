@@ -3,15 +3,13 @@ services:
     image: ghcr.io/uzunnet/orpay-vizitlink3d-api:latest
     container_name: orpay-api
     restart: unless-stopped
-    ports:
-      - "5015:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - VeriTabani__Yol=/app/Veri/vizitlink3d.db
       - Kestrel__Endpoints__Http__Url=http://+:8080
       - Jwt__Anahtar=${JWT_ANAHTAR:-VizitLink3D_Production_Gizli_Anahtari_2026}
-      - Cors__IzinliDomainler__0=http://localhost:5013
-      - Cors__IzinliDomainler__1=https://localhost:5013
+      - Cors__IzinliDomainler__0=http://localhost
+      - Cors__IzinliDomainler__1=https://localhost
       - Saas__VarsayilanFirmaSlug=orpay
       - Saas__LocalTekFirmaZorla=true
       - FORCE_SEED=1
@@ -31,8 +29,6 @@ services:
     image: ghcr.io/uzunnet/orpay-vizitlink3d-ui:latest
     container_name: orpay-ui
     restart: unless-stopped
-    ports:
-      - "5013:80"
     depends_on:
       vizitlink3d-api:
         condition: service_healthy
