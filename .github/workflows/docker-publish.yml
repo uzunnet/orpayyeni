@@ -42,8 +42,8 @@ jobs:
           tags: |
             ghcr.io/${{ env.GITHUB_USER }}/orpay-vizitlink3d-api:latest
             ghcr.io/${{ env.GITHUB_USER }}/orpay-vizitlink3d-api:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          no-cache: true
+          
 
       - name: UI imajini build ve push
         uses: docker/build-push-action@v6
@@ -54,5 +54,5 @@ jobs:
           tags: |
             ghcr.io/${{ env.GITHUB_USER }}/orpay-vizitlink3d-ui:latest
             ghcr.io/${{ env.GITHUB_USER }}/orpay-vizitlink3d-ui:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          no-cache: true
+          
