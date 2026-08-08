@@ -227,24 +227,24 @@ public partial class UrunDetay : ComponentBase, IDisposable
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        // Icerik API'den async geldigi icin ilk render'da .gb-reveal elemanlari
-        // henuz DOM'da olmuyor — bu yuzden her render'da (sadece firstRender'da degil)
-        // yeni eklenen (henuz .gorunur olmayan) elemanlari gozlemciye kaydediyoruz.
+        // Icerik API'den async geldigi icin ilk render'da .reveal-element / .scale-in
+        // elemanlari henuz DOM'da olmuyor — her render'da yeni eklenen
+        // (henuz .visible olmayan) elemanlari gozlemciye kaydediyoruz.
         try
         {
             await JS.InvokeVoidAsync("eval", @"
                 (function () {
-                    if (!window.__gbRevealObserver) {
-                        window.__gbRevealObserver = new IntersectionObserver((entries) => {
+                    if (!window.__revealObserver) {
+                        window.__revealObserver = new IntersectionObserver((entries) => {
                             entries.forEach(entry => {
                                 if (entry.isIntersecting) {
-                                    entry.target.classList.add('gorunur');
-                                    window.__gbRevealObserver.unobserve(entry.target);
+                                    entry.target.classList.add('visible');
+                                    window.__revealObserver.unobserve(entry.target);
                                 }
                             });
-                        }, { threshold: 0.1 });
+                        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
                     }
-                    document.querySelectorAll('.gb-reveal:not(.gorunur)').forEach(el => window.__gbRevealObserver.observe(el));
+                    document.querySelectorAll('.reveal-element:not(.visible), .scale-in:not(.visible)').forEach(el => window.__revealObserver.observe(el));
                 })();
             ");
         }

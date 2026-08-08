@@ -160,6 +160,7 @@ public class UrunlerKontrolcu(VizitLink3DDbContext vt, IOtomatikCeviriServisi ot
     {
         var urun = await vt.Urunler
             .AsNoTracking()
+            .Include(u => u.Medyalar)
             .FirstOrDefaultAsync(u => u.Slug == slug && !u.SilindiMi);
 
         if (urun is null)
@@ -477,6 +478,7 @@ public class UrunlerKontrolcu(VizitLink3DDbContext vt, IOtomatikCeviriServisi ot
         var benzerler = !string.IsNullOrWhiteSpace(modelOneki)
             ? await vt.Urunler
                 .AsNoTracking()
+                .Include(u => u.Medyalar)
                 .Where(u => !u.SilindiMi && u.AktifMi && u.Id != id && u.Kod.StartsWith(modelOneki + "-"))
                 .OrderByDescending(u => u.OneCikanMi)
                 .ThenBy(u => u.SiraNo)
@@ -533,6 +535,7 @@ public class UrunlerKontrolcu(VizitLink3DDbContext vt, IOtomatikCeviriServisi ot
         {
             urunler = await vt.Urunler
                 .AsNoTracking()
+                .Include(u => u.Medyalar)
                 .Where(u => !u.SilindiMi && u.AktifMi && sluglar.Contains(u.Slug))
                 .Take(adet)
                 .ToListAsync();
@@ -541,6 +544,7 @@ public class UrunlerKontrolcu(VizitLink3DDbContext vt, IOtomatikCeviriServisi ot
         {
             urunler = await vt.Urunler
                 .AsNoTracking()
+                .Include(u => u.Medyalar)
                 .Where(u => !u.SilindiMi && u.AktifMi && u.OneCikanMi)
                 .Take(adet)
                 .ToListAsync();
