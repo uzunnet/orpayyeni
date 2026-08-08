@@ -6,20 +6,21 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - VeriTabani__Yol=/app/Veri/vizitlink3d.db
-      - Kestrel__Endpoints__Http__Url=http://+:5015
       - Jwt__Anahtar=${JWT_ANAHTAR:-VizitLink3D_Production_Gizli_Anahtari_2026}
       - Cors__IzinliDomainler__0=https://orpay.uzunreklam.com
       - Cors__IzinliDomainler__1=http://orpay.uzunreklam.com
       - Saas__VarsayilanFirmaSlug=orpay
       - Saas__LocalTekFirmaZorla=true
       - FORCE_SEED=1
+    expose:
+      - "8080"
     volumes:
       - orpay-veri:/app/Veri
       - orpay-medya:/app/wwwroot/medya
     networks:
       - orpay-net
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5015/api/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
