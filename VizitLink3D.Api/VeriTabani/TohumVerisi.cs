@@ -15,7 +15,7 @@ public static partial class TohumVerisi
             {
                 Ad = "VizitLink3D Platform",
                 Unvan = "VizitLink3D Platform Varsayilan Firma",
-                Slug = "vizitlink3d",
+                Slug = Environment.GetEnvironmentVariable("Saas__VarsayilanFirmaSlug") ?? "vizitlink3d",
                 AciklamaKisa = "3D urun konfigurator ve dijital showroom platformu",
                 Aciklama = "VizitLink3D, urunlerinizi 3 boyutlu olarak musterilerinize sunmanizi saglayan dijital showroom ve konfigurator platformudur.",
                 Domain = "localhost",
@@ -24,7 +24,7 @@ public static partial class TohumVerisi
                 Adres = "Turkiye",
                 Sehir = "Istanbul",
                 KurulusYili = 2024,
-                SiteTema = "vizitlink3d",
+                SiteTema = "orpay-luxe-industrial",
                 AdminTema = "vizitlink3d",
                 AktifMi = true,
                 OlusturulmaTarihi = DateTime.UtcNow
@@ -40,8 +40,8 @@ public static partial class TohumVerisi
             vt.Kullanicilar.Add(new Kullanici
             {
                 FirmaId = firma.Id,
-                AdSoyad = "VIZITLINK3D Yonetici",
-                Eposta = "admin@3dvizitlink.com.tr",
+                AdSoyad = "ORPAY Yonetici",
+                Eposta = "admin@orpay.com.tr",
                 KullaniciAdi = "admin",
                 SifreHash = BCrypt.Net.BCrypt.HashPassword("Admin2026!"),
                 Rol = Rol.SuperAdmin,

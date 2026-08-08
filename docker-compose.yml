@@ -17,6 +17,7 @@ services:
       - Cors__IzinliDomainler__1=https://localhost:5013
       - Saas__VarsayilanFirmaSlug=orpay
       - Saas__LocalTekFirmaZorla=true
+      - FORCE_SEED=1
     volumes:
       - orpay-veri:/app/Veri
       - orpay-medya:/app/wwwroot/medya
