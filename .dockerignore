@@ -1,25 +1,55 @@
-**/.git
-**/.vs
-**/.vscode
+# Git
+.git
+.gitignore
+
+# Derleme ciktiları
 **/bin
 **/obj
-**/node_modules
-**/stitch_orpay
-**/uiout-test
-**/orpayresimler
-**/AjanKurallari
-**/AGENTS.md
-**/KURALLAR.md
-**/*.md
-**/*.user
-**/*.suo
-**/appsettings.Development.json
-**/launchSettings.json
-**/.idea
-**/TestResults
-**/Yedekler
-**/*.db-journal
-**/obj/**
-**/bin/Release/**
-**/wwwroot/css/temalar/**/*.gz
-**/wwwroot/css/temalar/**/*.br
+bin
+obj
+TestResults
+
+# .NET
+*.user
+*.suo
+*.userprefs
+.vs
+.vscode
+.idea
+
+# Gereksiz cikti klasorleri
+uiout
+ui-publish
+uiout-test
+cikti
+out
+publish
+ui-publish
+_vt-kontrol
+
+# Gecici / yardimci projeler (imaja girmesin)
+TestFirmaOlustur
+DBTemizle
+orpayresimler
+stitch_orpay
+
+# AI ajan gecmisi
+.opencode
+.mimocode
+.chrome-debug
+
+# Medya (volume'dan gelir - imaja GOMULMEZ)
+**/wwwroot/medya
+wwwroot/medya
+
+# Docker / CI
+.docker
+Dockerfile*
+*.db
+*.db-wal
+*.db-shm
+Yedekler
+
+# Loglar
+*.log
+npm-debug.log*
