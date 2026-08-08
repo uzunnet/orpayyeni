@@ -13,5 +13,6 @@ COPY --from=build /app/publish .
 RUN mkdir -p /app/Veri
 RUN cp -r /app/wwwroot/medya /app/medya-init 2>/dev/null || true
 COPY VizitLink3D.Api/entrypoint.sh /app/entrypoint.sh
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
 RUN chmod +x /app/entrypoint.sh
 ENTRYPOINT ["/app/entrypoint.sh"]

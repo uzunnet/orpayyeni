@@ -125,7 +125,15 @@ public partial class VizitLink3DDuzen : IDisposable
         new("Ana Sayfa", "/", []),
         new("Ürünler", "/urunler", []),
         new("Katalog", "/katalog", []),
-        new("Kurumsal", "/hakkimizda", []),
+        new("Kurumsal", "/hakkimizda",
+        [
+            new("Hakkımızda", "/hakkimizda", []),
+            new("Vizyon & Misyon", "/hakkimizda#vizyon-misyon", []),
+            new("Ekibimiz", "/hakkimizda#ekibimiz", []),
+            new("Sertifikalarımız", "/hakkimizda#sertifikalar", []),
+            new("Bayiler", "/hakkimizda#bayiler", []),
+            new("Fabrikamız", "/hakkimizda#fabrikamiz", [])
+        ]),
         new("İletişim", "/iletisim", [])
     ];
 

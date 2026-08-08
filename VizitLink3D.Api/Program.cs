@@ -336,4 +336,7 @@ if (System.IO.File.Exists(Path.Combine(uygulama.Environment.WebRootPath, "index.
     uygulama.MapFallbackToFile("index.html");
 }
 
+// 13. Health check endpoint (Docker healthcheck icin)
+uygulama.MapGet("/api/health", () => Results.Ok(new { durum = "saglikli", zaman = System.DateTime.UtcNow }));
+
 uygulama.Run();
