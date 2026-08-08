@@ -214,6 +214,10 @@ using (var kapsam = uygulama.Services.CreateScope())
         await VizitLink3D.Api.VeriTabani.TohumVerisi.TohumlaAsync(vt);
     }
 
+    // PatchSeed: Eksik UrunMedya, UrunYerellestirme, SayfaIcerigi kayıtlarını
+    // ve OneCikanMi işaretini tamamlar. Idempotent — mevcut verileri bozmaz.
+    await VizitLink3D.Api.VeriTabani.TohumVerisi.PatchSeedAsync(vt);
+
     // DeepSeek API anahtarını şifreli tohumla (env veya config'den; kayıt varsa dokunma)
     var deepSeekKey = Environment.GetEnvironmentVariable("DEEPSEEK_API_KEY")
         ?? yapici.Configuration["AI:DeepSeekApiKey"];

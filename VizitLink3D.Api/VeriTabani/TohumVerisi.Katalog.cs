@@ -469,18 +469,6 @@ public static partial class TohumVerisi
         {
             vt.UrunMedyalari.AddRange(urunMedyalar);
             await vt.SaveChangesAsync();
-
-            // Ana gorselleri guncelle
-            foreach (var urun in tumUrunler)
-            {
-                var ilkMedya = await vt.UrunMedyalari
-                    .FirstOrDefaultAsync(m => m.UrunId == urun.Id && m.AnaGosterim);
-                if (ilkMedya != null)
-                {
-                    urun.AnaGorselMedyaId = ilkMedya.Id;
-                }
-            }
-            await vt.SaveChangesAsync();
         }
     }
 

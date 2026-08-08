@@ -14,7 +14,7 @@ public partial class AnaSayfa : IDisposable
 
 
     private List<UrunKategori> _koleksiyonlar = new();
-    private List<UrunOzetDto> _oneCikanUrunler = new();
+    private List<Urun> _oneCikanUrunler = new();
     private List<Slayt> _slaytlar = new();
     private List<HizmetAdimi> _hizmetAdimlari = new();
     private List<MusteriYorumu> _yorumlar = new();
@@ -43,7 +43,7 @@ public partial class AnaSayfa : IDisposable
         try
         {
             var taskKoleksiyonlar = Api.GetAsync<List<UrunKategori>>("api/urun-kategorileri");
-            var taskOneCikanlar = Api.GetAsync<List<UrunOzetDto>>("api/urunler?oneCikan=true");
+            var taskOneCikanlar = Api.GetAsync<List<Urun>>("api/urunler?oneCikan=true");
             var taskSlaytlar = Api.GetAsync<List<Slayt>>($"api/slaytlar?sayfaKodu=anasayfa&dil={DilServisi.AktifDil}");
             var taskHizmetAdimlari = Api.GetAsync<List<HizmetAdimi>>("api/hizmet-adimlari");
             var taskYorumlar = Api.GetAsync<List<MusteriYorumu>>("api/musteri-yorumlari");
@@ -162,18 +162,28 @@ public partial class AnaSayfa : IDisposable
         }
     }
 
+    private string GorselUrlGetir(Urun urun)
+    {
+        var ilkMedyaUrl = urun.Medyalar?
+            .Where(m => !m.SilindiMi)
+            .OrderBy(m => m.SiraNo)
+            .FirstOrDefault(m => m.AnaGosterim)?.MedyaUrl
+            ?? urun.Medyalar?
+                .Where(m => !m.SilindiMi)
+                .OrderBy(m => m.SiraNo)
+                .FirstOrDefault()?.MedyaUrl;
+
+        if (!string.IsNullOrEmpty(ilkMedyaUrl))
+        {
+            var apiBase = Config["ApiTemelUrl"] ?? "http://localhost:5015";
+            return apiBase + ilkMedyaUrl;
+        }
+
+        return "/medya/urunler/bilesenler/Kasa/Kasa_18-18_MDF_Kasa_A.jpg";
+    }
+
     public void Dispose()
     {
         DilServisi.DilDegisti -= DilDegistiginde;
-    }
-
-    public class UrunOzetDto
-    {
-        public int Id { get; set; }
-        public string Ad { get; set; } = "";
-        public string? Kod { get; set; }
-        public string? Slug { get; set; }
-        public string? Aciklama { get; set; }
-        public string? KapakResim { get; set; }
     }
 }

@@ -228,7 +228,7 @@
             {
                 <a class="glass-panel p-4 rounded-lg flex flex-col items-center hover:bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group cursor-pointer dark:hover:bg-white/5" href="/urun/@(urun.Slug ?? urun.Id.ToString())">
                     <div class="w-full mb-4 overflow-hidden rounded relative" style="height:160px;background:var(--tema-arkaplan-2);">
-                        <img alt="@urun.Ad" class="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal group-hover:scale-105 transition-transform duration-500" src="@(urun.KapakResim?.StartsWith("/") == true ? apiMedyaUrl + urun.KapakResim.Replace("/medya", "").Replace("+", "%2B") : urun.KapakResim ?? "/medya/urunler/bilesenler/Kasa/Kasa_18-18_MDF_Kasa_A.jpg")" onerror="this.src='/medya/urunler/bilesenler/Kasa/Kasa_18-18_MDF_Kasa_A.jpg'" />
+                        <img alt="@urun.Ad" class="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal group-hover:scale-105 transition-transform duration-500" src="@(GorselUrlGetir(urun))" onerror="this.src='/medya/urunler/bilesenler/Kasa/Kasa_18-18_MDF_Kasa_A.jpg'" />
                     </div>
                     <h4 class="font-title-lg text-title-lg text-on-surface dark:text-white text-center group-hover:text-primary transition-colors">@urun.Ad</h4>
                 </a>

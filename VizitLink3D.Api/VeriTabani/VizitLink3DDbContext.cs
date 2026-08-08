@@ -121,21 +121,28 @@ public class VizitLink3DDbContext(DbContextOptions<VizitLink3DDbContext> secenek
     {
         base.OnConfiguring(secenekler);
 
-        // Multi-tenant: Firma slug'ına göre DB dosyasını belirle
-        // KiraciServisi'den firma slug'ını oku
         if (!secenekler.IsConfigured)
         {
+            // 1. Öncelik: VeriTabani__Yol ortam değişkeni / config (Docker volume)
+            var konfigYolu = Environment.GetEnvironmentVariable("VeriTabani__Yol");
+            if (!string.IsNullOrWhiteSpace(konfigYolu))
+            {
+                var konfigDizini = System.IO.Path.GetDirectoryName(konfigYolu);
+                if (!string.IsNullOrEmpty(konfigDizini) && !System.IO.Directory.Exists(konfigDizini))
+                    System.IO.Directory.CreateDirectory(konfigDizini);
+
+                secenekler.UseSqlite($"Data Source={konfigYolu}");
+                return;
+            }
+
+            // 2. Multi-tenant: Firma slug'ına göre DB dosyasını belirle
             var firmaSlug = _kiraci?.MevcutSlug;
             if (string.IsNullOrEmpty(firmaSlug))
             {
-                // Startup/migration sırasında HTTP request yoksa fallback kullan
                 firmaSlug = "vizitlink3d";
             }
 
-            // Firma DB'si: firmalar/{slug}/{slug}.db
             var dbPath = System.IO.Path.Combine("firmalar", firmaSlug, $"{firmaSlug}.db");
-
-            // Eğer dosya yoksa (yeni firma veya migration), merkezi DB'ye dön
             if (!System.IO.File.Exists(dbPath))
             {
                 dbPath = "vizitlink3d.db";

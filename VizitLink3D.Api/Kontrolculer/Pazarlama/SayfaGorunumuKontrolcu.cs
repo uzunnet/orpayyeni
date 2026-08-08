@@ -1,5 +1,6 @@
 ﻿using VizitLink3D.Api.VeriTabani;
 using VizitLink3D.Ortak.Modeller;
+using VizitLink3D.Ortak.Modeller.Urunler;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -37,6 +38,7 @@ public class SayfaGorunumuKontrolcu(VizitLink3DDbContext vt) : ControllerBase
 
         // Urunler
         var urunEntityler = await vt.Urunler
+            .Include(u => u.Medyalar)
             .Where(u => u.AktifMi && !u.SilindiMi && u.OneCikanMi)
             .OrderBy(u => u.SiraNo)
             .ToListAsync();
@@ -47,7 +49,14 @@ public class SayfaGorunumuKontrolcu(VizitLink3DDbContext vt) : ControllerBase
             {
                 BlokTipi = "Urun",
                 Icerik = u.Ad,
-                GorselUrl = u.AnaGorselMedyaId.HasValue ? $"{apiTemeli}/api/medya/dosya/{u.AnaGorselMedyaId.Value}" : null,
+                GorselUrl = u.Medyalar?
+                    .Where(m => !m.SilindiMi)
+                    .OrderBy(m => m.SiraNo)
+                    .FirstOrDefault(m => m.AnaGosterim)?.MedyaUrl
+                    ?? u.Medyalar?
+                        .Where(m => !m.SilindiMi)
+                        .OrderBy(m => m.SiraNo)
+                        .FirstOrDefault()?.MedyaUrl,
                 Link = "/urun/" + u.Slug
             })
             .ToList();
