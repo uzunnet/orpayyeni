@@ -164,10 +164,17 @@
     <link href="VizitLink3D.UI.styles.css" rel="stylesheet" />
     <script>
         (function() {
-            if (!localStorage.getItem('aktif_firma') || localStorage.getItem('aktif_firma') === 'localhost' || localStorage.getItem('aktif_firma') === '127.0.0.1') {
-                var h = window.location.hostname;
-                var val = (h === 'localhost' || h === '127.0.0.1') ? 'orpay' : h;
-                localStorage.setItem('aktif_firma', val);
+            var h = window.location.hostname || '';
+            var beklenen;
+            if (h === 'localhost' || h === '127.0.0.1') {
+                beklenen = 'orpay';
+            } else {
+                var temiz = h.replace(/^www\./i, '');
+                beklenen = temiz.split('.')[0];
+            }
+            var mevcut = localStorage.getItem('aktif_firma');
+            if (!mevcut || mevcut !== beklenen || mevcut === 'localhost' || mevcut === '127.0.0.1') {
+                localStorage.setItem('aktif_firma', beklenen);
             }
         })();
     </script>
