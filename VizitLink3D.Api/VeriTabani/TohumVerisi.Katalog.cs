@@ -255,15 +255,15 @@ public static partial class TohumVerisi
 
     private static async Task<int> UrunAilesiniTohumlaAsync(VizitLink3DDbContext vt, DateTime simdi)
     {
-        var mevcut = await vt.UrunAilesileri.FirstOrDefaultAsync(a => a.Slug == "vizitlink3d-kapi-sistemleri");
+        var mevcut = await vt.UrunAilesileri.FirstOrDefaultAsync(a => a.Slug == "orpay-kapi-sistemleri");
         if (mevcut != null)
             return mevcut.Id;
 
         var aile = new UrunAilesi
         {
-            Ad = "VizitLink3D Kapı Sistemleri",
-            Slug = "vizitlink3d-kapi-sistemleri",
-            Aciklama = "VizitLink3D kapı sistemleri ürün ailesi",
+            Ad = "ORPAY Kapı Sistemleri",
+            Slug = "orpay-kapi-sistemleri",
+            Aciklama = "ORPAY kapı sistemleri ürün ailesi",
             SiraNo = 1,
             AktifMi = true,
             OlusturulmaTarihi = simdi,
@@ -332,7 +332,7 @@ public static partial class TohumVerisi
                 YeniMi = false,
                 SiraNo = 0,
                 OlusturulmaTarihi = simdi,
-                KisaAciklama = $"{ModeldenGorunenAd(model)} modeli VizitLink3D kalitesiyle.",
+                KisaAciklama = $"{ModeldenGorunenAd(model)} modeli ORPAY kalitesiyle.",
             };
             vt.Urunler.Add(urun);
             await vt.SaveChangesAsync();
@@ -370,7 +370,7 @@ public static partial class TohumVerisi
     {
         var ayarlar = new Dictionary<string, string>
         {
-            ["site.baslik"]     = "VizitLink3D",
+            ["site.baslik"]     = "ORPAY",
             ["site.aciklama"]   = "3D dijital showroom ve urun konfigurator platformu.",
             ["site.telefon"]    = "+90 000 000 00 00",
             ["site.telefon_2"]  = "+90 000 000 00 01",
@@ -414,7 +414,7 @@ public static partial class TohumVerisi
             Anahtar = "hakkimizda",
             Bolum = "metin",
             Dil = "tr",
-            Deger = "VizitLink3D, urunlerinizi 3 boyutlu olarak musterilerinize sunmanizi saglayan dijital showroom ve konfigurator platformudur.\n\nModern teknolojilerle gelistirilen platformumuz, urunlerinizi interaktif bir sekilde sergilemenizi, musterilerinizin urunleri 3 boyutlu olarak incelemesini ve kendi tercihlerine gore ozellestirmesini saglar.\n\nSurekli gelisen altyapimiz ve yenilenen teknolojimiz ile musteri memnuniyetini on planda tutuyoruz.",
+            Deger = "ORPAY, kapı yüzeyleri ve orman ürünlerinde yüksek kaliteyi musterilerine sunan üretim firmasıdır.\n\nModern teknolojilerle gelistirilen platformumuz, urunlerinizi interaktif bir sekilde sergilemenizi, musterilerinizin urunleri 3 boyutlu olarak incelemesini ve kendi tercihlerine gore ozellestirmesini saglar.\n\nSurekli gelisen altyapimiz ve yenilenen teknolojimiz ile musteri memnuniyetini on planda tutuyoruz.",
             GuncellemeTarihi = DateTime.UtcNow,
         });
         await vt.SaveChangesAsync();

@@ -21,7 +21,7 @@ public static partial class TohumVerisi
                 Unvan = "ORPAY Orman Ürünleri Ltd. Şti.",
                 Slug = Environment.GetEnvironmentVariable("Saas__VarsayilanFirmaSlug") ?? "vizitlink3d",
                 AciklamaKisa = "3D urun konfigurator ve dijital showroom platformu",
-                Aciklama = "VizitLink3D, urunlerinizi 3 boyutlu olarak musterilerinize sunmanizi saglayan dijital showroom ve konfigurator platformudur.",
+                Aciklama = "ORPAY, kapı yüzeyleri ve orman ürünlerinde yüksek kaliteyi musterilerine sunan üretim firmasıdır.",
                 Domain = "localhost",
                 Eposta = "bilgi@3dvizitlink.com.tr",
                 Telefon1 = "+90 000 000 00 00",
@@ -70,8 +70,8 @@ public static partial class TohumVerisi
         if (!vt.SistemAyarlari.Any())
         {
             vt.SistemAyarlari.AddRange(
-                new SistemAyari { Anahtar = "site.baslik", Deger = "VizitLink3D" },
-                new SistemAyari { Anahtar = "site.aciklama", Deger = "VizitLink3D - 3D Dijital Showroom Platformu" },
+                new SistemAyari { Anahtar = "site.baslik", Deger = "ORPAY" },
+                new SistemAyari { Anahtar = "site.aciklama", Deger = "ORPAY - 3D Dijital Showroom Platformu" },
                 new SistemAyari { Anahtar = "site.telefon", Deger = "+90 000 000 00 00" },
                 new SistemAyari { Anahtar = "site.eposta", Deger = "bilgi@3dvizitlink.com.tr" }
             );
@@ -271,7 +271,7 @@ public static partial class TohumVerisi
             Anahtar = "hakkimizda",
             Bolum = "metin",
             Dil = "tr",
-            Deger = "VizitLink3D, urunlerinizi 3 boyutlu olarak musterilerinize sunmanizi saglayan dijital showroom ve konfigurator platformudur.\n\nModern teknolojilerle gelistirilen platformumuz, urunlerinizi interaktif bir sekilde sergilemenizi, musterilerinizin urunleri 3 boyutlu olarak incelemesini ve kendi tercihlerine gore ozellestirmesini saglar.\n\nSurekli gelisen altyapimiz ve yenilenen teknolojimiz ile musteri memnuniyetini on planda tutuyoruz.",
+            Deger = "ORPAY, kapı yüzeyleri ve orman ürünlerinde yüksek kaliteyi musterilerine sunan üretim firmasıdır.\n\nModern teknolojilerle gelistirilen platformumuz, urunlerinizi interaktif bir sekilde sergilemenizi, musterilerinizin urunleri 3 boyutlu olarak incelemesini ve kendi tercihlerine gore ozellestirmesini saglar.\n\nSurekli gelisen altyapimiz ve yenilenen teknolojimiz ile musteri memnuniyetini on planda tutuyoruz.",
             GuncellemeTarihi = DateTime.UtcNow,
         });
         await vt.SaveChangesAsync();
