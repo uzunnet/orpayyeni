@@ -16,7 +16,7 @@ services:
       - "8080"
     volumes:
       - orpay-veri:/app/Veri
-      - orpay-medya:/app/wwwroot/medya
+      - orpay-medya:/app/wwwroot
     networks:
       - orpay-net
     healthcheck:
