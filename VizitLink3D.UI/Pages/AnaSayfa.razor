@@ -5,7 +5,7 @@
 <PageTitle>@DilServisi.T("site.baslik", "Orpay Orman Ürünleri | Yüksek Kalite Kapı Yüzeyleri")</PageTitle>
 
 @{
-    var apiMedyaUrl = (Config["ApiTemelUrl"] ?? "http://localhost:5015") + $"/firmalar/{_firmaSlug}/medya";
+    var apiMedyaUrl = (Config["ApiTemelUrl"] ?? "") + $"/firmalar/{_firmaSlug}/medya";
     
     // Varsayılan Veriler
     var heroBaslik1 = _sayfaIcerikleri.GetValueOrDefault("HeroBaslik1", DilServisi.T("anasayfa.hero.baslik", "Ahşabın Zarafeti, Orpay'ın Kalitesi"));
@@ -52,7 +52,7 @@
             foreach (var s in _slaytlar)
             {
                 var activeClass = i == 0 ? "active" : "hidden";
-                var gorsel = s.ArkaplanResim?.StartsWith("/") == true ? (Config["ApiTemelUrl"] ?? "http://localhost:5015") + s.ArkaplanResim : s.ArkaplanResim;
+                var gorsel = s.ArkaplanResim?.StartsWith("/") == true ? (Config["ApiTemelUrl"] ?? "") + s.ArkaplanResim : s.ArkaplanResim;
                 <img alt="@s.Baslik" class="slider-img @activeClass absolute inset-0 w-full h-full object-cover object-center opacity-80" src="@gorsel" />
                 i++;
             }

@@ -175,7 +175,12 @@ public partial class AnaSayfa : IDisposable
 
         if (!string.IsNullOrEmpty(ilkMedyaUrl))
         {
-            var apiBase = Config["ApiTemelUrl"] ?? "http://localhost:5015";
+            var apiBase = Config["ApiTemelUrl"];
+            if (string.IsNullOrWhiteSpace(apiBase))
+            {
+                // Relative -> same-origin (production). Local gelistirme icin appsettings dolu olur.
+                apiBase = "";
+            }
             return apiBase + ilkMedyaUrl;
         }
 
