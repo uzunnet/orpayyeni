@@ -11,8 +11,8 @@ public partial class Giris : ComponentBase
     [Inject] private FirmaBilgisiServisi FirmaBilgisi { get; set; } = default!;
 
     private MudForm _form = default!;
-    private string _kullaniciAdi = "admin";
-    private string _sifre = "Admin2026!";
+    private string _kullaniciAdi = string.Empty;
+    private string _sifre = string.Empty;
     private string _firmaAdi = "";
     private bool _yukleniyor;
 
