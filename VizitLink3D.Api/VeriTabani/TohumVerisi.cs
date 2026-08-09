@@ -198,10 +198,17 @@ public static partial class TohumVerisi
             var kategori = await vt.UrunKategorileri.FirstOrDefaultAsync(k => k.Id == urun.UrunKategoriId);
             if (kategori == null) continue;
 
-            var klasorYolu = Path.Combine(medyaKoku, kategori.Slug, urun.Kod);
-            if (!Directory.Exists(klasorYolu)) continue;
+            // Kategori klasorunu bul (case-insensitive)
+            var kategoriKlasoru = Directory.GetDirectories(medyaKoku)
+                .FirstOrDefault(d => Path.GetFileName(d).Equals(kategori.Slug, StringComparison.OrdinalIgnoreCase));
+            if (kategoriKlasoru == null) continue;
 
-            var dosyalar = Directory.GetFiles(klasorYolu, "*.*", SearchOption.TopDirectoryOnly)
+            // Urun klasorunu bul (case-insensitive)
+            var urunKlasoru = Directory.GetDirectories(kategoriKlasoru)
+                .FirstOrDefault(d => Path.GetFileName(d).Equals(urun.Kod, StringComparison.OrdinalIgnoreCase));
+            if (urunKlasoru == null) continue;
+
+            var dosyalar = Directory.GetFiles(urunKlasoru, "*.*", SearchOption.TopDirectoryOnly)
                 .Where(d => d.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase)
                          || d.EndsWith(".png", StringComparison.OrdinalIgnoreCase)
                          || d.EndsWith(".webp", StringComparison.OrdinalIgnoreCase))
@@ -211,7 +218,9 @@ public static partial class TohumVerisi
             for (int i = 0; i < dosyalar.Count; i++)
             {
                 var dosyaAdi = Path.GetFileName(dosyalar[i]);
-                var medyaUrl = $"/medya/urunler/{kategori.Slug}/{urun.Kod}/{dosyaAdi}";
+                var kategoriAdi = Path.GetFileName(kategoriKlasoru);
+                var urunKodu = Path.GetFileName(urunKlasoru);
+                var medyaUrl = $"/medya/urunler/{kategoriAdi}/{urunKodu}/{dosyaAdi}";
 
                 var medya = new UrunMedya
                 {
