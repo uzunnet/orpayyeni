@@ -17,7 +17,7 @@ public partial class Ayarlar : ComponentBase
     private bool _yukleniyor;
     private bool _yukleniyorSayfa = true;
 
-    private string _firmaAdi = "VizitLink3D";
+    private string _firmaAdi = "ORPAY";
     private string _logoUrl = "/medya/brand/orpay-logo-kare.png";
     private string _faviconUrl = "/favicon.png";
     private string LogoOnizlemeYolu => MarkaVarligiNormalizeEt(_logoUrl, "/medya/brand/orpay-logo-kare.png");
