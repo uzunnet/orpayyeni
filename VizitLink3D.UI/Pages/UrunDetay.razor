@@ -46,7 +46,7 @@
 
             <div class="urun-detay-v2__hero-grid">
                 <!-- Sol: Ana Görsel -->
-                <div class="urun-detay-v2__hero-gorsel glow-effect scale-in" @onclick="() => LightboxAc(0)">
+                <div class="urun-detay-v2__hero-gorsel glow-effect scale-in" @onclick="() => LightboxAc(_aktifGorselIndex)">
                     <img src="@HeroGorselUrl" alt="@_urun.Ad" />
                     @if (KatalogOlculer.Count > 0)
                     {
@@ -75,6 +75,24 @@
                         </div>
                     }
                 </div>
+
+                <!-- Thumbnail Galeri -->
+                @if (GaleriGorselleri.Count > 1)
+                {
+                    <div class="urun-detay-v2__galeri">
+                        @for (var i = 0; i < GaleriGorselleri.Count; i++)
+                        {
+                            var gorsel = GaleriGorselleri[i];
+                            var aktif = i == _aktifGorselIndex;
+                            <button type="button"
+                                    class="urun-detay-v2__galeri-thumb @(aktif ? "urun-detay-v2__galeri-thumb--aktif" : "")"
+                                    @onclick="() => GorselSec(i)"
+                                    aria-label="@dil.T("urun.gorselGoster", "Görseli Göster") @(i + 1)">
+                                <img src="@gorsel" alt="@_urun.Ad @(i + 1)" />
+                            </button>
+                        }
+                    </div>
+                }
 
                 <!-- Sağ: Ürün Bilgisi -->
                 <div class="urun-detay-v2__hero-bilgi reveal-element">

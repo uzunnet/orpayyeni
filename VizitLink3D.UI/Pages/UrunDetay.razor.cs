@@ -32,6 +32,7 @@ public partial class UrunDetay : ComponentBase, IDisposable
     private List<Urun> BenzerUrunler { get; set; } = [];
     private List<Urun> EnCokGezilenler { get; set; } = [];
     private List<string> GaleriGorselleri { get; set; } = [];
+    private int _aktifGorselIndex;
     private List<UrunUcBoyutModeli> Modeller { get; set; } = [];
     private List<RalRengi> Renkler { get; set; } = [];
     private List<UrunMedya> Medyalar { get; set; } = [];
@@ -72,6 +73,13 @@ public partial class UrunDetay : ComponentBase, IDisposable
         if (index < 0 || index >= GaleriGorselleri.Count) return;
         _lightboxIndex = index;
         _lightboxAcik = true;
+    }
+
+    private void GorselSec(int index)
+    {
+        if (index < 0 || index >= GaleriGorselleri.Count) return;
+        _aktifGorselIndex = index;
+        HeroGorselUrl = GaleriGorselleri[index];
     }
 
     private void LightboxKapat() => _lightboxAcik = false;
@@ -149,6 +157,7 @@ public partial class UrunDetay : ComponentBase, IDisposable
             BenzerUrunler = [];
             EnCokGezilenler = [];
             GaleriGorselleri = [];
+            _aktifGorselIndex = 0;
             Modeller = [];
             Renkler = [];
             Medyalar = [];

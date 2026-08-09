@@ -212,6 +212,51 @@ html.dark .glass-panel,
     transform: scale(1.05);
 }
 
+/* Thumbnail galeri şeridi */
+.urun-detay-v2__galeri {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.urun-detay-v2__galeri-thumb {
+    width: 100px;
+    height: 100px;
+    padding: 0;
+    border: 2px solid transparent;
+    border-radius: 0.25rem;
+    overflow: hidden;
+    cursor: pointer;
+    background: transparent;
+    opacity: 0.6;
+    transition: opacity 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+
+.urun-detay-v2__galeri-thumb:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+}
+
+.urun-detay-v2__galeri-thumb--aktif {
+    opacity: 1;
+    border-color: var(--tema-ikincil);
+}
+
+.urun-detay-v2__galeri-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+@media (max-width: 640px) {
+    .urun-detay-v2__galeri-thumb {
+        width: 76px;
+        height: 76px;
+    }
+}
+
 /* Hero görsel overlay (hover'da görünür) */
 .urun-detay-v2__hero-overlay {
     position: absolute;
