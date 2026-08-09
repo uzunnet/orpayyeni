@@ -71,14 +71,8 @@ public class DilServisi
     {
         _desteklenenDiller = new List<DilBilgisi>
         {
-            new() { Kod = "tr", Ad = "Turkce", Bayrak = "fi fi-tr" },
-            new() { Kod = "en", Ad = "English", Bayrak = "fi fi-gb" },
-            new() { Kod = "de", Ad = "Deutsch", Bayrak = "fi fi-de" },
-            new() { Kod = "fr", Ad = "Français", Bayrak = "fi fi-fr" },
-            new() { Kod = "ru", Ad = "Русский", Bayrak = "fi fi-ru" },
-            new() { Kod = "ar", Ad = "العربية", Bayrak = "fi fi-sa" },
-            new() { Kod = "es", Ad = "Español", Bayrak = "fi fi-es" },
-            new() { Kod = "zh", Ad = "中文", Bayrak = "fi fi-cn" }
+            new() { Kod = "tr", Ad = "Türkçe", Bayrak = "fi fi-tr" },
+            new() { Kod = "en", Ad = "English", Bayrak = "fi fi-gb" }
         };
     }
 
